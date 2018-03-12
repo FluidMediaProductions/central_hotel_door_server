@@ -19,6 +19,7 @@ const addr = ":8080"
 
 const AuthServer = "http://localhost:8081"
 const BookingsServer = "http://localhost:8082"
+const HotelsServer = "http://localhost:8083"
 
 func getJson(r *http.Request) (map[string]interface{}, error) {
 	c := http.Client{}
@@ -154,6 +155,38 @@ var bookingType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
+var hotelType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "Hotel",
+	Fields: graphql.Fields{
+		"ID": &graphql.Field{
+			Type: graphql.Int,
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				hotel, isOk := params.Source.(map[string]interface{})
+				if isOk {
+					id, isOk := hotel["ID"].(float64)
+					if isOk {
+						return int(id), nil
+					}
+				}
+				return nil, nil
+			},
+		},
+		"name": &graphql.Field{
+			Type: graphql.String,
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				hotel, isOk := params.Source.(map[string]interface{})
+				if isOk {
+					name, isOk := hotel["name"].(string)
+					if isOk {
+						return name, nil
+					}
+				}
+				return nil, nil
+			},
+		},
+	},
+})
+
 var authedQuery = graphql.NewObject(graphql.ObjectConfig{
 	Name: "AuthedQuery",
 	Fields: graphql.Fields{
@@ -201,9 +234,9 @@ var authedQuery = graphql.NewObject(graphql.ObjectConfig{
 							}
 						}
 
-						booking, isOk := resp["booking"].(map[string]interface{})
+						hotels, isOk := resp["hotels"].([]interface{})
 						if isOk {
-							return booking, nil
+							return hotels, nil
 						}
 					}
 				}
@@ -231,6 +264,33 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 						return nil, err
 					}
 					return claims.User, nil
+				}
+				return nil, nil
+			},
+		},
+		"hotels": &graphql.Field{
+			Type: hotelType,
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				req, err := http.NewRequest("GET", HotelsServer+"/hotels", nil)
+				if err != nil {
+					return nil, err
+				}
+
+				resp, err := getJson(req)
+				if err != nil {
+					return nil, err
+				}
+				respErr, isOk := resp["err"].(string)
+				if isOk {
+					if respErr != "" {
+						return nil, errors.New(respErr)
+					}
+				}
+
+				log.Println(resp)
+				booking, isOk := resp["hotels"].([]interface{})
+				if isOk {
+					return booking, nil
 				}
 				return nil, nil
 			},
