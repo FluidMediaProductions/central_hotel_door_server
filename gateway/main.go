@@ -152,6 +152,38 @@ var bookingType = graphql.NewObject(graphql.ObjectConfig{
 				return nil, nil
 			},
 		},
+		"hotel": &graphql.Field{
+			Type: hotelType,
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				booking, isOk := params.Source.(map[string]interface{})
+				if isOk {
+					hotelId, isOk := booking["hotelId"].(float64)
+					if isOk {
+						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotel/%d", int(hotelId)), nil)
+						if err != nil {
+							return nil, err
+						}
+
+						resp, err := getJson(req)
+						if err != nil {
+							return nil, err
+						}
+						respErr, isOk := resp["err"].(string)
+						if isOk {
+							if respErr != "" {
+								return nil, errors.New(respErr)
+							}
+						}
+
+						hotel, isOk := resp["hotel"].(map[string]interface{})
+						if isOk {
+							return hotel, nil
+						}
+					}
+				}
+				return nil, nil
+			},
+		},
 	},
 })
 
@@ -234,9 +266,9 @@ var authedQuery = graphql.NewObject(graphql.ObjectConfig{
 							}
 						}
 
-						hotels, isOk := resp["hotels"].([]interface{})
+						booking, isOk := resp["booking"].(map[string]interface{})
 						if isOk {
-							return hotels, nil
+							return booking, nil
 						}
 					}
 				}
@@ -269,7 +301,7 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 			},
 		},
 		"hotels": &graphql.Field{
-			Type: hotelType,
+			Type: graphql.NewList(hotelType),
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				req, err := http.NewRequest("GET", HotelsServer+"/hotels", nil)
 				if err != nil {
@@ -287,10 +319,43 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 					}
 				}
 
-				log.Println(resp)
-				booking, isOk := resp["hotels"].([]interface{})
+				hotels, isOk := resp["hotels"].([]interface{})
 				if isOk {
-					return booking, nil
+					return hotels, nil
+				}
+				return nil, nil
+			},
+		},
+		"hotel": &graphql.Field{
+			Type: hotelType,
+			Args: graphql.FieldConfigArgument{
+				"id": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.Int),
+				},
+			},
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				id, isOK := params.Args["id"].(int)
+				if isOK {
+					req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotel/%d", id), nil)
+					if err != nil {
+						return nil, err
+					}
+
+					resp, err := getJson(req)
+					if err != nil {
+						return nil, err
+					}
+					respErr, isOk := resp["err"].(string)
+					if isOk {
+						if respErr != "" {
+							return nil, errors.New(respErr)
+						}
+					}
+
+					hotel, isOk := resp["hotel"].(map[string]interface{})
+					if isOk {
+						return hotel, nil
+					}
 				}
 				return nil, nil
 			},
