@@ -23,6 +23,7 @@ type Booking struct {
 	Start time.Time `json:"start"`
 	End time.Time `json:"end"`
 	HotelID uint `json:"hotelId"`
+	RoomID uint `json:"roomId"`
 }
 
 type BookingsResp struct {
