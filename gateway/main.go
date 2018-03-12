@@ -24,11 +24,13 @@ func getJson(r *http.Request) (map[string]interface{}, error) {
 	c := http.Client{}
 	resp, err := c.Do(r)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
 	respBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -36,6 +38,7 @@ func getJson(r *http.Request) (map[string]interface{}, error) {
 	data := map[string]interface{}{}
 	err = json.Unmarshal(respBytes, &data)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 	return data, nil
@@ -308,5 +311,5 @@ func main() {
 	http.Handle("/graphql", corsH)
 
 	log.Printf("Listening on %s\n", addr)
-	http.ListenAndServe(addr, nil)
+	log.Fatalln(http.ListenAndServe(addr, nil))
 }

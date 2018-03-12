@@ -93,5 +93,5 @@ func main() {
 	r.Methods("GET").Path("/hotel/{id:[0-9]+}").HandlerFunc(getHotel)
 
 	log.Printf("Listening on %s\n", addr)
-	http.ListenAndServe(addr, r)
+	log.Fatalln(http.ListenAndServe(addr, r))
 }

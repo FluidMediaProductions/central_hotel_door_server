@@ -104,7 +104,7 @@ func main() {
 	r.Methods("POST").Path("/login").HandlerFunc(loginUser)
 
 	log.Printf("Listening on %s\n", addr)
-	http.ListenAndServe(addr, r)
+	log.Fatalln(http.ListenAndServe(addr, r))
 }
 
 
