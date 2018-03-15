@@ -14,7 +14,7 @@ services:
       - hotels
       - rooms
   auth:
-    build: ./auth
+    build: .
     volumes:
       - ./auth:/go/src/auth
     working_dir: /go/src/auth
@@ -22,7 +22,7 @@ services:
       - 80
     command: go run main.go
   hotels:
-    build: ./hotels
+    build: .
     volumes:
       - ./hotels:/go/src/hotels
     working_dir: /go/src/hotels
@@ -30,7 +30,7 @@ services:
       - 80
     command: go run main.go
   rooms:
-    build: ./rooms
+    build: .
     volumes:
       - ./rooms:/go/src/rooms
     working_dir: /go/src/rooms
@@ -38,7 +38,7 @@ services:
       - 80
     command: go run main.go
   bookings:
-    build: ./bookings
+    build: .
     volumes:
       - ./bookings:/go/src/bookings
     working_dir: /go/src/bookings
