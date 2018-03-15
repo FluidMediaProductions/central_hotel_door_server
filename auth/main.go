@@ -12,7 +12,7 @@ import (
 	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
 )
 
-const addr = ":8081"
+const addr = ":80"
 
 var db *gorm.DB
 

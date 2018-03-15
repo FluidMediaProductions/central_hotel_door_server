@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-const addr = ":8084"
+const addr = ":80"
 
 var db *gorm.DB
 
@@ -19,6 +19,7 @@ type Room struct {
 	Name string `json:"name"`
 	Floor string `json:"floor"`
 	HotelID uint `json:"hotelId"`
+	DoorID uint `json:"doorId"`
 }
 
 type RoomsResp struct {

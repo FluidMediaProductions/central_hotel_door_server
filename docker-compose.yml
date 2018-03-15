@@ -1,0 +1,47 @@
+version: "2"
+
+services:
+  gateway:
+    image: golang:1.10-alpine
+    volumes:
+      - ./gateway:/go/src/gateway
+    working_dir: /go/src/gateway
+    command: go run main.go
+    ports:
+      - 8080:80
+    links:
+      - auth
+      - hotels
+      - rooms
+  auth:
+    build: ./auth
+    volumes:
+      - ./auth:/go/src/auth
+    working_dir: /go/src/auth
+    expose:
+      - 80
+    command: go run main.go
+  hotels:
+    build: ./hotels
+    volumes:
+      - ./hotels:/go/src/hotels
+    working_dir: /go/src/hotels
+    expose:
+      - 80
+    command: go run main.go
+  rooms:
+    build: ./rooms
+    volumes:
+      - ./rooms:/go/src/rooms
+    working_dir: /go/src/rooms
+    expose:
+      - 80
+    command: go run main.go
+  bookings:
+    build: ./bookings
+    volumes:
+      - ./bookings:/go/src/bookings
+    working_dir: /go/src/bookings
+    expose:
+      - 80
+    command: go run main.go

@@ -1,0 +1,115 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "+TKtBzv23ywvmmqRiGEjUba4YmI=",
+			"path": "github.com/dgrijalva/jwt-go",
+			"revision": "dbeaa9332f19a944acb5736b4456cfcc02140e29",
+			"revisionTime": "2017-10-19T21:57:19Z"
+		},
+		{
+			"checksumSHA1": "atMy27EGOv6JXls0vvIy3s+NoA8=",
+			"path": "github.com/fluidmediaproductions/central_hotel_door_server/utils",
+			"revision": "e26d99d6656dc8c25dd3e398671b9032e637136d",
+			"revisionTime": "2018-03-12T17:41:34Z"
+		},
+		{
+			"checksumSHA1": "RcJEvy/yg5F45pts6yMPm8TCZSk=",
+			"path": "github.com/graphql-go/graphql",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "/g29kXS7NodmiYAPKeIyEXYYI+g=",
+			"path": "github.com/graphql-go/graphql/gqlerrors",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "VrO1uc17ly1vnEKnOGGt0iSRwpQ=",
+			"path": "github.com/graphql-go/graphql/language/ast",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "FNFpZJ07U5Ud3MCc25ast14qVbo=",
+			"path": "github.com/graphql-go/graphql/language/kinds",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "22j2uTp0XMUgd5dvrKAqFRvRFEU=",
+			"path": "github.com/graphql-go/graphql/language/lexer",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "yskrC6tG5BTJdIk4GKHzGTenQOc=",
+			"path": "github.com/graphql-go/graphql/language/location",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "BUev824xn1rEc4afs6CqTCnr9rw=",
+			"path": "github.com/graphql-go/graphql/language/parser",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "vvZgiJe8nZ6r++mAFcgXw1O1+nE=",
+			"path": "github.com/graphql-go/graphql/language/printer",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "dRrl/Ky/0NTYA3bZznpxp4tG5Jc=",
+			"path": "github.com/graphql-go/graphql/language/source",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "f62XVj7So29WO/HJC6znxHbbeTs=",
+			"path": "github.com/graphql-go/graphql/language/typeInfo",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "qeUIi6ohnCSBjL7lbvqPcc+L0Ig=",
+			"path": "github.com/graphql-go/graphql/language/visitor",
+			"revision": "a881484cbecd02036ef6a005f4777f709d2f09f5",
+			"revisionTime": "2018-02-23T12:59:34Z"
+		},
+		{
+			"checksumSHA1": "CO0obOYAff3iJ/240CjFxM6N02g=",
+			"path": "github.com/graphql-go/handler",
+			"revision": "cc93f95bb535278ff64b1c5ead653bdf9ca17d57",
+			"revisionTime": "2017-12-08T13:40:01Z"
+		},
+		{
+			"checksumSHA1": "IPuI0TCUlOnJGLYWyJDDH6xbtZg=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "6ed508ec6a4ecb3531899a69cbc746ccf65a4166",
+			"revisionTime": "2018-02-27T23:43:56Z"
+		},
+		{
+			"checksumSHA1": "4eelJOSLZoDzLuaJvgilOBVNovU=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "04140366298a54a039076d798123ffa108fff46c",
+			"revisionTime": "2018-03-08T03:36:59Z"
+		},
+		{
+			"checksumSHA1": "ljd3FhYRJ91cLZz3wsH9BQQ2JbA=",
+			"path": "github.com/pkg/errors",
+			"revision": "30136e27e2ac8d167177e8a583aa4c3fea5be833",
+			"revisionTime": "2018-01-27T01:58:12Z"
+		},
+		{
+			"checksumSHA1": "62AWD68bDmLyRunZGJ99J7bNceA=",
+			"path": "github.com/rs/cors",
+			"revision": "36f00aa91d31dac5aeba5cee361f0e5d395116ac",
+			"revisionTime": "2018-02-24T20:03:55Z"
+		}
+	],
+	"rootPath": "github.com/fluidmediaproductions/central_hotel_door_server/gateway"
+}

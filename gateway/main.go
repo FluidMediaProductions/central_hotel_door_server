@@ -15,12 +15,12 @@ import (
 	"time"
 )
 
-const addr = ":8080"
+const addr = ":80"
 
-const AuthServer = "http://localhost:8081"
-const BookingsServer = "http://localhost:8082"
-const HotelsServer = "http://localhost:8083"
-const RoomsServer = "http://localhost:8084"
+const AuthServer = "http://auth"
+const BookingsServer = "http://bookings"
+const HotelsServer = "http://hotels"
+const RoomsServer = "http://room"
 
 func getJson(r *http.Request) (map[string]interface{}, error) {
 	c := http.Client{}
@@ -274,6 +274,19 @@ var hotelType = graphql.NewObject(graphql.ObjectConfig{
 					address, isOk := hotel["address"].(string)
 					if isOk {
 						return address, nil
+					}
+				}
+				return nil, nil
+			},
+		},
+		"hasCarPark": &graphql.Field{
+			Type: graphql.String,
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				hotel, isOk := params.Source.(map[string]interface{})
+				if isOk {
+					hasCarPark, isOk := hotel["hasCarPark"].(bool)
+					if isOk {
+						return hasCarPark, nil
 					}
 				}
 				return nil, nil

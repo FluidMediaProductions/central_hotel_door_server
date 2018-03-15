@@ -13,7 +13,7 @@ import (
 	"strconv"
 )
 
-const addr = ":8082"
+const addr = ":80"
 
 var db *gorm.DB
 

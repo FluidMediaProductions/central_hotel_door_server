@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-const addr = ":8083"
+const addr = ":80"
 
 var db *gorm.DB
 
@@ -22,6 +22,7 @@ type Hotel struct {
 	Address string `json:"address"`
 	Location *utils.Location `json:"location"`
 	CheckIn time.Time `json:"checkIn"`
+	HasCarPark bool `json:"hasCarPark"`
 }
 
 type HotelsResp struct {

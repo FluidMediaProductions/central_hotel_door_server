@@ -1,0 +1,139 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "+TKtBzv23ywvmmqRiGEjUba4YmI=",
+			"path": "github.com/dgrijalva/jwt-go",
+			"revision": "dbeaa9332f19a944acb5736b4456cfcc02140e29",
+			"revisionTime": "2017-10-19T21:57:19Z"
+		},
+		{
+			"checksumSHA1": "atMy27EGOv6JXls0vvIy3s+NoA8=",
+			"path": "github.com/fluidmediaproductions/central_hotel_door_server/utils",
+			"revision": "e26d99d6656dc8c25dd3e398671b9032e637136d",
+			"revisionTime": "2018-03-12T17:41:34Z"
+		},
+		{
+			"checksumSHA1": "g/V4qrXjUGG9B+e3hB+4NAYJ5Gs=",
+			"path": "github.com/gorilla/context",
+			"revision": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42",
+			"revisionTime": "2016-08-17T18:46:32Z"
+		},
+		{
+			"checksumSHA1": "fSs1WcPh2F5JJtxqYC+Jt8yCkYc=",
+			"path": "github.com/gorilla/mux",
+			"revision": "5bbbb5b2b5729b132181cc7f4aa3b3c973e9a0ed",
+			"revisionTime": "2018-01-07T15:57:08Z"
+		},
+		{
+			"checksumSHA1": "IPuI0TCUlOnJGLYWyJDDH6xbtZg=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "6ed508ec6a4ecb3531899a69cbc746ccf65a4166",
+			"revisionTime": "2018-02-27T23:43:56Z"
+		},
+		{
+			"checksumSHA1": "4VZ1gLZHMumRjV3fclS1aX8S1aQ=",
+			"path": "github.com/jinzhu/gorm/dialects/sqlite",
+			"revision": "6ed508ec6a4ecb3531899a69cbc746ccf65a4166",
+			"revisionTime": "2018-02-27T23:43:56Z"
+		},
+		{
+			"checksumSHA1": "4eelJOSLZoDzLuaJvgilOBVNovU=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "04140366298a54a039076d798123ffa108fff46c",
+			"revisionTime": "2018-03-08T03:36:59Z"
+		},
+		{
+			"checksumSHA1": "4fh/y4TLt0wVvZ/hF9AQVNX3Vdc=",
+			"path": "github.com/mattn/go-sqlite3",
+			"revision": "a35b097634ab3a42fac3f7a1c5ed1f898d5cdd5f",
+			"revisionTime": "2018-01-29T03:10:10Z"
+		},
+		{
+			"checksumSHA1": "oCH3J96RWvO8W4xjix47PModpio=",
+			"path": "golang.org/x/crypto/bcrypt",
+			"revision": "91a49db82a88618983a78a06c1cbd4e00ab749ab",
+			"revisionTime": "2018-02-28T15:18:34Z"
+		},
+		{
+			"checksumSHA1": "oVPHWesOmZ02vLq2fglGvf+AMgk=",
+			"path": "golang.org/x/crypto/blowfish",
+			"revision": "91a49db82a88618983a78a06c1cbd4e00ab749ab",
+			"revisionTime": "2018-02-28T15:18:34Z"
+		},
+		{
+			"checksumSHA1": "1MGpGDQqnUoRpv7VEcQrXOBydXE=",
+			"path": "golang.org/x/crypto/pbkdf2",
+			"revision": "91a49db82a88618983a78a06c1cbd4e00ab749ab",
+			"revisionTime": "2018-02-28T15:18:34Z"
+		},
+		{
+			"checksumSHA1": "dHh6VeHcbNg11miGjGEl8LbPe7w=",
+			"path": "golang.org/x/crypto/scrypt",
+			"revision": "91a49db82a88618983a78a06c1cbd4e00ab749ab",
+			"revisionTime": "2018-02-28T15:18:34Z"
+		},
+		{
+			"checksumSHA1": "klJ9QeZbE0SGPA1hhLjMwMTONig=",
+			"path": "gopkg.in/hlandau/easymetric.v1/cexp",
+			"revision": "1c173222e345c2ba115e0f483821c6da2d3b0fa9",
+			"revisionTime": "2015-09-23T21:15:05Z"
+		},
+		{
+			"checksumSHA1": "hBKoXBOEfoSVBsKCrUuB1YoLqNM=",
+			"path": "gopkg.in/hlandau/measurable.v1",
+			"revision": "d96a009bd9bda94dd1294105e67e8c1794e533d3",
+			"revisionTime": "2015-10-29T11:39:54Z"
+		},
+		{
+			"checksumSHA1": "u+gt3/QilvHnqehSl1YkxDOAfLk=",
+			"path": "gopkg.in/hlandau/passlib.v1",
+			"revision": "933f1c3f63ffb0d17de04c3174f875ae683a33cd",
+			"revisionTime": "2016-09-22T11:41:03Z"
+		},
+		{
+			"checksumSHA1": "dLTGi5ic/+/0iXUwlNJACCUegBo=",
+			"path": "gopkg.in/hlandau/passlib.v1/abstract",
+			"revision": "933f1c3f63ffb0d17de04c3174f875ae683a33cd",
+			"revisionTime": "2016-09-22T11:41:03Z"
+		},
+		{
+			"checksumSHA1": "WIlU/mYXRx+dOE8duG8NYhtJr2o=",
+			"path": "gopkg.in/hlandau/passlib.v1/hash/bcrypt",
+			"revision": "933f1c3f63ffb0d17de04c3174f875ae683a33cd",
+			"revisionTime": "2016-09-22T11:41:03Z"
+		},
+		{
+			"checksumSHA1": "+KHCKMjQSiGcoBTCK/rNaDUsZjA=",
+			"path": "gopkg.in/hlandau/passlib.v1/hash/bcryptsha256",
+			"revision": "933f1c3f63ffb0d17de04c3174f875ae683a33cd",
+			"revisionTime": "2016-09-22T11:41:03Z"
+		},
+		{
+			"checksumSHA1": "g9Craq/vfDfd8Mw9eAy6NFjfFz0=",
+			"path": "gopkg.in/hlandau/passlib.v1/hash/scrypt",
+			"revision": "933f1c3f63ffb0d17de04c3174f875ae683a33cd",
+			"revisionTime": "2016-09-22T11:41:03Z"
+		},
+		{
+			"checksumSHA1": "V4W70BcLKNnb53BTJ49YVmHapHA=",
+			"path": "gopkg.in/hlandau/passlib.v1/hash/scrypt/raw",
+			"revision": "933f1c3f63ffb0d17de04c3174f875ae683a33cd",
+			"revisionTime": "2016-09-22T11:41:03Z"
+		},
+		{
+			"checksumSHA1": "wbxXrJXpVsXVdLAv+d2zK+4ZZf4=",
+			"path": "gopkg.in/hlandau/passlib.v1/hash/sha2crypt",
+			"revision": "933f1c3f63ffb0d17de04c3174f875ae683a33cd",
+			"revisionTime": "2016-09-22T11:41:03Z"
+		},
+		{
+			"checksumSHA1": "dn+VC/24lLLgOErHEH8KoUN/Q18=",
+			"path": "gopkg.in/hlandau/passlib.v1/hash/sha2crypt/raw",
+			"revision": "933f1c3f63ffb0d17de04c3174f875ae683a33cd",
+			"revisionTime": "2016-09-22T11:41:03Z"
+		}
+	],
+	"rootPath": "github.com/fluidmediaproductions/central_hotel_door_server/auth"
+}
