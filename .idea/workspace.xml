@@ -5,7 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54d2d74e-1e82-427d-b612-b697385a4d17" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hotel_comms/crypto.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hotel_comms/hotel_comms.proto" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hotel_gateway/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bookings/bookings" beforeDir="false" afterPath="$PROJECT_DIR$/bookings/bookings" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bookings/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/bookings/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/gateway" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/gateway" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotels/hotels" beforeDir="false" afterPath="$PROJECT_DIR$/hotels/hotels" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotels/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/hotels/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotels/vendor/github.com/fluidmediaproductions/central_hotel_door_server/utils/jwt.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotels/vendor/github.com/fluidmediaproductions/central_hotel_door_server/utils/loc.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotels/vendor/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/hotels/vendor/vendor.json" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
@@ -51,41 +63,11 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gateway/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10064">
-              <caret line="592" column="42" selection-start-line="592" selection-start-column="42" selection-end-line="592" selection-end-column="42" />
+            <state relative-caret-position="632">
+              <caret line="635" column="44" selection-start-line="635" selection-start-column="44" selection-end-line="635" selection-end-column="44" />
               <folding>
                 <element signature="e#14#265#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="rooms" pinned="false" current-in-tab="false">
-        <entry file="das://2a5aefba-c904-4402-b490-3561c1f37096/schema/main/table/rooms">
-          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-            <state>
-              <filtering enabled="true" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="http.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/utils/http.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="14" column="23" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
-              <folding>
-                <element signature="e#15#74#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rooms/main.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="816">
-              <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -102,35 +84,68 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/hotels/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1411">
-              <caret line="93" column="34" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
+            <state relative-caret-position="3077">
+              <caret line="193" column="24" lean-forward="true" selection-start-line="193" selection-start-column="24" selection-end-line="193" selection-end-column="24" />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bookings/main.go">
+        <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="685">
-              <caret line="59" column="17" selection-start-line="59" selection-start-column="17" selection-end-line="59" selection-end-column="17" />
+            <state relative-caret-position="-1581">
+              <caret line="50" selection-start-line="50" selection-end-line="58" selection-end-column="1" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
+      <file leaf-file-name="comms.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/comms.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="708">
-              <caret line="86" lean-forward="true" selection-start-line="86" selection-end-line="86" />
+            <state relative-caret-position="663">
+              <caret line="46" column="1" lean-forward="true" selection-start-line="11" selection-end-line="46" selection-end-column="1" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bookings" pinned="false" current-in-tab="false">
-        <entry file="das://51051452-2f18-44bf-a6f7-98c0e5aa2b9f/schema/main/table/bookings">
-          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-            <state>
-              <filtering enabled="true" />
+      <file leaf-file-name="main.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/hotel_gateway/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="446">
+              <caret line="109" column="30" lean-forward="true" selection-start-line="109" selection-start-column="30" selection-end-line="109" selection-end-column="30" />
+              <folding>
+                <element signature="e#14#322#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="hotel_comms.proto" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hotel_comms/hotel_comms.proto">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="door_comms.proto" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../hotel_door/door_comms.proto">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="23" selection-start-line="23" selection-end-line="33" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="server.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/server.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="581">
+              <caret line="101" column="1" lean-forward="true" selection-start-line="14" selection-end-line="101" selection-end-column="1" />
+              <folding>
+                <element signature="e#14#188#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -145,6 +160,15 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>OpenRoom</find>
+      <find>door</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>OpenHotel</replace>
+    </replaceStrings>
+  </component>
   <component name="GOROOT" path="/usr/local/go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -158,12 +182,16 @@
         <option value="$PROJECT_DIR$/hotels/Dockerfile" />
         <option value="$PROJECT_DIR$/auth/main.go" />
         <option value="$PROJECT_DIR$/utils/http.go" />
-        <option value="$PROJECT_DIR$/hotels/main.go" />
-        <option value="$PROJECT_DIR$/gateway/main.go" />
         <option value="$PROJECT_DIR$/docker-compose.yml" />
-        <option value="$PROJECT_DIR$/bookings/main.go" />
         <option value="$PROJECT_DIR$/rooms/main.go" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/gateway/main.go" />
+        <option value="$PROJECT_DIR$/hotels/main.go" />
+        <option value="$PROJECT_DIR$/bookings/main.go" />
+        <option value="$PROJECT_DIR$/hotels/vendor/vendor.json" />
+        <option value="$PROJECT_DIR$/hotel_comms/hotel_comms.proto" />
+        <option value="$PROJECT_DIR$/hotel_comms/crypto.go" />
+        <option value="$PROJECT_DIR$/hotel_gateway/main.go" />
       </list>
     </option>
   </component>
@@ -194,32 +222,17 @@
             <path>
               <item name="central_hotel_door_server" type="b2602c69:ProjectViewProjectNode" />
               <item name="central_hotel_door_server" type="462c0819:PsiDirectoryNode" />
-              <item name="auth" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="central_hotel_door_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="central_hotel_door_server" type="462c0819:PsiDirectoryNode" />
-              <item name="bookings" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="central_hotel_door_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="central_hotel_door_server" type="462c0819:PsiDirectoryNode" />
               <item name="gateway" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="central_hotel_door_server" type="b2602c69:ProjectViewProjectNode" />
               <item name="central_hotel_door_server" type="462c0819:PsiDirectoryNode" />
-              <item name="hotels" type="462c0819:PsiDirectoryNode" />
+              <item name="hotel_comms" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="central_hotel_door_server" type="b2602c69:ProjectViewProjectNode" />
               <item name="central_hotel_door_server" type="462c0819:PsiDirectoryNode" />
-              <item name="rooms" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="central_hotel_door_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="central_hotel_door_server" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
+              <item name="hotel_gateway" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -236,7 +249,7 @@
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.vendoring.notification.had.been.shown" value="true" />
     <property name="http.client.ignore.private.env.files.were.configured" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../hotel_door/door_server/comms.go" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
@@ -263,15 +276,17 @@
     </option>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="25" width="1442" height="876" extended-state="6" />
+    <frame x="-1" y="25" width="1602" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.225" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="right" id="Database" order="3" weight="0.329375" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32769832" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Thumbnails" weight="0.32899868" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
@@ -284,7 +299,6 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Database Console" order="7" weight="0.32769832" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32912722" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -295,66 +309,10 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="3" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/hotels/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="32" column="27" selection-start-line="32" selection-start-column="27" selection-end-line="32" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/loc.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="26" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bookings/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2363">
-          <caret line="150" column="1" selection-start-line="150" selection-start-column="1" selection-end-line="150" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/jwt.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="850">
-          <caret line="54" selection-start-line="54" selection-end-line="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gateway/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4709">
-          <caret line="290" column="51" selection-start-line="290" selection-start-column="51" selection-end-line="290" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gateway/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3780">
-          <caret line="202" column="47" selection-start-line="202" selection-start-column="47" selection-end-line="202" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/auth/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1180">
-          <caret line="69" column="13" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/loc.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="4" column="26" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bookings/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
@@ -463,22 +421,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="21" selection-start-line="21" selection-end-line="24" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/auth.go" />
     <entry file="file://$PROJECT_DIR$/auth/random.go" />
-    <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/static_server.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="12" column="4" selection-start-line="12" selection-start-column="4" selection-end-line="26" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="das://691bc9f8-5dfd-4c16-956c-163855846bd8/schema/main/table/users" />
     <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/static/src/graphql.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -537,17 +481,62 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hotels/main.go">
+    <entry file="das://table:/2642b66b/51051452-2f18-44bf-a6f7-98c0e5aa2b9f/main.bookings">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1411">
-          <caret line="93" column="34" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
+        <state relative-caret-position="708">
+          <caret line="86" lean-forward="true" selection-start-line="86" selection-end-line="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://table:/2642b66b/2a5aefba-c904-4402-b490-3561c1f37096/main.rooms">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rooms/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="38" selection-start-line="38" selection-end-line="41" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bookings/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="547">
+          <caret line="286" column="89" selection-start-line="286" selection-start-column="89" selection-end-line="286" selection-end-column="89" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hotels/vendor/vendor.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" column="40" selection-start-line="24" selection-start-column="40" selection-end-line="24" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="581">
+          <caret line="101" column="1" lean-forward="true" selection-start-line="14" selection-end-line="101" selection-end-column="1" />
+          <folding>
+            <element signature="e#14#188#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gateway/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10064">
-          <caret line="592" column="42" selection-start-line="592" selection-start-column="42" selection-end-line="592" selection-end-column="42" />
+        <state relative-caret-position="632">
+          <caret line="635" column="44" selection-start-line="635" selection-start-column="44" selection-end-line="635" selection-end-column="44" />
           <folding>
             <element signature="e#14#265#0" expanded="true" />
           </folding>
@@ -561,38 +550,72 @@
         </state>
       </provider>
     </entry>
-    <entry file="das://table:/2642b66b/2a5aefba-c904-4402-b490-3561c1f37096/main.rooms">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://table:/2642b66b/51051452-2f18-44bf-a6f7-98c0e5aa2b9f/main.bookings">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rooms/main.go">
+    <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/static_server.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
+        <state relative-caret-position="357">
+          <caret line="27" column="1" lean-forward="true" selection-start-line="27" selection-start-column="1" selection-end-line="27" selection-end-column="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bookings/main.go">
+    <entry file="file://$PROJECT_DIR$/hotels/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="685">
-          <caret line="59" column="17" selection-start-line="59" selection-start-column="17" selection-end-line="59" selection-end-column="17" />
+        <state relative-caret-position="3077">
+          <caret line="193" column="24" lean-forward="true" selection-start-line="193" selection-start-column="24" selection-end-line="193" selection-end-column="24" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/../hotel_door/door_comms.proto">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="708">
-          <caret line="86" lean-forward="true" selection-start-line="86" selection-end-line="86" />
+        <state relative-caret-position="391">
+          <caret line="23" selection-start-line="23" selection-end-line="33" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hotel_comms/hotel_comms.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hotel_comms/crypto.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-660">
+          <caret line="23" column="48" lean-forward="true" selection-start-line="23" selection-start-column="48" selection-end-line="23" selection-end-column="48" />
+          <folding>
+            <element signature="e#21#127#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../hotel_door/crypto.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20">
+          <caret line="63" column="20" selection-end-line="98" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/comms.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="46" column="1" lean-forward="true" selection-start-line="11" selection-end-line="46" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1581">
+          <caret line="50" selection-start-line="50" selection-end-line="58" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hotel_gateway/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="446">
+          <caret line="109" column="30" lean-forward="true" selection-start-line="109" selection-start-column="30" selection-end-line="109" selection-end-column="30" />
+          <folding>
+            <element signature="e#14#322#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

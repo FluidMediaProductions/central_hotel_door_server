@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -9,10 +10,12 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
 const addr = ":80"
+const BookingsServer = "http://bookings"
 
 var db *gorm.DB
 
@@ -33,6 +36,11 @@ type HotelsResp struct {
 type HotelResp struct {
 	Err   string `json:"err"`
 	Hotel *Hotel `json:"hotel"`
+}
+
+type OpenHotelResp struct {
+	Err     string `json:"err"`
+	Success bool   `json:"success"`
 }
 
 func getHotels(w http.ResponseWriter, r *http.Request) {
@@ -78,6 +86,101 @@ func getHotel(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func openHotel(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(&OpenHotelResp{
+			Err: "id not valid",
+		})
+		return
+	}
+
+	hotel := &Hotel{}
+	err = db.Find(&hotel, id).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(&OpenHotelResp{
+				Err: "hotel not found",
+			})
+			return
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&OpenHotelResp{
+				Err: err.Error(),
+			})
+			return
+		}
+	}
+
+	authHeaders, isOk := r.Header["Authorization"]
+	if isOk {
+		if len(authHeaders) > 0 {
+			authHeader := authHeaders[0]
+			jwt := strings.TrimPrefix(authHeader, "Bearer ")
+
+			_, err := utils.VerifyJWT(jwt)
+			if err != nil {
+				w.WriteHeader(http.StatusForbidden)
+				json.NewEncoder(w).Encode(&OpenHotelResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			req, err := http.NewRequest("GET", BookingsServer+fmt.Sprintf("/bookings/by-hotel/%d", id), nil)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&OpenHotelResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))
+
+			resp, err := utils.GetJson(req)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&OpenHotelResp{
+					Err: err.Error(),
+				})
+				return
+			}
+			respErr, isOk := resp["err"].(string)
+			if isOk {
+				if respErr != "" {
+					json.NewEncoder(w).Encode(&OpenHotelResp{
+						Err: respErr,
+					})
+					return
+				}
+			}
+
+			_, isOk = resp["booking"].(map[string]interface{})
+			if isOk {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&OpenHotelResp{
+					Success: true,
+				})
+				return
+			}
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&OpenHotelResp{
+				Err: "unknown",
+			})
+			return
+		}
+	}
+	w.WriteHeader(http.StatusForbidden)
+	json.NewEncoder(w).Encode(&OpenHotelResp{
+		Err: "no auth header",
+	})
+}
+
 func main() {
 	var err error
 	db, err = gorm.Open("sqlite3", "test.db")
@@ -92,6 +195,7 @@ func main() {
 
 	r.Methods("GET").Path("/hotels").HandlerFunc(getHotels)
 	r.Methods("GET").Path("/hotels/{id:[0-9]+}").HandlerFunc(getHotel)
+	r.Methods("GET").Path("/hotels/{id:[0-9]+}/open").HandlerFunc(openHotel)
 
 	log.Printf("Listening on %s\n", addr)
 	log.Fatalln(http.ListenAndServe(addr, r))

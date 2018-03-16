@@ -597,6 +597,49 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 				return nil, nil
 			},
 		},
+		"openHotelDoor": &graphql.Field{
+			Type: graphql.Boolean,
+			Args: graphql.FieldConfigArgument{
+				"id": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.Int),
+				},
+			},
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				id, isOK := params.Args["id"].(int)
+				if isOK {
+					user, isOk := params.Source.(*utils.User)
+					if isOk {
+						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%d/open", id), nil)
+						if err != nil {
+							return nil, err
+						}
+
+						jwt, err := utils.NewJWT(user)
+						if err != nil {
+							return nil, err
+						}
+						req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))
+
+						resp, err := utils.GetJson(req)
+						if err != nil {
+							return nil, err
+						}
+						respErr, isOk := resp["err"].(string)
+						if isOk {
+							if respErr != "" {
+								return nil, errors.New(respErr)
+							}
+						}
+
+						success, isOk := resp["success"].(bool)
+						if isOk {
+							return success, nil
+						}
+					}
+				}
+				return nil, nil
+			},
+		},
 	},
 })
 
