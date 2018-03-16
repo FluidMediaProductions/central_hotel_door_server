@@ -11,13 +11,17 @@ import (
 	"time"
 
 	"github.com/fluidmediaproductions/central_hotel_door_server/hotel_comms"
+	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"crypto/rand"
+	"fmt"
 )
 
 const addr = ":80"
+const RoomsServer = "http://rooms"
 
 var db *gorm.DB
 
@@ -35,16 +39,6 @@ type HotelServer struct {
 	LastSeen  time.Time
 	Online    bool
 	PublicKey []byte
-}
-
-type Action struct {
-	gorm.Model
-	HotelServer *HotelServer
-	HotelServerID uint
-	Type int
-	Payload []byte
-	Complete bool
-	Success bool
 }
 
 type ProtoHandlerFunc func(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter) error
@@ -171,6 +165,30 @@ func checkHotels() {
 	}
 }
 
+func getRoomsByHotel(hotel uint) ([]interface{}, error) {
+	req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/by-hotel/%d", hotel), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := utils.GetJson(req)
+	if err != nil {
+		return nil, err
+	}
+	respErr, isOk := resp["err"].(string)
+	if isOk {
+		if respErr != "" {
+			return nil, errors.New(respErr)
+		}
+	}
+
+	rooms, isOk := resp["rooms"].([]interface{})
+	if isOk {
+		return rooms, nil
+	}
+	return nil, nil
+}
+
 func hotelPing(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter) error {
 	newMsg := &hotel_comms.HotelPing{}
 	err := proto.Unmarshal(msg, newMsg)
@@ -194,13 +212,28 @@ func hotelPing(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter
 	hotel.Online = true
 	db.Save(hotel)
 
-	action := &Action{}
-	var actionCount int
-	db.Where(map[string]interface{}{"hotel_server_id": hotel.ID, "complete": false}).Find(&action).Count(&actionCount)
+	actionRequired := false
+
+	rooms, err := getRoomsByHotel(hotel.HotelId)
+	if err != nil {
+		return err
+	}
+	for _, room := range rooms {
+		room, isOk := room.(map[string]interface{})
+		if isOk {
+			shouldOpen, isOk := room["shouldOpen"].(bool)
+			if isOk {
+				if shouldOpen {
+					actionRequired = true
+					break
+				}
+			}
+		}
+	}
 
 	resp := &hotel_comms.HotelPingResp{
 		Success: proto.Bool(true),
-		ActionRequired: proto.Bool(actionCount > 0),
+		ActionRequired: proto.Bool(actionRequired),
 	}
 
 	w.WriteHeader(http.StatusOK)

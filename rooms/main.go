@@ -24,6 +24,7 @@ type Room struct {
 	Floor   string `json:"floor"`
 	HotelID uint   `json:"hotelId"`
 	DoorID  uint   `json:"doorId"`
+	ShouldOpen bool `json:"shouldOpen"`
 }
 
 type RoomsResp struct {
@@ -97,6 +98,43 @@ func getRoom(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(&RoomResp{
 		Room: room,
+	})
+}
+
+func getRoomsByHotel(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(&RoomResp{
+			Err: "id not valid",
+		})
+		return
+	}
+
+	rooms := make([]*Room, 0)
+	err = db.Find(&rooms, &Room{
+		HotelID: uint(id),
+	}).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(&RoomsResp{
+				Err: "room not found",
+			})
+			return
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&RoomsResp{
+				Err: err.Error(),
+			})
+			return
+		}
+	}
+
+	json.NewEncoder(w).Encode(&RoomsResp{
+		Rooms: rooms,
 	})
 }
 
@@ -176,7 +214,9 @@ func openRoom(w http.ResponseWriter, r *http.Request) {
 
 			_, isOk = resp["booking"].(map[string]interface{})
 			if isOk {
-				w.WriteHeader(http.StatusInternalServerError)
+				room.ShouldOpen = true
+				db.Save(&room)
+
 				json.NewEncoder(w).Encode(&OpenRoomResp{
 					Success: true,
 				})
@@ -209,6 +249,7 @@ func main() {
 
 	r.Methods("GET").Path("/rooms").HandlerFunc(getRooms)
 	r.Methods("GET").Path("/rooms/{id:[0-9]+}").HandlerFunc(getRoom)
+	r.Methods("GET").Path("/rooms/by-hotel/{id:[0-9]+}").HandlerFunc(getRoomsByHotel)
 	r.Methods("GET").Path("/rooms/{id:[0-9]+}/open").HandlerFunc(openRoom)
 
 	log.Printf("Listening on %s\n", addr)

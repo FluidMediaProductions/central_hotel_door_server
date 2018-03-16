@@ -1,0 +1,67 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "4772zXrOaPVeDeSgdiV7Vp4KEjk=",
+			"path": "github.com/dgrijalva/jwt-go",
+			"revision": "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e",
+			"revisionTime": "2018-03-08T23:13:08Z"
+		},
+		{
+			"checksumSHA1": "PgX0Lv7d4xoib/DbTZsLXf/PX6s=",
+			"path": "github.com/fluidmediaproductions/central_hotel_door_server/hotel_comms",
+			"revision": "c30c9f43ed62b5347aeda4b25fdcb40f4397bcdb",
+			"revisionTime": "2018-03-16T15:43:49Z"
+		},
+		{
+			"checksumSHA1": "Fzl6Wf1PDC0FGexAQaUgj6NTE/o=",
+			"path": "github.com/fluidmediaproductions/central_hotel_door_server/utils",
+			"revision": "c30c9f43ed62b5347aeda4b25fdcb40f4397bcdb",
+			"revisionTime": "2018-03-16T15:43:49Z"
+		},
+		{
+			"checksumSHA1": "WX1+2gktHcBmE9MGwFSGs7oqexU=",
+			"path": "github.com/golang/protobuf/proto",
+			"revision": "bbd03ef6da3a115852eaf24c8a1c46aeb39aa175",
+			"revisionTime": "2018-02-02T18:43:18Z"
+		},
+		{
+			"checksumSHA1": "g/V4qrXjUGG9B+e3hB+4NAYJ5Gs=",
+			"path": "github.com/gorilla/context",
+			"revision": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42",
+			"revisionTime": "2016-08-17T18:46:32Z"
+		},
+		{
+			"checksumSHA1": "bVayBU8lTVHNDai7umD17bwyws0=",
+			"path": "github.com/gorilla/mux",
+			"revision": "5ab525f4fb1678e197ae59401e9050fa0b6cb5fd",
+			"revisionTime": "2017-12-08T16:08:15Z"
+		},
+		{
+			"checksumSHA1": "rro98K08E4cpMkmaMe6C0bQheSg=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "48a20a6e9f3f4d26095df82c3337efec6db0a6fc",
+			"revisionTime": "2018-02-22T04:04:12Z"
+		},
+		{
+			"checksumSHA1": "4VZ1gLZHMumRjV3fclS1aX8S1aQ=",
+			"path": "github.com/jinzhu/gorm/dialects/sqlite",
+			"revision": "48a20a6e9f3f4d26095df82c3337efec6db0a6fc",
+			"revisionTime": "2018-02-22T04:04:12Z"
+		},
+		{
+			"checksumSHA1": "VIp1lZm6joWhlNdwhady8u//qRw=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "1c35d901db3da928c72a72d8458480cc9ade058f",
+			"revisionTime": "2017-01-02T12:52:26Z"
+		},
+		{
+			"checksumSHA1": "kUqagcesbbz7A2eCwDYntlvrEqs=",
+			"path": "github.com/mattn/go-sqlite3",
+			"revision": "696e2e43cb00dcb1acaf6073e01493e3c4197b75",
+			"revisionTime": "2018-02-18T13:15:52Z"
+		}
+	],
+	"rootPath": "github.com/fluidmediaproductions/central_hotel_door_server/hotel_gateway"
+}

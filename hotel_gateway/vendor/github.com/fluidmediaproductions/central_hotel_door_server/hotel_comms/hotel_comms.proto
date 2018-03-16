@@ -1,0 +1,25 @@
+syntax = "proto2";
+package hotel_comms;
+
+enum MsgType {
+    HOTEL_PING = 0;
+    HOTEL_PING_RESP = 1;
+}
+
+message ProtoMsg {
+    required MsgType type = 1;
+    required bytes msg = 2;
+    required string UUID = 3;
+    required bytes sig = 4;
+}
+
+message HotelPing {
+    required int64 timestamp = 1;
+    required bytes publicKey = 2;
+}
+
+message HotelPingResp {
+    required bool success = 1;
+    optional string error = 2;
+    optional bool actionRequired = 3;
+}

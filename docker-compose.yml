@@ -14,6 +14,16 @@ services:
       - hotels
       - rooms
       - bookings
+  hotel_gateway:
+    build: .
+    volumes:
+      - ./hotel_gateway:/go/src/hotel_gateway
+    working_dir: /go/src/hotel_gateway
+    command: sh -c "go build -o hotel_gateway *.go && ./hotel_gateway"
+    ports:
+      - 8081:80
+    links:
+      - rooms
   auth:
     build: .
     volumes:
@@ -27,6 +37,8 @@ services:
     volumes:
       - ./hotels:/go/src/hotels
     working_dir: /go/src/hotels
+    links:
+      - bookings
     expose:
       - 80
     command: sh -c "go build -o hotels *.go && ./hotels"
