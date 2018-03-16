@@ -18,37 +18,37 @@ var db *gorm.DB
 
 type Hotel struct {
 	gorm.Model
-	Name string `json:"name"`
-	Address string `json:"address"`
-	Location *utils.Location `json:"location"`
-	CheckIn time.Time `json:"checkIn"`
-	HasCarPark bool `json:"hasCarPark"`
+	Name       string          `json:"name"`
+	Address    string          `json:"address"`
+	Location   *utils.Location `json:"location"`
+	CheckIn    time.Time       `json:"checkIn"`
+	HasCarPark bool            `json:"hasCarPark"`
 }
 
 type HotelsResp struct {
-	Err string `json:"err"`
+	Err    string   `json:"err"`
 	Hotels []*Hotel `json:"hotels"`
 }
 
 type HotelResp struct {
-	Err string `json:"err"`
+	Err   string `json:"err"`
 	Hotel *Hotel `json:"hotel"`
 }
 
 func getHotels(w http.ResponseWriter, r *http.Request) {
-		hotels := make([]*Hotel, 0)
-		err := db.Find(&hotels).Error
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(&HotelsResp{
-				Err: err.Error(),
-			})
-			return
-		}
-
+	hotels := make([]*Hotel, 0)
+	err := db.Find(&hotels).Error
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(&HotelsResp{
-			Hotels: hotels,
+			Err: err.Error(),
 		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(&HotelsResp{
+		Hotels: hotels,
+	})
 }
 
 func getHotel(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +91,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.Methods("GET").Path("/hotels").HandlerFunc(getHotels)
-	r.Methods("GET").Path("/hotel/{id:[0-9]+}").HandlerFunc(getHotel)
+	r.Methods("GET").Path("/hotels/{id:[0-9]+}").HandlerFunc(getHotel)
 
 	log.Printf("Listening on %s\n", addr)
 	log.Fatalln(http.ListenAndServe(addr, r))

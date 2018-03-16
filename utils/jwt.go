@@ -11,12 +11,12 @@ var JWTSecret = []byte{0xf9, 0x1, 0xd4, 0x9c, 0xc8, 0x55, 0xc6, 0xe9, 0x63, 0x32
 type User struct {
 	gorm.Model
 	Email string `json:"email"`
-	Pass string `json:"-"`
-	Name string `json:"name"`
+	Pass  string `json:"-"`
+	Name  string `json:"name"`
 }
 
 type JWTClaims struct {
-	User *User        `json:"user"`
+	User *User `json:"user"`
 	jwt.StandardClaims
 }
 
@@ -24,7 +24,7 @@ func NewJWT(user *User) (string, error) {
 	claims := JWTClaims{
 		User: user,
 		StandardClaims: jwt.StandardClaims{
-			IssuedAt: time.Now().Unix(),
+			IssuedAt:  time.Now().Unix(),
 			NotBefore: time.Now().Unix(),
 		},
 	}
@@ -38,7 +38,7 @@ func NewJWT(user *User) (string, error) {
 	return s, nil
 }
 
-func VerifyJWT(tokenString string,) (*JWTClaims, error) {
+func VerifyJWT(tokenString string) (*JWTClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return JWTSecret, nil
 	})

@@ -9,7 +9,6 @@ import (
 	"github.com/graphql-go/handler"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -20,31 +19,7 @@ const addr = ":80"
 const AuthServer = "http://auth"
 const BookingsServer = "http://bookings"
 const HotelsServer = "http://hotels"
-const RoomsServer = "http://room"
-
-func getJson(r *http.Request) (map[string]interface{}, error) {
-	c := http.Client{}
-	resp, err := c.Do(r)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-
-	respBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	data := map[string]interface{}{}
-	err = json.Unmarshal(respBytes, &data)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-	return data, nil
-}
+const RoomsServer = "http://rooms"
 
 var userType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
@@ -81,7 +56,7 @@ var userType = graphql.NewObject(graphql.ObjectConfig{
 					}
 					req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))
 
-					resp, err := getJson(req)
+					resp, err := utils.GetJson(req)
 					if err != nil {
 						return nil, err
 					}
@@ -160,12 +135,12 @@ var bookingType = graphql.NewObject(graphql.ObjectConfig{
 				if isOk {
 					hotelId, isOk := booking["hotelId"].(float64)
 					if isOk {
-						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotel/%d", int(hotelId)), nil)
+						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%d", int(hotelId)), nil)
 						if err != nil {
 							return nil, err
 						}
 
-						resp, err := getJson(req)
+						resp, err := utils.GetJson(req)
 						if err != nil {
 							return nil, err
 						}
@@ -192,12 +167,12 @@ var bookingType = graphql.NewObject(graphql.ObjectConfig{
 				if isOk {
 					roomId, isOk := booking["roomId"].(float64)
 					if isOk {
-						req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/room/%d", int(roomId)), nil)
+						req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d", int(roomId)), nil)
 						if err != nil {
 							return nil, err
 						}
 
-						resp, err := getJson(req)
+						resp, err := utils.GetJson(req)
 						if err != nil {
 							return nil, err
 						}
@@ -344,12 +319,12 @@ var roomType = graphql.NewObject(graphql.ObjectConfig{
 				if isOk {
 					hotelId, isOk := room["hotelId"].(float64)
 					if isOk {
-						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotel/%d", int(hotelId)), nil)
+						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%d", int(hotelId)), nil)
 						if err != nil {
 							return nil, err
 						}
 
-						resp, err := getJson(req)
+						resp, err := utils.GetJson(req)
 						if err != nil {
 							return nil, err
 						}
@@ -397,7 +372,7 @@ var authedQuery = graphql.NewObject(graphql.ObjectConfig{
 				if isOK {
 					user, isOk := params.Source.(*utils.User)
 					if isOk {
-						req, err := http.NewRequest("GET", BookingsServer+fmt.Sprintf("/booking/%d", id), nil)
+						req, err := http.NewRequest("GET", BookingsServer+fmt.Sprintf("/bookings/%d", id), nil)
 						if err != nil {
 							return nil, err
 						}
@@ -408,7 +383,7 @@ var authedQuery = graphql.NewObject(graphql.ObjectConfig{
 						}
 						req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))
 
-						resp, err := getJson(req)
+						resp, err := utils.GetJson(req)
 						if err != nil {
 							return nil, err
 						}
@@ -461,7 +436,7 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 					return nil, err
 				}
 
-				resp, err := getJson(req)
+				resp, err := utils.GetJson(req)
 				if err != nil {
 					return nil, err
 				}
@@ -489,12 +464,12 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				id, isOK := params.Args["id"].(int)
 				if isOK {
-					req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotel/%d", id), nil)
+					req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%d", id), nil)
 					if err != nil {
 						return nil, err
 					}
 
-					resp, err := getJson(req)
+					resp, err := utils.GetJson(req)
 					if err != nil {
 						return nil, err
 					}
@@ -521,7 +496,7 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 					return nil, err
 				}
 
-				resp, err := getJson(req)
+				resp, err := utils.GetJson(req)
 				if err != nil {
 					return nil, err
 				}
@@ -549,12 +524,12 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				id, isOK := params.Args["id"].(int)
 				if isOK {
-					req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/room/%d", id), nil)
+					req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d", id), nil)
 					if err != nil {
 						return nil, err
 					}
 
-					resp, err := getJson(req)
+					resp, err := utils.GetJson(req)
 					if err != nil {
 						return nil, err
 					}
@@ -568,6 +543,55 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 					room, isOk := resp["room"].(map[string]interface{})
 					if isOk {
 						return room, nil
+					}
+				}
+				return nil, nil
+			},
+		},
+	},
+})
+
+var authedMutation = graphql.NewObject(graphql.ObjectConfig{
+	Name: "AuthedMutation",
+	Fields: graphql.Fields{
+		"openRoom": &graphql.Field{
+			Type: graphql.Boolean,
+			Args: graphql.FieldConfigArgument{
+				"id": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.Int),
+				},
+			},
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				id, isOK := params.Args["id"].(int)
+				if isOK {
+					user, isOk := params.Source.(*utils.User)
+					if isOk {
+						req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d/open", id), nil)
+						if err != nil {
+							return nil, err
+						}
+
+						jwt, err := utils.NewJWT(user)
+						if err != nil {
+							return nil, err
+						}
+						req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))
+
+						resp, err := utils.GetJson(req)
+						if err != nil {
+							return nil, err
+						}
+						respErr, isOk := resp["err"].(string)
+						if isOk {
+							if respErr != "" {
+								return nil, errors.New(respErr)
+							}
+						}
+
+						success, isOk := resp["success"].(bool)
+						if isOk {
+							return success, nil
+						}
 					}
 				}
 				return nil, nil
@@ -606,7 +630,7 @@ var rootMutation = graphql.NewObject(graphql.ObjectConfig{
 						if err != nil {
 							return nil, err
 						}
-						resp, err := getJson(req)
+						resp, err := utils.GetJson(req)
 						if err != nil {
 							return nil, err
 						}
@@ -625,7 +649,25 @@ var rootMutation = graphql.NewObject(graphql.ObjectConfig{
 				return nil, nil
 			},
 		},
-
+		"auth": &graphql.Field{
+			Type: authedMutation,
+			Args: graphql.FieldConfigArgument{
+				"token": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.String),
+				},
+			},
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				token, isOK := params.Args["token"].(string)
+				if isOK {
+					claims, err := utils.VerifyJWT(token)
+					if err != nil {
+						return nil, err
+					}
+					return claims.User, nil
+				}
+				return nil, nil
+			},
+		},
 	},
 })
 

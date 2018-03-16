@@ -1,15 +1,15 @@
 package main
 
 import (
+	"encoding/json"
+	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
+	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gopkg.in/hlandau/passlib.v1"
-	"net/http"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
-	"encoding/json"
-	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
+	"net/http"
 )
 
 const addr = ":80"
@@ -106,5 +106,3 @@ func main() {
 	log.Printf("Listening on %s\n", addr)
 	log.Fatalln(http.ListenAndServe(addr, r))
 }
-
-

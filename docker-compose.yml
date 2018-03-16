@@ -6,13 +6,14 @@ services:
     volumes:
       - ./gateway:/go/src/gateway
     working_dir: /go/src/gateway
-    command: go run main.go
+    command: sh -c "go build -o gateway *.go && ./gateway"
     ports:
       - 8080:80
     links:
       - auth
       - hotels
       - rooms
+      - bookings
   auth:
     build: .
     volumes:
@@ -20,7 +21,7 @@ services:
     working_dir: /go/src/auth
     expose:
       - 80
-    command: go run main.go
+    command: sh -c "go build -o auth *.go && ./auth"
   hotels:
     build: .
     volumes:
@@ -28,15 +29,17 @@ services:
     working_dir: /go/src/hotels
     expose:
       - 80
-    command: go run main.go
+    command: sh -c "go build -o hotels *.go && ./hotels"
   rooms:
     build: .
     volumes:
       - ./rooms:/go/src/rooms
     working_dir: /go/src/rooms
+    links:
+      - bookings
     expose:
       - 80
-    command: go run main.go
+    command: sh -c "go build -o rooms *.go && ./rooms"
   bookings:
     build: .
     volumes:
@@ -44,4 +47,4 @@ services:
     working_dir: /go/src/bookings
     expose:
       - 80
-    command: go run main.go
+    command: sh -c "go build -o bookings *.go && ./bookings"
