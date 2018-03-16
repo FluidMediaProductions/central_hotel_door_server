@@ -5,203 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54d2d74e-1e82-427d-b612-b697385a4d17" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/utils/http.go" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/auth/main.go" afterPath="$PROJECT_DIR$/auth/main.go" />
-      <change beforePath="$PROJECT_DIR$/bookings/main.go" afterPath="$PROJECT_DIR$/bookings/main.go" />
-      <change beforePath="$PROJECT_DIR$/bookings/test.db" afterPath="$PROJECT_DIR$/bookings/test.db" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" afterPath="$PROJECT_DIR$/docker-compose.yml" />
-      <change beforePath="$PROJECT_DIR$/gateway/main.go" afterPath="$PROJECT_DIR$/gateway/main.go" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/MIGRATION_GUIDE.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/VERSION_HISTORY.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/claims.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/doc.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/ecdsa.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/ecdsa_utils.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/errors.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/hmac.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/map_claims.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/none.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/parser.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/rsa.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/rsa_pss.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/rsa_utils.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/signing_method.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/dgrijalva/jwt-go/token.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/fluidmediaproductions/central_hotel_door_server/utils/jwt.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/fluidmediaproductions/central_hotel_door_server/utils/loc.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/CONTRIBUTING.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/definition.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/directives.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/executor.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/gqlerrors/error.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/gqlerrors/formatted.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/gqlerrors/located.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/gqlerrors/sortutil.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/gqlerrors/syntax.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/graphql.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/introspection.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/kitchen-sink.graphql" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/arguments.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/definitions.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/directives.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/document.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/location.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/name.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/node.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/selections.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/type_definitions.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/types.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/ast/values.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/kinds/kinds.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/lexer/lexer.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/location/location.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/parser/parser.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/printer/printer.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/source/source.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/typeInfo/type_info.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/language/visitor/visitor.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/located.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/rules.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/rules_overlapping_fields_can_be_merged.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/scalars.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/schema-kitchen-sink.graphql" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/schema.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/type_info.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/types.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/util.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/validator.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/graphql/values.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/handler/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/handler/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/handler/graphiql.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/graphql-go/handler/handler.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/License" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/association.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/callback.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/callback_create.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/callback_delete.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/callback_query.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/callback_query_preload.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/callback_row_query.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/callback_save.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/callback_update.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/dialect.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/dialect_common.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/dialect_mysql.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/dialect_postgres.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/dialect_sqlite3.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/docker-compose.yml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/errors.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/field.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/interface.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/join_table_handler.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/logger.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/main.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/model.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/model_struct.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/scope.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/search.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/test_all.sh" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/utils.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/gorm/wercker.yml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/inflection/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/inflection/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/inflection/inflections.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/jinzhu/inflection/wercker.yml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/pkg/errors/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/pkg/errors/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/pkg/errors/appveyor.yml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/pkg/errors/errors.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/pkg/errors/stack.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/rs/cors/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/rs/cors/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/rs/cors/cors.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/rs/cors/utils.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/vendor.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/hotels/main.go" afterPath="$PROJECT_DIR$/hotels/main.go" />
-      <change beforePath="$PROJECT_DIR$/rooms/main.go" afterPath="$PROJECT_DIR$/rooms/main.go" />
-      <change beforePath="$PROJECT_DIR$/rooms/test.db" afterPath="$PROJECT_DIR$/rooms/test.db" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/context/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/context/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/context/context.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/context/doc.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/ISSUE_TEMPLATE.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/context_gorilla.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/context_native.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/doc.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/mux.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/regexp.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/route.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/gorilla/mux/test_helpers.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/License" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/association.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/callback.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/callback_create.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/callback_delete.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/callback_query.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/callback_query_preload.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/callback_row_query.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/callback_save.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/callback_update.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/dialect.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/dialect_common.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/dialect_mysql.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/dialect_postgres.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/dialect_sqlite3.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/dialects/sqlite/sqlite.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/docker-compose.yml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/errors.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/field.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/interface.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/join_table_handler.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/logger.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/main.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/model.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/model_struct.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/scope.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/search.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/test_all.sh" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/utils.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/gorm/wercker.yml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/inflection/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/inflection/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/inflection/inflections.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/jinzhu/inflection/wercker.yml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/LICENSE" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/backup.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/callback.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/doc.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/error.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3-binding.c" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3-binding.h" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_context.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_fts5.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_go18.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_icu.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_json1.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_libsqlite3.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_load_extension.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_omit_load_extension.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_other.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_solaris.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_trace.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_type.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_vtable.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3_windows.go" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/github.com/mattn/go-sqlite3/sqlite3ext.h" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/rooms/vendor/vendor.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/utils/jwt.go" afterPath="$PROJECT_DIR$/utils/jwt.go" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
@@ -247,8 +51,8 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gateway/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="792">
-              <caret line="592" column="42" lean-forward="false" selection-start-line="592" selection-start-column="42" selection-end-line="592" selection-end-column="42" />
+            <state relative-caret-position="10064">
+              <caret line="592" column="42" selection-start-line="592" selection-start-column="42" selection-end-line="592" selection-end-column="42" />
               <folding>
                 <element signature="e#14#265#0" expanded="true" />
               </folding>
@@ -257,7 +61,7 @@
         </entry>
       </file>
       <file leaf-file-name="rooms" pinned="false" current-in-tab="false">
-        <entry file="das://table:/2642b66b/2a5aefba-c904-4402-b490-3561c1f37096/main.rooms">
+        <entry file="das://2a5aefba-c904-4402-b490-3561c1f37096/schema/main/table/rooms">
           <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
             <state>
               <filtering enabled="true" />
@@ -268,8 +72,8 @@
       <file leaf-file-name="http.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/http.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
+            <state relative-caret-position="153">
+              <caret line="14" column="23" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
               <folding>
                 <element signature="e#15#74#0" expanded="true" />
               </folding>
@@ -280,9 +84,8 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rooms/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="467">
-              <caret line="59" column="9" lean-forward="false" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
-              <folding />
+            <state relative-caret-position="816">
+              <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -290,9 +93,8 @@
       <file leaf-file-name="docker-compose.yml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/docker-compose.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="684">
-              <caret line="38" column="16" lean-forward="false" selection-start-line="38" selection-start-column="16" selection-end-line="38" selection-end-column="16" />
-              <folding />
+            <state relative-caret-position="646">
+              <caret line="38" column="16" selection-start-line="38" selection-start-column="16" selection-end-line="38" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -300,25 +102,32 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/hotels/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="701">
-              <caret line="93" column="34" lean-forward="false" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
-              <folding />
+            <state relative-caret-position="1411">
+              <caret line="93" column="34" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bookings/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="864">
-              <caret line="59" column="17" lean-forward="false" selection-start-line="59" selection-start-column="17" selection-end-line="59" selection-end-column="17" />
-              <folding />
+            <state relative-caret-position="685">
+              <caret line="59" column="17" selection-start-line="59" selection-start-column="17" selection-end-line="59" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="708">
+              <caret line="86" lean-forward="true" selection-start-line="86" selection-end-line="86" />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="bookings" pinned="false" current-in-tab="false">
-        <entry file="das://table:/2642b66b/51051452-2f18-44bf-a6f7-98c0e5aa2b9f/main.bookings">
+        <entry file="das://51051452-2f18-44bf-a6f7-98c0e5aa2b9f/schema/main/table/bookings">
           <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
             <state>
               <filtering enabled="true" />
@@ -354,6 +163,7 @@
         <option value="$PROJECT_DIR$/docker-compose.yml" />
         <option value="$PROJECT_DIR$/bookings/main.go" />
         <option value="$PROJECT_DIR$/rooms/main.go" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -369,21 +179,11 @@
     <option name="height" value="434" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
-      <flattenPackages />
-      <showMembers />
-      <showModules />
-      <showLibraryContents />
-      <hideEmptyPackages />
-      <abbreviatePackageNames />
-      <autoscrollToSource />
-      <autoscrollFromSource />
-      <sortByType />
-      <manualOrder />
+    <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -425,7 +225,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -463,32 +262,29 @@
       </list>
     </option>
   </component>
-  <component name="ShelveChangesManager" show_recycled="false">
-    <option name="remove_strategy" value="false" />
-  </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1922" height="1056" extended-state="6" />
+    <frame x="-1" y="25" width="1442" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329375" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32769832" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912722" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="right" id="Database" order="3" weight="0.329375" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Database Console" order="7" weight="0.32769832" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32912722" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -501,91 +297,89 @@
     <breakpoint-manager>
       <option name="time" value="1" />
     </breakpoint-manager>
-    <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="das://bd91bb1e-fb40-45f8-bf3f-90836886444a/schema/main/table/hotels" />
     <entry file="file://$PROJECT_DIR$/hotels/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
-          <caret line="32" column="27" lean-forward="false" selection-start-line="32" selection-start-column="27" selection-end-line="32" selection-end-column="27" />
+          <caret line="32" column="27" selection-start-line="32" selection-start-column="27" selection-end-line="32" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/loc.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="4" column="26" lean-forward="false" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="26" />
+          <caret line="4" column="26" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bookings/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2363">
-          <caret line="150" column="1" lean-forward="false" selection-start-line="150" selection-start-column="1" selection-end-line="150" selection-end-column="1" />
+          <caret line="150" column="1" selection-start-line="150" selection-start-column="1" selection-end-line="150" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/jwt.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
-          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <caret line="54" selection-start-line="54" selection-end-line="54" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gateway/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4709">
-          <caret line="290" column="51" lean-forward="false" selection-start-line="290" selection-start-column="51" selection-end-line="290" selection-end-column="51" />
+          <caret line="290" column="51" selection-start-line="290" selection-start-column="51" selection-end-line="290" selection-end-column="51" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gateway/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3780">
-          <caret line="202" column="47" lean-forward="false" selection-start-line="202" selection-start-column="47" selection-end-line="202" selection-end-column="47" />
+          <caret line="202" column="47" selection-start-line="202" selection-start-column="47" selection-end-line="202" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/auth/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1180">
-          <caret line="69" column="13" lean-forward="false" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
+          <caret line="69" column="13" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/loc.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
-          <caret line="4" column="26" lean-forward="false" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="26" />
+          <caret line="4" column="26" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bookings/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
-          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/jwt.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1080">
-          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <caret line="54" selection-start-line="54" selection-end-line="54" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/hotels/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
-          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/auth/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1003">
-          <caret line="69" column="13" lean-forward="false" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
+          <caret line="69" column="13" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -593,28 +387,28 @@
     <entry file="file://$PROJECT_DIR$/bookings/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
-          <caret line="33" column="35" lean-forward="false" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
+          <caret line="33" column="35" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/jwt.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
-          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <caret line="54" selection-start-line="54" selection-end-line="54" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gateway/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3400">
-          <caret line="200" column="81" lean-forward="false" selection-start-line="200" selection-start-column="81" selection-end-line="200" selection-end-column="81" />
+          <caret line="200" column="81" selection-start-line="200" selection-start-column="81" selection-end-line="200" selection-end-column="81" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/auth/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1003">
-          <caret line="69" column="13" lean-forward="false" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
+          <caret line="69" column="13" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -622,28 +416,28 @@
     <entry file="file://$PROJECT_DIR$/bookings/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="561">
-          <caret line="33" column="35" lean-forward="false" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
+          <caret line="33" column="35" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/jwt.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
-          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <caret line="54" selection-start-line="54" selection-end-line="54" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gateway/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3400">
-          <caret line="200" column="81" lean-forward="false" selection-start-line="200" selection-start-column="81" selection-end-line="200" selection-end-column="81" />
+          <caret line="200" column="81" selection-start-line="200" selection-start-column="81" selection-end-line="200" selection-end-column="81" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/auth/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1173">
-          <caret line="69" column="13" lean-forward="false" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
+          <caret line="69" column="13" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -651,14 +445,14 @@
     <entry file="file://$PROJECT_DIR$/bookings/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
-          <caret line="7" column="46" lean-forward="false" selection-start-line="7" selection-start-column="46" selection-end-line="7" selection-end-column="46" />
+          <caret line="7" column="46" selection-start-line="7" selection-start-column="46" selection-end-line="7" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/jwt.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
-          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <caret line="54" selection-start-line="54" selection-end-line="54" />
         </state>
       </provider>
     </entry>
@@ -672,7 +466,7 @@
     <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
-          <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="24" selection-end-column="1" />
+          <caret line="21" selection-start-line="21" selection-end-line="24" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -681,7 +475,7 @@
     <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/static_server.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
-          <caret line="12" column="4" lean-forward="false" selection-start-line="12" selection-start-column="4" selection-end-line="26" selection-end-column="34" />
+          <caret line="12" column="4" selection-start-line="12" selection-start-column="4" selection-end-line="26" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -689,14 +483,14 @@
     <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/static/src/graphql.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
-          <caret line="11" column="29" lean-forward="false" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
+          <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../hotel_door/door_server/graphql.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6680">
-          <caret line="701" column="8" lean-forward="false" selection-start-line="701" selection-start-column="8" selection-end-line="701" selection-end-column="56" />
+          <caret line="701" column="8" selection-start-line="701" selection-start-column="8" selection-end-line="701" selection-end-column="56" />
         </state>
       </provider>
     </entry>
@@ -704,14 +498,14 @@
     <entry file="file://$PROJECT_DIR$/utils/jwt.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
-          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <caret line="54" selection-start-line="54" selection-end-line="54" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/loc.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="4" column="26" lean-forward="false" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="26" />
+          <caret line="4" column="26" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -725,18 +519,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hotels/Dockerfile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="34" lean-forward="false" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/hotels/Dockerfile" />
     <entry file="file://$PROJECT_DIR$/utils/http.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
+        <state relative-caret-position="153">
+          <caret line="14" column="23" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
           <folding>
             <element signature="e#15#74#0" expanded="true" />
           </folding>
@@ -746,23 +533,21 @@
     <entry file="file://$PROJECT_DIR$/auth/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-937">
-          <caret line="14" column="17" lean-forward="false" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
-          <folding />
+          <caret line="14" column="17" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/hotels/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="701">
-          <caret line="93" column="34" lean-forward="false" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
-          <folding />
+        <state relative-caret-position="1411">
+          <caret line="93" column="34" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gateway/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="792">
-          <caret line="592" column="42" lean-forward="false" selection-start-line="592" selection-start-column="42" selection-end-line="592" selection-end-column="42" />
+        <state relative-caret-position="10064">
+          <caret line="592" column="42" selection-start-line="592" selection-start-column="42" selection-end-line="592" selection-end-column="42" />
           <folding>
             <element signature="e#14#265#0" expanded="true" />
           </folding>
@@ -771,9 +556,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/docker-compose.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="38" column="16" lean-forward="false" selection-start-line="38" selection-start-column="16" selection-end-line="38" selection-end-column="16" />
-          <folding />
+        <state relative-caret-position="646">
+          <caret line="38" column="16" selection-start-line="38" selection-start-column="16" selection-end-line="38" selection-end-column="16" />
         </state>
       </provider>
     </entry>
@@ -793,17 +577,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/rooms/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="467">
-          <caret line="59" column="9" lean-forward="false" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
-          <folding />
+        <state relative-caret-position="816">
+          <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bookings/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="864">
-          <caret line="59" column="17" lean-forward="false" selection-start-line="59" selection-start-column="17" selection-end-line="59" selection-end-column="17" />
-          <folding />
+        <state relative-caret-position="685">
+          <caret line="59" column="17" selection-start-line="59" selection-start-column="17" selection-end-line="59" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="708">
+          <caret line="86" lean-forward="true" selection-start-line="86" selection-end-line="86" />
         </state>
       </provider>
     </entry>
