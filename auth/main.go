@@ -89,6 +89,14 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func router() *mux.Router {
+	r := mux.NewRouter()
+
+	r.Methods("POST").Path("/login").HandlerFunc(loginUser)
+
+	return r
+}
+
 func main() {
 	var err error
 	db, err = gorm.Open("sqlite3", "test.db")
@@ -99,10 +107,6 @@ func main() {
 
 	db.AutoMigrate(&utils.User{})
 
-	r := mux.NewRouter()
-
-	r.Methods("POST").Path("/login").HandlerFunc(loginUser)
-
 	log.Printf("Listening on %s\n", addr)
-	log.Fatalln(http.ListenAndServe(addr, r))
+	log.Fatalln(http.ListenAndServe(addr, router()))
 }
