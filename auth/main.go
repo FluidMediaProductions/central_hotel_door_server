@@ -2,14 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+
 	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gopkg.in/hlandau/passlib.v1"
-	"io/ioutil"
-	"log"
-	"net/http"
 )
 
 const addr = ":80"

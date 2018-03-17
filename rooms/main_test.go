@@ -5,9 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
-	"github.com/jinzhu/gorm"
-	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,6 +13,10 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
+	"github.com/jinzhu/gorm"
+	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 func fixedFullRe(s string) string {
@@ -246,7 +247,6 @@ func TestGetRoomByHotel(t *testing.T) {
 	if string(body) != string(expBody.Bytes()) {
 		t.Errorf("Response not what was expected, got %s wanted %s", string(body), string(expBody.Bytes()))
 	}
-
 
 	req = httptest.NewRequest("GET", "http://a/rooms/by-hotel/1", nil)
 	w = httptest.NewRecorder()

@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+	"time"
+
 	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
-	"log"
-	"net/http"
-	"time"
 )
 
 const addr = ":80"

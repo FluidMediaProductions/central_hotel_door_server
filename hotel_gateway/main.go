@@ -10,14 +10,15 @@ import (
 	"net/http"
 	"time"
 
+	"crypto/rand"
+	"fmt"
+
 	"github.com/fluidmediaproductions/central_hotel_door_server/hotel_comms"
 	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"crypto/rand"
-	"fmt"
 )
 
 const addr = ":80"
@@ -147,8 +148,8 @@ func sendMsg(msg proto.Message, msgType hotel_comms.MsgType, w http.ResponseWrit
 
 	wrappedMsg := &hotel_comms.ProtoMsg{
 		Type: &msgType,
-		Msg: msgBytes,
-		Sig: sig,
+		Msg:  msgBytes,
+		Sig:  sig,
 		UUID: proto.String(""),
 	}
 
@@ -213,7 +214,7 @@ func hotelPing(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter
 
 		resp := &hotel_comms.HotelPingResp{
 			Success: proto.Bool(false),
-			Error: proto.String("time out of sync"),
+			Error:   proto.String("time out of sync"),
 		}
 		w.WriteHeader(http.StatusNotAcceptable)
 		sendMsg(resp, hotel_comms.MsgType_HOTEL_PING_RESP, w)
@@ -244,7 +245,7 @@ func hotelPing(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter
 	}
 
 	resp := &hotel_comms.HotelPingResp{
-		Success: proto.Bool(true),
+		Success:        proto.Bool(true),
 		ActionRequired: proto.Bool(actionRequired),
 	}
 

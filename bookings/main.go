@@ -2,15 +2,16 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
-	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 const addr = ":80"

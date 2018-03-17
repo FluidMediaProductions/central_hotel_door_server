@@ -1,9 +1,10 @@
 package utils
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"testing"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 func TestJWT(t *testing.T) {

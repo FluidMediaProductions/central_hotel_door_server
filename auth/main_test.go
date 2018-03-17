@@ -1,18 +1,19 @@
 package main
 
 import (
-	"net/http/httptest"
-	"github.com/jinzhu/gorm"
-	"testing"
-	"fmt"
-	"regexp"
-	"gopkg.in/DATA-DOG/go-sqlmock.v1"
-	"strings"
-	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
-	"encoding/json"
-	"gopkg.in/hlandau/passlib.v1"
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/http/httptest"
+	"regexp"
+	"strings"
+	"testing"
+
+	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
+	"github.com/jinzhu/gorm"
+	"gopkg.in/DATA-DOG/go-sqlmock.v1"
+	"gopkg.in/hlandau/passlib.v1"
 )
 
 func fixedFullRe(s string) string {
@@ -56,7 +57,7 @@ func TestLogin(t *testing.T) {
 	hash, _ := passlib.Hash("foobar")
 	user := &utils.User{
 		Email: "foo@bar.com",
-		Pass: hash,
+		Pass:  hash,
 	}
 
 	sqlMock.ExpectQuery(fixedFullRe("SELECT * FROM `users` WHERE `users`.`deleted_at` IS NULL AND ((`users`.`email` = ?))" +

@@ -19,7 +19,7 @@ const (
 )
 
 type Handler struct {
-	Schema *graphql.Schema
+	Schema   *graphql.Schema
 	pretty   bool
 	graphiql bool
 }

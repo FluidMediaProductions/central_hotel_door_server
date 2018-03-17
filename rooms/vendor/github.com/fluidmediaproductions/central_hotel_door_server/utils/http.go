@@ -1,10 +1,10 @@
 package utils
 
 import (
-	"net/http"
-	"log"
 	"encoding/json"
 	"io/ioutil"
+	"log"
+	"net/http"
 )
 
 func GetJson(r *http.Request) (map[string]interface{}, error) {
