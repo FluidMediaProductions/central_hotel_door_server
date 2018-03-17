@@ -14,17 +14,18 @@ import (
 )
 
 const addr = ":80"
-const BookingsServer = "http://bookings"
+
+var BookingsServer = "http://bookings"
 
 var db *gorm.DB
 
 type Room struct {
 	gorm.Model
-	Name    string `json:"name"`
-	Floor   string `json:"floor"`
-	HotelID uint   `json:"hotelId"`
-	DoorID  uint   `json:"doorId"`
-	ShouldOpen bool `json:"shouldOpen"`
+	Name       string `json:"name"`
+	Floor      string `json:"floor"`
+	HotelID    uint   `json:"hotelId"`
+	DoorID     uint   `json:"doorId"`
+	ShouldOpen bool   `json:"shouldOpen"`
 }
 
 type RoomsResp struct {
@@ -46,19 +47,11 @@ func getRooms(w http.ResponseWriter, r *http.Request) {
 	rooms := make([]*Room, 0)
 	err := db.Find(&rooms).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(&RoomsResp{
-				Err: "room not found",
-			})
-			return
-		} else {
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(&RoomsResp{
-				Err: err.Error(),
-			})
-			return
-		}
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&RoomsResp{
+			Err: err.Error(),
+		})
+		return
 	}
 
 	json.NewEncoder(w).Encode(&RoomsResp{
@@ -69,17 +62,10 @@ func getRooms(w http.ResponseWriter, r *http.Request) {
 func getRoom(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(&RoomResp{
-			Err: "id not valid",
-		})
-		return
-	}
+	id, _ := strconv.Atoi(vars["id"])
 
 	room := &Room{}
-	err = db.Find(&room, id).Error
+	err := db.Find(&room, id).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
@@ -104,33 +90,18 @@ func getRoom(w http.ResponseWriter, r *http.Request) {
 func getRoomsByHotel(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(&RoomResp{
-			Err: "id not valid",
-		})
-		return
-	}
+	id, _ := strconv.Atoi(vars["id"])
 
 	rooms := make([]*Room, 0)
-	err = db.Find(&rooms, &Room{
+	err := db.Find(&rooms, &Room{
 		HotelID: uint(id),
 	}).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(&RoomsResp{
-				Err: "room not found",
-			})
-			return
-		} else {
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(&RoomsResp{
-				Err: err.Error(),
-			})
-			return
-		}
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&RoomsResp{
+			Err: err.Error(),
+		})
+		return
 	}
 
 	json.NewEncoder(w).Encode(&RoomsResp{
@@ -141,17 +112,10 @@ func getRoomsByHotel(w http.ResponseWriter, r *http.Request) {
 func openRoom(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(&OpenRoomResp{
-			Err: "id not valid",
-		})
-		return
-	}
+	id, _ := strconv.Atoi(vars["id"])
 
 	room := &Room{}
-	err = db.Find(&room, id).Error
+	err := db.Find(&room, id).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
@@ -215,7 +179,14 @@ func openRoom(w http.ResponseWriter, r *http.Request) {
 			_, isOk = resp["booking"].(map[string]interface{})
 			if isOk {
 				room.ShouldOpen = true
-				db.Save(&room)
+				err := db.Save(&room).Error
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					json.NewEncoder(w).Encode(&OpenRoomResp{
+						Err: err.Error(),
+					})
+					return
+				}
 
 				json.NewEncoder(w).Encode(&OpenRoomResp{
 					Success: true,
@@ -235,6 +206,17 @@ func openRoom(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func router() *mux.Router {
+	r := mux.NewRouter()
+
+	r.Methods("GET").Path("/rooms").HandlerFunc(getRooms)
+	r.Methods("GET").Path("/rooms/{id:[0-9]+}").HandlerFunc(getRoom)
+	r.Methods("GET").Path("/rooms/by-hotel/{id:[0-9]+}").HandlerFunc(getRoomsByHotel)
+	r.Methods("GET").Path("/rooms/{id:[0-9]+}/open").HandlerFunc(openRoom)
+
+	return r
+}
+
 func main() {
 	var err error
 	db, err = gorm.Open("sqlite3", "test.db")
@@ -245,13 +227,6 @@ func main() {
 
 	db.AutoMigrate(&Room{})
 
-	r := mux.NewRouter()
-
-	r.Methods("GET").Path("/rooms").HandlerFunc(getRooms)
-	r.Methods("GET").Path("/rooms/{id:[0-9]+}").HandlerFunc(getRoom)
-	r.Methods("GET").Path("/rooms/by-hotel/{id:[0-9]+}").HandlerFunc(getRoomsByHotel)
-	r.Methods("GET").Path("/rooms/{id:[0-9]+}/open").HandlerFunc(openRoom)
-
 	log.Printf("Listening on %s\n", addr)
-	log.Fatalln(http.ListenAndServe(addr, r))
+	log.Fatalln(http.ListenAndServe(addr, router()))
 }
