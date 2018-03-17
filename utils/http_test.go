@@ -1,13 +1,13 @@
 package utils
 
 import (
-	"testing"
-	"net/http/httptest"
-	"net/http"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 )
 
-func TestGetJson(t *testing.T)  {
+func TestGetJson(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "{\"foo\": \"bar\"}")
 	}))
@@ -31,5 +31,20 @@ func TestGetJson(t *testing.T)  {
 		break
 	default:
 		t.Errorf("Expected foo of type string but got type %T", res["foo"])
+	}
+
+	ts = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "bla")
+	}))
+	defer ts.Close()
+
+	req, err = http.NewRequest("GET", ts.URL, nil)
+	if err != nil {
+		t.Fatalf("Failed to make request for testing GetJson: %v", err)
+	}
+
+	res, err = GetJson(req)
+	if err == nil {
+		t.Errorf("No error given with invalid json")
 	}
 }
