@@ -15,7 +15,6 @@ message ProtoMsg {
 
 message HotelPing {
     required int64 timestamp = 1;
-    required bytes publicKey = 2;
 }
 
 message HotelPingResp {

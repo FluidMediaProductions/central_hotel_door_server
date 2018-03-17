@@ -77,9 +77,20 @@ func protoServ(w http.ResponseWriter, r *http.Request) {
 			hotelServer := &HotelServer{
 				UUID: *newMsg.UUID,
 			}
-			db.First(hotelServer)
+			err := db.First(hotelServer).Error
+			if err != nil {
+				if err == gorm.ErrRecordNotFound {
+					log.Printf("Hotel %s not found\n", hotelServer.UUID)
+					w.WriteHeader(http.StatusNotFound)
+					return
+				} else {
+					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+			}
 
-			err := verifySignature(newMsg.Msg, newMsg.Sig, hotelServer.PublicKey)
+			err = verifySignature(newMsg.Msg, newMsg.Sig, hotelServer.PublicKey)
 			if err != nil {
 				log.Printf("Unable to verify signature from %s: %v\n", hotelServer.UUID, err)
 				w.WriteHeader(http.StatusNotAcceptable)
@@ -138,6 +149,7 @@ func sendMsg(msg proto.Message, msgType hotel_comms.MsgType, w http.ResponseWrit
 		Type: &msgType,
 		Msg: msgBytes,
 		Sig: sig,
+		UUID: proto.String(""),
 	}
 
 	wrappedMsgBytes, err := proto.Marshal(wrappedMsg)
