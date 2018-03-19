@@ -46,19 +46,11 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 
 			claims, err := utils.VerifyJWT(jwt)
 			if err != nil {
-				if err == gorm.ErrRecordNotFound {
-					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&BookingsResp{
-						Err: "booking not found",
-					})
-					return
-				} else {
-					w.WriteHeader(http.StatusForbidden)
-					json.NewEncoder(w).Encode(&BookingsResp{
-						Err: err.Error(),
-					})
-					return
-				}
+				w.WriteHeader(http.StatusForbidden)
+				json.NewEncoder(w).Encode(&BookingsResp{
+					Err: err.Error(),
+				})
+				return
 			}
 
 			bookings := make([]*Booking, 0)
@@ -95,7 +87,7 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 			claims, err := utils.VerifyJWT(jwt)
 			if err != nil {
 				w.WriteHeader(http.StatusForbidden)
-				json.NewEncoder(w).Encode(&BookingsResp{
+				json.NewEncoder(w).Encode(&BookingResp{
 					Err: err.Error(),
 				})
 				return
@@ -103,27 +95,20 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 
 			vars := mux.Vars(r)
 
-			id, err := strconv.Atoi(vars["id"])
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(&BookingsResp{
-					Err: "id not valid",
-				})
-				return
-			}
+			id, _ := strconv.Atoi(vars["id"])
 
 			booking := &Booking{}
 			err = db.Find(&booking, id).Error
 			if err != nil {
 				if err == gorm.ErrRecordNotFound {
 					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&BookingsResp{
+					json.NewEncoder(w).Encode(&BookingResp{
 						Err: "booking not found",
 					})
 					return
 				} else {
 					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&BookingsResp{
+					json.NewEncoder(w).Encode(&BookingResp{
 						Err: err.Error(),
 					})
 					return
@@ -132,7 +117,7 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 
 			if booking.UserID != claims.User.ID {
 				w.WriteHeader(http.StatusForbidden)
-				json.NewEncoder(w).Encode(&BookingsResp{
+				json.NewEncoder(w).Encode(&BookingResp{
 					Err: "booking not owned by user",
 				})
 				return
@@ -145,7 +130,7 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	w.WriteHeader(http.StatusForbidden)
-	json.NewEncoder(w).Encode(&BookingsResp{
+	json.NewEncoder(w).Encode(&BookingResp{
 		Err: "no auth header",
 	})
 }
@@ -160,7 +145,7 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 			claims, err := utils.VerifyJWT(jwt)
 			if err != nil {
 				w.WriteHeader(http.StatusForbidden)
-				json.NewEncoder(w).Encode(&BookingsResp{
+				json.NewEncoder(w).Encode(&BookingResp{
 					Err: err.Error(),
 				})
 				return
@@ -168,14 +153,7 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 
 			vars := mux.Vars(r)
 
-			id, err := strconv.Atoi(vars["id"])
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(&BookingsResp{
-					Err: "id not valid",
-				})
-				return
-			}
+			id, _ := strconv.Atoi(vars["id"])
 
 			booking := &Booking{}
 			err = db.Find(&booking, &Booking{
@@ -185,13 +163,13 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				if err == gorm.ErrRecordNotFound {
 					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&BookingsResp{
+					json.NewEncoder(w).Encode(&BookingResp{
 						Err: "booking not found",
 					})
 					return
 				} else {
 					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&BookingsResp{
+					json.NewEncoder(w).Encode(&BookingResp{
 						Err: err.Error(),
 					})
 					return
@@ -205,7 +183,7 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	w.WriteHeader(http.StatusForbidden)
-	json.NewEncoder(w).Encode(&BookingsResp{
+	json.NewEncoder(w).Encode(&BookingResp{
 		Err: "no auth header",
 	})
 }
@@ -220,7 +198,7 @@ func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
 			claims, err := utils.VerifyJWT(jwt)
 			if err != nil {
 				w.WriteHeader(http.StatusForbidden)
-				json.NewEncoder(w).Encode(&BookingsResp{
+				json.NewEncoder(w).Encode(&BookingResp{
 					Err: err.Error(),
 				})
 				return
@@ -228,14 +206,7 @@ func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
 
 			vars := mux.Vars(r)
 
-			id, err := strconv.Atoi(vars["id"])
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(&BookingsResp{
-					Err: "id not valid",
-				})
-				return
-			}
+			id, _ := strconv.Atoi(vars["id"])
 
 			booking := &Booking{}
 			err = db.Find(&booking, &Booking{
@@ -245,13 +216,13 @@ func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				if err == gorm.ErrRecordNotFound {
 					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&BookingsResp{
+					json.NewEncoder(w).Encode(&BookingResp{
 						Err: "booking not found",
 					})
 					return
 				} else {
 					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&BookingsResp{
+					json.NewEncoder(w).Encode(&BookingResp{
 						Err: err.Error(),
 					})
 					return
@@ -265,9 +236,20 @@ func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	w.WriteHeader(http.StatusForbidden)
-	json.NewEncoder(w).Encode(&BookingsResp{
+	json.NewEncoder(w).Encode(&BookingResp{
 		Err: "no auth header",
 	})
+}
+
+func router() *mux.Router {
+	r := mux.NewRouter()
+
+	r.Methods("GET").Path("/bookings").HandlerFunc(getBookings)
+	r.Methods("GET").Path("/bookings/{id:[0-9]+}").HandlerFunc(getBooking)
+	r.Methods("GET").Path("/bookings/by-room/{id:[0-9]+}").HandlerFunc(getBookingByRoom)
+	r.Methods("GET").Path("/bookings/by-hotel/{id:[0-9]+}").HandlerFunc(getBookingByHotel)
+
+	return r
 }
 
 func main() {
@@ -280,13 +262,6 @@ func main() {
 
 	db.AutoMigrate(&Booking{})
 
-	r := mux.NewRouter()
-
-	r.Methods("GET").Path("/bookings").HandlerFunc(getBookings)
-	r.Methods("GET").Path("/bookings/{id:[0-9]+}").HandlerFunc(getBooking)
-	r.Methods("GET").Path("/bookings/by-room/{id:[0-9]+}").HandlerFunc(getBookingByRoom)
-	r.Methods("GET").Path("/bookings/by-hotel/{id:[0-9]+}").HandlerFunc(getBookingByHotel)
-
 	log.Printf("Listening on %s\n", addr)
-	log.Fatalln(http.ListenAndServe(addr, r))
+	log.Fatalln(http.ListenAndServe(addr, router()))
 }
