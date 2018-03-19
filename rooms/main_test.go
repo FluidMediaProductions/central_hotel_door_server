@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
@@ -393,7 +392,7 @@ func TestOpenRoom(t *testing.T) {
 	}
 	jwt, err := utils.NewJWT(user)
 	if err != nil {
-		log.Fatalf("Failed to make JWT: %v", err)
+		t.Fatalf("Failed to make JWT: %v", err)
 	}
 
 	req = httptest.NewRequest("GET", "http://a/rooms/1/open", nil)
