@@ -10,14 +10,19 @@ import (
 	"net/http"
 	"time"
 
+	"crypto/rand"
+	"fmt"
+
 	"github.com/fluidmediaproductions/central_hotel_door_server/hotel_comms"
+	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	"crypto/rand"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 const addr = ":80"
+const RoomsServer = "http://rooms"
 
 var db *gorm.DB
 
@@ -35,16 +40,6 @@ type HotelServer struct {
 	LastSeen  time.Time
 	Online    bool
 	PublicKey []byte
-}
-
-type Action struct {
-	gorm.Model
-	HotelServer *HotelServer
-	HotelServerID uint
-	Type int
-	Payload []byte
-	Complete bool
-	Success bool
 }
 
 type ProtoHandlerFunc func(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter) error
@@ -83,9 +78,20 @@ func protoServ(w http.ResponseWriter, r *http.Request) {
 			hotelServer := &HotelServer{
 				UUID: *newMsg.UUID,
 			}
-			db.First(hotelServer)
+			err := db.First(hotelServer).Error
+			if err != nil {
+				if err == gorm.ErrRecordNotFound {
+					log.Printf("Hotel %s not found\n", hotelServer.UUID)
+					w.WriteHeader(http.StatusNotFound)
+					return
+				} else {
+					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+			}
 
-			err := verifySignature(newMsg.Msg, newMsg.Sig, hotelServer.PublicKey)
+			err = verifySignature(newMsg.Msg, newMsg.Sig, hotelServer.PublicKey)
 			if err != nil {
 				log.Printf("Unable to verify signature from %s: %v\n", hotelServer.UUID, err)
 				w.WriteHeader(http.StatusNotAcceptable)
@@ -142,8 +148,9 @@ func sendMsg(msg proto.Message, msgType hotel_comms.MsgType, w http.ResponseWrit
 
 	wrappedMsg := &hotel_comms.ProtoMsg{
 		Type: &msgType,
-		Msg: msgBytes,
-		Sig: sig,
+		Msg:  msgBytes,
+		Sig:  sig,
+		UUID: proto.String(""),
 	}
 
 	wrappedMsgBytes, err := proto.Marshal(wrappedMsg)
@@ -171,6 +178,30 @@ func checkHotels() {
 	}
 }
 
+func getRoomsByHotel(hotel uint) ([]interface{}, error) {
+	req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/by-hotel/%d", hotel), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := utils.GetJson(req)
+	if err != nil {
+		return nil, err
+	}
+	respErr, isOk := resp["err"].(string)
+	if isOk {
+		if respErr != "" {
+			return nil, errors.New(respErr)
+		}
+	}
+
+	rooms, isOk := resp["rooms"].([]interface{})
+	if isOk {
+		return rooms, nil
+	}
+	return nil, nil
+}
+
 func hotelPing(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter) error {
 	newMsg := &hotel_comms.HotelPing{}
 	err := proto.Unmarshal(msg, newMsg)
@@ -183,7 +214,7 @@ func hotelPing(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter
 
 		resp := &hotel_comms.HotelPingResp{
 			Success: proto.Bool(false),
-			Error: proto.String("time out of sync"),
+			Error:   proto.String("time out of sync"),
 		}
 		w.WriteHeader(http.StatusNotAcceptable)
 		sendMsg(resp, hotel_comms.MsgType_HOTEL_PING_RESP, w)
@@ -194,13 +225,28 @@ func hotelPing(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter
 	hotel.Online = true
 	db.Save(hotel)
 
-	action := &Action{}
-	var actionCount int
-	db.Where(map[string]interface{}{"hotel_server_id": hotel.ID, "complete": false}).Find(&action).Count(&actionCount)
+	actionRequired := false
+
+	rooms, err := getRoomsByHotel(hotel.HotelId)
+	if err != nil {
+		return err
+	}
+	for _, room := range rooms {
+		room, isOk := room.(map[string]interface{})
+		if isOk {
+			shouldOpen, isOk := room["shouldOpen"].(bool)
+			if isOk {
+				if shouldOpen {
+					actionRequired = true
+					break
+				}
+			}
+		}
+	}
 
 	resp := &hotel_comms.HotelPingResp{
-		Success: proto.Bool(true),
-		ActionRequired: proto.Bool(actionCount > 0),
+		Success:        proto.Bool(true),
+		ActionRequired: proto.Bool(actionRequired),
 	}
 
 	w.WriteHeader(http.StatusOK)

@@ -3,29 +3,32 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
-	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 const addr = ":80"
-const BookingsServer = "http://bookings"
+
+var BookingsServer = "http://bookings"
 
 var db *gorm.DB
 
 type Hotel struct {
 	gorm.Model
-	Name       string          `json:"name"`
-	Address    string          `json:"address"`
-	Location   *utils.Location `json:"location"`
-	CheckIn    time.Time       `json:"checkIn"`
-	HasCarPark bool            `json:"hasCarPark"`
+	Name           string          `json:"name"`
+	Address        string          `json:"address"`
+	Location       *utils.Location `json:"location"`
+	CheckIn        time.Time       `json:"checkIn"`
+	HasCarPark     bool            `json:"hasCarPark"`
+	ShouldDoorOpen bool            `json:"shouldDoorOpen"`
 }
 
 type HotelsResp struct {
@@ -62,23 +65,24 @@ func getHotels(w http.ResponseWriter, r *http.Request) {
 func getHotel(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(&HotelResp{
-			Err: "id not valid",
-		})
-		return
-	}
+	id, _ := strconv.Atoi(vars["id"])
 
 	hotel := &Hotel{}
-	err = db.Find(&hotel, id).Error
+	err := db.Find(&hotel, id).Error
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(&HotelResp{
-			Err: err.Error(),
-		})
-		return
+		if err == gorm.ErrRecordNotFound {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(&HotelResp{
+				Err: "hotel not found",
+			})
+			return
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&HotelResp{
+				Err: err.Error(),
+			})
+			return
+		}
 	}
 
 	json.NewEncoder(w).Encode(&HotelResp{
@@ -89,17 +93,10 @@ func getHotel(w http.ResponseWriter, r *http.Request) {
 func openHotel(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(&OpenHotelResp{
-			Err: "id not valid",
-		})
-		return
-	}
+	id, _ := strconv.Atoi(vars["id"])
 
 	hotel := &Hotel{}
-	err = db.Find(&hotel, id).Error
+	err := db.Find(&hotel, id).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
@@ -162,6 +159,16 @@ func openHotel(w http.ResponseWriter, r *http.Request) {
 
 			_, isOk = resp["booking"].(map[string]interface{})
 			if isOk {
+				hotel.ShouldDoorOpen = true
+				err := db.Save(&hotel).Error
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					json.NewEncoder(w).Encode(&OpenHotelResp{
+						Err: err.Error(),
+					})
+					return
+				}
+
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(&OpenHotelResp{
 					Success: true,
@@ -181,6 +188,16 @@ func openHotel(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func router() *mux.Router {
+	r := mux.NewRouter()
+
+	r.Methods("GET").Path("/hotels").HandlerFunc(getHotels)
+	r.Methods("GET").Path("/hotels/{id:[0-9]+}").HandlerFunc(getHotel)
+	r.Methods("GET").Path("/hotels/{id:[0-9]+}/open").HandlerFunc(openHotel)
+
+	return r
+}
+
 func main() {
 	var err error
 	db, err = gorm.Open("sqlite3", "test.db")
@@ -191,12 +208,6 @@ func main() {
 
 	db.AutoMigrate(&Hotel{})
 
-	r := mux.NewRouter()
-
-	r.Methods("GET").Path("/hotels").HandlerFunc(getHotels)
-	r.Methods("GET").Path("/hotels/{id:[0-9]+}").HandlerFunc(getHotel)
-	r.Methods("GET").Path("/hotels/{id:[0-9]+}/open").HandlerFunc(openHotel)
-
 	log.Printf("Listening on %s\n", addr)
-	log.Fatalln(http.ListenAndServe(addr, r))
+	log.Fatalln(http.ListenAndServe(addr, router()))
 }

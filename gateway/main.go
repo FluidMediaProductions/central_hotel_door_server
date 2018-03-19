@@ -4,22 +4,23 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+	"time"
+
 	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
-	"log"
-	"net/http"
-	"time"
 )
 
 const addr = ":80"
 
-const AuthServer = "http://auth"
-const BookingsServer = "http://bookings"
-const HotelsServer = "http://hotels"
-const RoomsServer = "http://rooms"
+var AuthServer = "http://auth"
+var BookingsServer = "http://bookings"
+var HotelsServer = "http://hotels"
+var RoomsServer = "http://rooms"
 
 var userType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
@@ -714,12 +715,17 @@ var rootMutation = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-func main() {
+func initSchema() (graphql.Schema, error) {
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
 		Query:    rootQuery,
 		Mutation: rootMutation,
 	})
 
+	return schema, err
+}
+
+func main() {
+	schema, err := initSchema()
 	if err != nil {
 		panic(err)
 	}
