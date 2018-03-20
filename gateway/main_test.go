@@ -401,6 +401,86 @@ func TestQueryBooking(t *testing.T) {
 		t.Error("Expected errors with when hotels server sent error but got none")
 	}
 
+	query = `
+		query ($token: String!) {
+			auth(token: $token) {
+				booking(id: 1) {
+					room {
+						ID
+					}
+				}
+			}
+        }
+	`
+
+	roomsServerResp := `
+		{
+			"err": "",
+			"room": 
+			{
+				"ID": 1
+			}
+		}
+	`
+
+	roomsTs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, roomsServerResp)
+	}))
+	defer roomsTs.Close()
+
+	RoomsServer = roomsTs.URL
+
+	res = runQuery(query, variables, t)
+
+	if res.HasErrors() {
+		t.Errorf("Errors given from query: %v", res.Errors)
+	}
+	data, isOk = res.Data.(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data, expected type map[string]interface{} got %T", res.Data)
+	}
+	auth, isOk = data["auth"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[auth], expected type map[string]interface{} got %T", data["auth"])
+	}
+	booking, isOk = auth["booking"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[auth][booking], expected type map[string]interface{} got %T", auth["booking"])
+	}
+
+	room, isOk := booking["room"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[auth][booking][room], expected type map[string]interface{} got %T", booking["hotel"])
+	}
+	ID, isOk = room["ID"].(int)
+	if !isOk {
+		t.Errorf("Error getting data[auth][booking][room][ID], expected type int got %T", room["ID"])
+	} else {
+		if ID != 1 {
+			t.Errorf("ID was not what was expected, wanted 1 got %d", ID)
+		}
+	}
+
+	roomsServerResp = `
+		{
+			"err": "foobar",
+			"hotel": null
+		}
+	`
+
+	roomsTs = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, roomsServerResp)
+	}))
+	defer roomsTs.Close()
+
+	RoomsServer = roomsTs.URL
+
+	res = runQuery(query, variables, t)
+
+	if !res.HasErrors() {
+		t.Error("Expected errors with when roomss server sent error but got none")
+	}
+
 	bookingsServerResp = `
 		{
 			"err": "foobar",
