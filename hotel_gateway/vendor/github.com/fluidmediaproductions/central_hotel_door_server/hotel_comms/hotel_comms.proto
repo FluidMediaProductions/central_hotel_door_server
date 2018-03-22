@@ -4,6 +4,8 @@ package hotel_comms;
 enum MsgType {
     HOTEL_PING = 0;
     HOTEL_PING_RESP = 1;
+    GET_ACTIONS = 2;
+    GET_ACTIONS_RESP = 3;
 }
 
 message ProtoMsg {
@@ -15,11 +17,28 @@ message ProtoMsg {
 
 message HotelPing {
     required int64 timestamp = 1;
-    required bytes publicKey = 2;
 }
 
 message HotelPingResp {
     required bool success = 1;
     optional string error = 2;
     optional bool actionRequired = 3;
+}
+
+enum ActionType {
+    ROOM_UNLOCK = 0;
+}
+
+message Action {
+    required ActionType type = 1;
+    required int64 id = 2;
+    optional bytes payload = 3;
+}
+
+message GetActions {
+
+}
+
+message GetActionsResp {
+    repeated Action actions = 1;
 }

@@ -3,22 +3,22 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "4772zXrOaPVeDeSgdiV7Vp4KEjk=",
+			"checksumSHA1": "+TKtBzv23ywvmmqRiGEjUba4YmI=",
 			"path": "github.com/dgrijalva/jwt-go",
-			"revision": "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e",
-			"revisionTime": "2018-03-08T23:13:08Z"
+			"revision": "dbeaa9332f19a944acb5736b4456cfcc02140e29",
+			"revisionTime": "2017-10-19T21:57:19Z"
 		},
 		{
-			"checksumSHA1": "PgX0Lv7d4xoib/DbTZsLXf/PX6s=",
+			"checksumSHA1": "M68dsusT3PR1sO4/ugKape4L/AE=",
 			"path": "github.com/fluidmediaproductions/central_hotel_door_server/hotel_comms",
-			"revision": "c30c9f43ed62b5347aeda4b25fdcb40f4397bcdb",
-			"revisionTime": "2018-03-16T15:43:49Z"
+			"revision": "067970f85fe10058596bb4fc13899d5ac0e4a823",
+			"revisionTime": "2018-03-21T09:54:07Z"
 		},
 		{
-			"checksumSHA1": "Fzl6Wf1PDC0FGexAQaUgj6NTE/o=",
+			"checksumSHA1": "6aeA/W9boK82KRPxsfQPjG6QCRk=",
 			"path": "github.com/fluidmediaproductions/central_hotel_door_server/utils",
-			"revision": "c30c9f43ed62b5347aeda4b25fdcb40f4397bcdb",
-			"revisionTime": "2018-03-16T15:43:49Z"
+			"revision": "067970f85fe10058596bb4fc13899d5ac0e4a823",
+			"revisionTime": "2018-03-21T09:54:07Z"
 		},
 		{
 			"checksumSHA1": "WX1+2gktHcBmE9MGwFSGs7oqexU=",
@@ -33,34 +33,34 @@
 			"revisionTime": "2016-08-17T18:46:32Z"
 		},
 		{
-			"checksumSHA1": "bVayBU8lTVHNDai7umD17bwyws0=",
+			"checksumSHA1": "fSs1WcPh2F5JJtxqYC+Jt8yCkYc=",
 			"path": "github.com/gorilla/mux",
-			"revision": "5ab525f4fb1678e197ae59401e9050fa0b6cb5fd",
-			"revisionTime": "2017-12-08T16:08:15Z"
+			"revision": "5bbbb5b2b5729b132181cc7f4aa3b3c973e9a0ed",
+			"revisionTime": "2018-01-07T15:57:08Z"
 		},
 		{
-			"checksumSHA1": "rro98K08E4cpMkmaMe6C0bQheSg=",
+			"checksumSHA1": "IPuI0TCUlOnJGLYWyJDDH6xbtZg=",
 			"path": "github.com/jinzhu/gorm",
-			"revision": "48a20a6e9f3f4d26095df82c3337efec6db0a6fc",
-			"revisionTime": "2018-02-22T04:04:12Z"
+			"revision": "6ed508ec6a4ecb3531899a69cbc746ccf65a4166",
+			"revisionTime": "2018-02-27T23:43:56Z"
 		},
 		{
 			"checksumSHA1": "4VZ1gLZHMumRjV3fclS1aX8S1aQ=",
 			"path": "github.com/jinzhu/gorm/dialects/sqlite",
-			"revision": "48a20a6e9f3f4d26095df82c3337efec6db0a6fc",
-			"revisionTime": "2018-02-22T04:04:12Z"
+			"revision": "6ed508ec6a4ecb3531899a69cbc746ccf65a4166",
+			"revisionTime": "2018-02-27T23:43:56Z"
 		},
 		{
-			"checksumSHA1": "VIp1lZm6joWhlNdwhady8u//qRw=",
+			"checksumSHA1": "4eelJOSLZoDzLuaJvgilOBVNovU=",
 			"path": "github.com/jinzhu/inflection",
-			"revision": "1c35d901db3da928c72a72d8458480cc9ade058f",
-			"revisionTime": "2017-01-02T12:52:26Z"
+			"revision": "04140366298a54a039076d798123ffa108fff46c",
+			"revisionTime": "2018-03-08T03:36:59Z"
 		},
 		{
-			"checksumSHA1": "kUqagcesbbz7A2eCwDYntlvrEqs=",
+			"checksumSHA1": "4fh/y4TLt0wVvZ/hF9AQVNX3Vdc=",
 			"path": "github.com/mattn/go-sqlite3",
-			"revision": "696e2e43cb00dcb1acaf6073e01493e3c4197b75",
-			"revisionTime": "2018-02-18T13:15:52Z"
+			"revision": "a35b097634ab3a42fac3f7a1c5ed1f898d5cdd5f",
+			"revisionTime": "2018-01-29T03:10:10Z"
 		}
 	],
 	"rootPath": "github.com/fluidmediaproductions/central_hotel_door_server/hotel_gateway"
