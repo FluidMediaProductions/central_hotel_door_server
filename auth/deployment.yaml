@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-config
+  namespace: travelr
+data:
+  dbHost: mysql
+  dbUser: travelr
+  dbName: travelr_auth
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  namespace: travelr
+  labels:
+    app: auth
+spec:
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: evilben/travelr_auth:(hash)
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: TRAVELR_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: dbHost
+            - name: TRAVELR_DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: dbUser
+            - name: TRAVELR_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: dbName
+            - name: TRAVELR_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-auth
+                  key: pass
+            - name: TRAVELR_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt
+                  key: secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth
+  namespace: travelr
+spec:
+  selector:
+    app: auth
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
