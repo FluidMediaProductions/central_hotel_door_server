@@ -4,22 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/gateway/main.go" line="452" mnemonic="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54d2d74e-1e82-427d-b612-b697385a4d17" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/gateway/deployment.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/auth/deployment.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/auth/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookings/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/bookings/deployment.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/fluidmediaproductions/central_hotel_door_server/utils/http.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/fluidmediaproductions/central_hotel_door_server/utils/jwt.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/github.com/fluidmediaproductions/central_hotel_door_server/utils/loc.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/vendor/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/vendor/vendor.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/push.sh" beforeDir="false" afterPath="$PROJECT_DIR$/push.sh" afterDir="false" />
-    </list>
+    <list default="true" id="54d2d74e-1e82-427d-b612-b697385a4d17" name="Default" comment="" />
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
