@@ -16,6 +16,7 @@ metadata:
   labels:
     app: bookings
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: bookings

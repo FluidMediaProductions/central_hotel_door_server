@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: travelr
+  labels:
+    app: gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: auth
+          image: evilben/travelr_gateway:(hash)
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: TRAVELR_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt
+                  key: secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: travelr
+spec:
+  selector:
+    app: gateway
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gateway
+  namespace: travelr
+spec:
+  tls:
+    - hosts:
+        - "travelr.fluidmedia.wales"
+      secretName: gateway-tls
+  rules:
+    - host: travelr.fluidmedia.wales
+      http:
+        paths:
+          - path: "/graphql"
+            backend:
+              serviceName: gateway
+              servicePort: 80
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: gateway-cert
+  namespace: travelr
+spec:
+  secretName: gateway-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: travelr.fluidmedia.wales
+  dnsNames:
+  - travelr.fluidmedia.wales
+  acme:
+    config:
+    - http01:
+        ingressClass: traefik
+      domains:
+      - travelr.fluidmedia.wales

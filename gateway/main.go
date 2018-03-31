@@ -13,6 +13,7 @@ import (
 	"github.com/graphql-go/handler"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
+	"github.com/spf13/viper"
 )
 
 const addr = ":80"
@@ -21,6 +22,7 @@ var AuthServer = "http://auth"
 var BookingsServer = "http://bookings"
 var HotelsServer = "http://hotels"
 var RoomsServer = "http://rooms"
+var jwtSecret []byte
 
 var userType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
@@ -51,7 +53,7 @@ var userType = graphql.NewObject(graphql.ObjectConfig{
 						return nil, err
 					}
 
-					jwt, err := utils.NewJWT(user)
+					jwt, err := utils.NewJWT(user, jwtSecret)
 					if err != nil {
 						return nil, err
 					}
@@ -378,7 +380,7 @@ var authedQuery = graphql.NewObject(graphql.ObjectConfig{
 							return nil, err
 						}
 
-						jwt, err := utils.NewJWT(user)
+						jwt, err := utils.NewJWT(user, jwtSecret)
 						if err != nil {
 							return nil, err
 						}
@@ -420,7 +422,7 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				token, isOK := params.Args["token"].(string)
 				if isOK {
-					claims, err := utils.VerifyJWT(token)
+					claims, err := utils.VerifyJWT(token, jwtSecret)
 					if err != nil {
 						return nil, err
 					}
@@ -572,7 +574,7 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 							return nil, err
 						}
 
-						jwt, err := utils.NewJWT(user)
+						jwt, err := utils.NewJWT(user, jwtSecret)
 						if err != nil {
 							return nil, err
 						}
@@ -615,7 +617,7 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 							return nil, err
 						}
 
-						jwt, err := utils.NewJWT(user)
+						jwt, err := utils.NewJWT(user, jwtSecret)
 						if err != nil {
 							return nil, err
 						}
@@ -703,7 +705,7 @@ var rootMutation = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				token, isOK := params.Args["token"].(string)
 				if isOK {
-					claims, err := utils.VerifyJWT(token)
+					claims, err := utils.VerifyJWT(token, jwtSecret)
 					if err != nil {
 						return nil, err
 					}
@@ -725,6 +727,11 @@ func initSchema() (graphql.Schema, error) {
 }
 
 func main() {
+	viper.SetEnvPrefix("TRAVELR")
+	viper.AutomaticEnv()
+
+	jwtSecret = []byte(viper.GetString("JWT_SECRET"))
+
 	schema, err := initSchema()
 	if err != nil {
 		panic(err)

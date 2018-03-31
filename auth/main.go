@@ -51,9 +51,16 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			}
 			err := db.Where(user).First(user).Error
 			if err != nil {
+				if err == gorm.ErrRecordNotFound {
+					w.WriteHeader(http.StatusNotFound)
+					json.NewEncoder(w).Encode(&JWTResp{
+						Err: "user not found",
+					})
+					return
+				}
 				w.WriteHeader(http.StatusNotFound)
 				json.NewEncoder(w).Encode(&JWTResp{
-					Err: "user not found",
+					Err: err.Error(),
 				})
 				return
 			}
