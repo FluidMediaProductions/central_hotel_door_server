@@ -401,6 +401,86 @@ func TestQueryBooking(t *testing.T) {
 		t.Error("Expected errors with when hotels server sent error but got none")
 	}
 
+	query = `
+		query ($token: String!) {
+			auth(token: $token) {
+				booking(id: 1) {
+					room {
+						ID
+					}
+				}
+			}
+        }
+	`
+
+	roomsServerResp := `
+		{
+			"err": "",
+			"room": 
+			{
+				"ID": 1
+			}
+		}
+	`
+
+	roomsTs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, roomsServerResp)
+	}))
+	defer roomsTs.Close()
+
+	RoomsServer = roomsTs.URL
+
+	res = runQuery(query, variables, t)
+
+	if res.HasErrors() {
+		t.Errorf("Errors given from query: %v", res.Errors)
+	}
+	data, isOk = res.Data.(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data, expected type map[string]interface{} got %T", res.Data)
+	}
+	auth, isOk = data["auth"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[auth], expected type map[string]interface{} got %T", data["auth"])
+	}
+	booking, isOk = auth["booking"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[auth][booking], expected type map[string]interface{} got %T", auth["booking"])
+	}
+
+	room, isOk := booking["room"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[auth][booking][room], expected type map[string]interface{} got %T", booking["hotel"])
+	}
+	ID, isOk = room["ID"].(int)
+	if !isOk {
+		t.Errorf("Error getting data[auth][booking][room][ID], expected type int got %T", room["ID"])
+	} else {
+		if ID != 1 {
+			t.Errorf("ID was not what was expected, wanted 1 got %d", ID)
+		}
+	}
+
+	roomsServerResp = `
+		{
+			"err": "foobar",
+			"hotel": null
+		}
+	`
+
+	roomsTs = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, roomsServerResp)
+	}))
+	defer roomsTs.Close()
+
+	RoomsServer = roomsTs.URL
+
+	res = runQuery(query, variables, t)
+
+	if !res.HasErrors() {
+		t.Error("Expected errors with when roomss server sent error but got none")
+	}
+
 	bookingsServerResp = `
 		{
 			"err": "foobar",
@@ -502,7 +582,9 @@ func TestQueryHotel(t *testing.T) {
 	hotelsServerResp = `
 		{
 			"err": "",
-			"hotel": {}
+			"hotel": {
+				"checkIn": "bla"
+			}
 		}
 	`
 
@@ -515,8 +597,8 @@ func TestQueryHotel(t *testing.T) {
 
 	res = runQuery(query, map[string]interface{}{}, t)
 
-	if res.HasErrors() {
-		t.Errorf("Errors given from query: %v", res.Errors)
+	if !res.HasErrors() {
+		t.Errorf("Errors expected from query but none given")
 	}
 	data, isOk = res.Data.(map[string]interface{})
 	if !isOk {
@@ -750,6 +832,97 @@ func TestQueryRoom(t *testing.T) {
 		t.Errorf("Error getting data[room][floor], expected type <nil> got %T", room["floor"])
 	}
 
+	query = `
+		query {
+			room(id: 1) {
+				hotel {
+					ID
+				}
+			}
+        }
+	`
+
+	roomsServerResp = `
+		{
+			"err": "",
+			"room": 
+			{
+				"hotelId": 1
+			}
+		}
+	`
+
+	hotelsServerResp := `
+		{
+			"err": "",
+			"hotel": 
+			{
+				"ID": 1
+			}
+		}
+	`
+
+	hotelsTs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, hotelsServerResp)
+	}))
+	defer hotelsTs.Close()
+
+	HotelsServer = hotelsTs.URL
+
+	ts = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, roomsServerResp)
+	}))
+	defer ts.Close()
+
+	RoomsServer = ts.URL
+
+	res = runQuery(query, nil, t)
+
+	if res.HasErrors() {
+		t.Errorf("Errors given from query: %v", res.Errors)
+	}
+	data, isOk = res.Data.(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data, expected type map[string]interface{} got %T", res.Data)
+	}
+	room, isOk = data["room"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[room], expected type map[string]interface{} got %T", data["room"])
+	}
+
+	hotel, isOk := room["hotel"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[room][hotel], expected type map[string]interface{} got %T", room["hotel"])
+	}
+	ID, isOk = hotel["ID"].(int)
+	if !isOk {
+		t.Errorf("Error getting data[room][hotel][ID], expected type int got %T", hotel["ID"])
+	} else {
+		if ID != 1 {
+			t.Errorf("ID was not what was expected, wanted 1 got %d", ID)
+		}
+	}
+
+	hotelsServerResp = `
+		{
+			"err": "foobar",
+			"hotel": null
+		}
+	`
+
+	hotelsTs = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, hotelsServerResp)
+	}))
+	defer hotelsTs.Close()
+
+	HotelsServer = hotelsTs.URL
+
+	res = runQuery(query, nil, t)
+
+	if !res.HasErrors() {
+		t.Error("Expected errors with when hotels server sent error but got none")
+	}
+
 	roomsServerResp = `
 		{
 			"err": "foobar",
@@ -846,5 +1019,249 @@ func TestQueryRooms(t *testing.T) {
 	res = runQuery(query, nil, t)
 	if !res.HasErrors() {
 		t.Error("Expected errors with when rooms server sent error but got none")
+	}
+}
+
+func TestOpenRoom(t *testing.T) {
+	user := &utils.User{
+		Name:  "Bob",
+		Email: "foo@bar.com",
+		Model: gorm.Model{
+			ID: 1,
+		},
+	}
+
+	roomsServerResp := `
+		{
+			"err": "",
+			"success": true
+		}
+	`
+
+	jwt, err := utils.NewJWT(user)
+	if err != nil {
+		t.Fatalf("Error creating JWT: %v", err)
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ") == "" {
+			t.Errorf("No JWT given to rooms server, got %s",
+				strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
+		}
+		fmt.Fprint(w, roomsServerResp)
+	}))
+	defer ts.Close()
+
+	RoomsServer = ts.URL
+
+	query := `
+		mutation ($token: String!) {
+			auth(token: $token) {
+				openRoom(id: 1)
+			}
+        }
+	`
+	variables := map[string]interface{}{
+		"token": jwt,
+	}
+	res := runQuery(query, variables, t)
+
+	if res.HasErrors() {
+		t.Errorf("Errors given from query: %v", res.Errors)
+	}
+
+	data, isOk := res.Data.(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data, expected type map[string]interface{} got %T", res.Data)
+	}
+	auth, isOk := data["auth"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[auth], expected type map[string]interface{} got %T", data["auth"])
+	}
+
+	openRoom, isOk := auth["openRoom"].(bool)
+	if !isOk {
+		t.Errorf("Error getting data[auth][openRoom], expected type bool got %T", auth["openRoom"])
+	} else {
+		if openRoom != true {
+			t.Errorf("Success value was not what was expected, wanted true got %t", openRoom)
+		}
+	}
+
+	roomsServerResp = `
+		{
+			"err": "foobar",
+			"success": false
+		}
+	`
+
+	ts = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ") == "" {
+			t.Errorf("No JWT given to rooms server, got %s",
+				strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
+		}
+		fmt.Fprint(w, roomsServerResp)
+	}))
+	defer ts.Close()
+
+	RoomsServer = ts.URL
+
+	res = runQuery(query, variables, t)
+	if !res.HasErrors() {
+		t.Error("Expected errors with when rooms server sent error but got none")
+	}
+}
+
+func TestOpenHotel(t *testing.T) {
+	user := &utils.User{
+		Name:  "Bob",
+		Email: "foo@bar.com",
+		Model: gorm.Model{
+			ID: 1,
+		},
+	}
+
+	hotelsServerResp := `
+		{
+			"err": "",
+			"success": true
+		}
+	`
+
+	jwt, err := utils.NewJWT(user)
+	if err != nil {
+		t.Fatalf("Error creating JWT: %v", err)
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ") == "" {
+			t.Errorf("No JWT given to hotels server, got %s",
+				strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
+		}
+		fmt.Fprint(w, hotelsServerResp)
+	}))
+	defer ts.Close()
+
+	HotelsServer = ts.URL
+
+	query := `
+		mutation ($token: String!) {
+			auth(token: $token) {
+				openHotelDoor(id: 1)
+			}
+        }
+	`
+	variables := map[string]interface{}{
+		"token": jwt,
+	}
+	res := runQuery(query, variables, t)
+
+	if res.HasErrors() {
+		t.Errorf("Errors given from query: %v", res.Errors)
+	}
+
+	data, isOk := res.Data.(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data, expected type map[string]interface{} got %T", res.Data)
+	}
+	auth, isOk := data["auth"].(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data[auth], expected type map[string]interface{} got %T", data["auth"])
+	}
+
+	openHotelDoor, isOk := auth["openHotelDoor"].(bool)
+	if !isOk {
+		t.Errorf("Error getting data[auth][openHotelDoor], expected type bool got %T", auth["openHotelDoor"])
+	} else {
+		if openHotelDoor != true {
+			t.Errorf("Success value was not what was expected, wanted true got %t", openHotelDoor)
+		}
+	}
+
+	hotelsServerResp = `
+		{
+			"err": "foobar",
+			"success": false
+		}
+	`
+
+	ts = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ") == "" {
+			t.Errorf("No JWT given to hotels server, got %s",
+				strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
+		}
+		fmt.Fprint(w, hotelsServerResp)
+	}))
+	defer ts.Close()
+
+	HotelsServer = ts.URL
+
+	res = runQuery(query, variables, t)
+	if !res.HasErrors() {
+		t.Error("Expected errors with when hotels server sent error but got none")
+	}
+}
+
+func TestLogin(t *testing.T) {
+	authServerResp := `
+		{
+			"err": "",
+			"jwt": "foobar"
+		}
+	`
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, authServerResp)
+	}))
+	defer ts.Close()
+
+	AuthServer = ts.URL
+
+	query := `
+		mutation ($email: String!, $pass: String!) {
+			loginUser(email: $email, pass: $pass)
+        }
+	`
+	variables := map[string]interface{}{
+		"email": "foo@bar.com",
+		"pass": "foobar",
+	}
+	res := runQuery(query, variables, t)
+
+	if res.HasErrors() {
+		t.Errorf("Errors given from query: %v", res.Errors)
+	}
+
+	data, isOk := res.Data.(map[string]interface{})
+	if !isOk {
+		t.Fatalf("Error getting data, expected type map[string]interface{} got %T", res.Data)
+	}
+
+	loginUser, isOk := data["loginUser"].(string)
+	if !isOk {
+		t.Errorf("Error getting data[loginUser], expected type bool got %T", data["loginUser"])
+	} else {
+		if loginUser != "foobar" {
+			t.Errorf("JWT was not what was expected, wanted foobar got %s", loginUser)
+		}
+	}
+
+	authServerResp = `
+		{
+			"err": "foobar",
+			"jwt": null
+		}
+	`
+
+	ts = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, authServerResp)
+	}))
+	defer ts.Close()
+
+	AuthServer = ts.URL
+
+	res = runQuery(query, variables, t)
+	if !res.HasErrors() {
+		t.Error("Expected errors with when auth server sent error but got none")
 	}
 }
