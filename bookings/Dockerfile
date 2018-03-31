@@ -1,11 +1,11 @@
 FROM golang:1.10-alpine
 
-COPY . /go/src/auth
-WORKDIR /go/src/auth
-RUN CGO_ENABLED=0 go build -o auth main.go
+COPY . /go/src/bookings
+WORKDIR /go/src/bookings
+RUN CGO_ENABLED=0 go build -o bookings main.go
 
 FROM scratch
 
-COPY --from=0 /go/src/auth/auth /auth
+COPY --from=0 /go/src/bookings/bookings /bookings
 
-ENTRYPOINT ["/auth"]
+ENTRYPOINT ["/bookings"]
