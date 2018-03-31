@@ -2,5 +2,5 @@
 
 HASH=`git rev-parse --verify HEAD`
 
-sudo docker push evilben/travel_auth:$HASH
-sudo docker push evilben/travel_bookings:$HASH
+cat auth/deployment.yaml | sed "s/(hash)/$HASH/g" | kubectl apply -f -
+cat bookings/deployment.yaml | sed "s/(hash)/$HASH/g" | kubectl apply -f -
