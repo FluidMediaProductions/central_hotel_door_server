@@ -270,8 +270,8 @@ func main() {
 
 	jwtSecret = []byte(viper.GetString("JWT_SECRET"))
 
-	config := &mysql.Config{Addr: dbHost, User: dbUser, Passwd: dbPass, DBName: dbName}
-	
+	config := &mysql.Config{Addr: dbHost, Net: "tcp", User: dbUser, Passwd: dbPass, DBName: dbName}
+
 	log.Printf("Connecting to database with DSN: %s\n", config.FormatDSN())
 	var err error
 	db, err = gorm.Open("mysql", config.FormatDSN())
