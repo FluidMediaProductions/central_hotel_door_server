@@ -33,7 +33,7 @@ type HotelServer struct {
 	HotelId   uint
 	LastSeen  time.Time
 	Online    bool
-	PublicKey []byte
+	PublicKey []byte `gorm:"type:LONGBLOB"`
 }
 
 type ProtoHandlerFunc func(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter) error

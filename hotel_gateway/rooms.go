@@ -70,5 +70,5 @@ func getDoors(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter)
 	}
 
 	w.WriteHeader(http.StatusOK)
-	return sendMsg(resp, hotel_comms.MsgType_HOTEL_PING_RESP, w)
+	return sendMsg(resp, hotel_comms.MsgType_GET_DOORS_RESP, w)
 }
