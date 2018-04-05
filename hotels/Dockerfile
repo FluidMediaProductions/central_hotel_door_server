@@ -1,11 +1,11 @@
 FROM golang:1.10-alpine
 
-COPY . /go/src/bookings
-WORKDIR /go/src/bookings
-RUN CGO_ENABLED=0 go build -o bookings main.go
+COPY . /go/src/hotels
+WORKDIR /go/src/hotels
+RUN CGO_ENABLED=0 go build -o hotels
 
 FROM scratch
 
-COPY --from=0 /go/src/bookings/bookings /bookings
+COPY --from=0 /go/src/hotels/hotels /hotels
 
-ENTRYPOINT ["/bookings"]
+ENTRYPOINT ["/hotels"]

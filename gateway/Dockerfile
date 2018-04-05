@@ -2,7 +2,7 @@ FROM golang:1.10-alpine
 
 COPY . /go/src/gateway
 WORKDIR /go/src/gateway
-RUN CGO_ENABLED=0 go build -o gateway main.go
+RUN CGO_ENABLED=0 go build -o gateway
 
 FROM scratch
 

@@ -12,6 +12,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/spf13/viper"
+	"github.com/go-sql-driver/mysql"
 )
 
 const addr = ":80"
@@ -19,6 +21,7 @@ const addr = ":80"
 var BookingsServer = "http://bookings"
 
 var db *gorm.DB
+var jwtSecret []byte
 
 type Room struct {
 	gorm.Model
@@ -139,7 +142,7 @@ func openRoom(w http.ResponseWriter, r *http.Request) {
 			authHeader := authHeaders[0]
 			jwt := strings.TrimPrefix(authHeader, "Bearer ")
 
-			_, err := utils.VerifyJWT(jwt)
+			_, err := utils.VerifyJWT(jwt, jwtSecret)
 			if err != nil {
 				w.WriteHeader(http.StatusForbidden)
 				json.NewEncoder(w).Encode(&OpenRoomResp{
@@ -219,8 +222,25 @@ func router() *mux.Router {
 }
 
 func main() {
+	viper.SetDefault("DB_HOST", "mysql")
+	viper.SetDefault("DB_USER", "travelr")
+	viper.SetDefault("DB_NAME", "rooms")
+
+	viper.SetEnvPrefix("TRAVELR")
+	viper.AutomaticEnv()
+
+	dbHost := viper.GetString("DB_HOST")
+	dbUser := viper.GetString("DB_USER")
+	dbPass := viper.GetString("DB_PASS")
+	dbName := viper.GetString("DB_NAME")
+
+	jwtSecret = []byte(viper.GetString("JWT_SECRET"))
+
+	config := &mysql.Config{Addr: dbHost, Net: "tcp", User: dbUser, Passwd: dbPass, DBName: dbName, ParseTime: true}
+
+	log.Printf("Connecting to database with DSN: %s\n", config.FormatDSN())
 	var err error
-	db, err = gorm.Open("sqlite3", "test.db")
+	db, err = gorm.Open("mysql", config.FormatDSN())
 	if err != nil {
 		panic("failed to connect database")
 	}

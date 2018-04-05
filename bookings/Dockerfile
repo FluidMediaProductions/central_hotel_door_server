@@ -2,7 +2,7 @@ FROM golang:1.10-alpine
 
 COPY . /go/src/bookings
 WORKDIR /go/src/bookings
-RUN CGO_ENABLED=0 go build -o bookings main.go
+RUN CGO_ENABLED=0 go build -o bookings
 
 FROM scratch
 

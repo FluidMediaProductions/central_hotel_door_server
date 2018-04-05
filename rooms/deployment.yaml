@@ -1,33 +1,33 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: hotels-config
+  name: rooms-config
   namespace: travelr
 data:
   dbHost: mysql
   dbUser: travelr
-  dbName: travelr_hotels
+  dbName: travelr_rooms
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hotels
+  name: rooms
   namespace: travelr
   labels:
-    app: hotels
+    app: rooms
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: hotels
+      app: rooms
   template:
     metadata:
       labels:
-        app: hotels
+        app: rooms
     spec:
       containers:
         - name: auth
-          image: evilben/travelr_hotels:(hash)
+          image: evilben/travelr_rooms:(hash)
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -36,17 +36,17 @@ spec:
             - name: TRAVELR_DB_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: hotels-config
+                  name: rooms-config
                   key: dbHost
             - name: TRAVELR_DB_USER
               valueFrom:
                 configMapKeyRef:
-                  name: hotels-config
+                  name: rooms-config
                   key: dbUser
             - name: TRAVELR_DB_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: hotels-config
+                  name: rooms-config
                   key: dbName
             - name: TRAVELR_DB_PASS
               valueFrom:
@@ -62,11 +62,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hotels
+  name: rooms
   namespace: travelr
 spec:
   selector:
-    app: hotels
+    app: rooms
   ports:
     - port: 80
       protocol: TCP

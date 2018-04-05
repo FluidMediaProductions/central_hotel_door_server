@@ -6,6 +6,8 @@ enum MsgType {
     HOTEL_PING_RESP = 1;
     GET_ACTIONS = 2;
     GET_ACTIONS_RESP = 3;
+    GET_DOORS = 4;
+    GET_DOORS_RESP = 5;
 }
 
 message ProtoMsg {
@@ -23,6 +25,19 @@ message HotelPingResp {
     required bool success = 1;
     optional string error = 2;
     optional bool actionRequired = 3;
+}
+
+message Door {
+    required int64 id = 1;
+    required string name = 2;
+}
+
+message GetDoors {
+
+}
+
+message GetDoorsResp {
+    repeated Door doors = 1;
 }
 
 enum ActionType {
