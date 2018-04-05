@@ -52,6 +52,10 @@ var protoHandlers = []ProtoHandler{
 		msgType: hotel_comms.MsgType_GET_ACTIONS,
 		handler: getAction,
 	},
+	{
+		msgType: hotel_comms.MsgType_GET_DOORS,
+		handler: getDoors,
+	},
 }
 
 func checkHotels() {
