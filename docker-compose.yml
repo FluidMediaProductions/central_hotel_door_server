@@ -24,6 +24,11 @@ services:
       - 8081:80
     links:
       - rooms
+    environment:
+      - TRAVELR_DB_HOST=172.30.0.13
+      - TRAVELR_DB_USER=root
+      - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
+      - TRAVELR_DB_NAME=travelr_hotel_gateway
   auth:
     build: .
     volumes:
@@ -32,6 +37,11 @@ services:
     expose:
       - 80
     command: sh -c "go build -o auth && ./auth"
+    environment:
+      - TRAVELR_DB_HOST=172.30.0.13
+      - TRAVELR_DB_USER=root
+      - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
+      - TRAVELR_DB_NAME=travelr_auth
   hotels:
     build: .
     volumes:
@@ -42,6 +52,11 @@ services:
     expose:
       - 80
     command: sh -c "go build -o hotels && ./hotels"
+    environment:
+      - TRAVELR_DB_HOST=172.30.0.13
+      - TRAVELR_DB_USER=root
+      - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
+      - TRAVELR_DB_NAME=travelr_hotels
   rooms:
     build: .
     volumes:
@@ -52,6 +67,11 @@ services:
     expose:
       - 80
     command: sh -c "go build -o rooms && ./rooms"
+    environment:
+      - TRAVELR_DB_HOST=172.30.0.13
+      - TRAVELR_DB_USER=root
+      - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
+      - TRAVELR_DB_NAME=travelr_rooms
   bookings:
     build: .
     volumes:
@@ -60,3 +80,8 @@ services:
     expose:
       - 80
     command: sh -c "go build -o bookings && ./bookings"
+    environment:
+      - TRAVELR_DB_HOST=172.30.0.13
+      - TRAVELR_DB_USER=root
+      - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
+      - TRAVELR_DB_NAME=travelr_bookings

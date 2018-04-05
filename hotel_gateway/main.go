@@ -29,7 +29,7 @@ var status = &Status{}
 
 type HotelServer struct {
 	gorm.Model
-	UUID      string `gorm:"unique"`
+	UUID      string
 	HotelId   uint
 	LastSeen  time.Time
 	Online    bool

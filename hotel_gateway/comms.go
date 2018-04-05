@@ -11,6 +11,7 @@ import (
 	"crypto/rsa"
 	"crypto"
 	"crypto/rand"
+	"errors"
 )
 
 func protoServ(w http.ResponseWriter, r *http.Request) {
