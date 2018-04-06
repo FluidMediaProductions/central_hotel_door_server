@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hotel-gateway-config
+  namespace: travelr
+data:
+  dbHost: mysql
+  dbUser: travelr
+  dbName: travelr_hotel_gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel-gateway
+  namespace: travelr
+  labels:
+    app: hotel-gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hotel-gateway
+  template:
+    metadata:
+      labels:
+        app: hotel-gateway
+    spec:
+      containers:
+        - name: auth
+          image: evilben/travelr_hotel_gateway:(hash)
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: TRAVELR_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: hotel-gateway-config
+                  key: dbHost
+            - name: TRAVELR_DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: hotel-gateway-config
+                  key: dbUser
+            - name: TRAVELR_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: hotel-gateway-config
+                  key: dbName
+            - name: TRAVELR_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-auth
+                  key: pass
+            - name: TRAVELR_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt
+                  key: secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hotel-gateway
+  namespace: travelr
+spec:
+  selector:
+    app: hotel-gateway
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hotel-gateway
+  namespace: travelr
+spec:
+  tls:
+    - hosts:
+        - "travelr-hotel.fluidmedia.wales"
+      secretName: hotel-gateway-tls
+  rules:
+    - host: travelr-hotel.fluidmedia.wales
+      http:
+        paths:
+          - path: ""
+            backend:
+              serviceName: hotel-gateway
+              servicePort: 80
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: hotel-gateway-cert
+  namespace: travelr
+spec:
+  secretName: hotel-gateway-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: travelr-hotel.fluidmedia.wales
+  dnsNames:
+  - travelr-hotel.fluidmedia.wales
+  acme:
+    config:
+    - http01:
+        ingressClass: traefik
+      domains:
+      - travelr-hotel.fluidmedia.wales
