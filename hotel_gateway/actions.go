@@ -4,7 +4,9 @@ import (
 	"net/http"
 	"github.com/fluidmediaproductions/central_hotel_door_server/hotel_comms"
 	"github.com/golang/protobuf/proto"
-	"log"
+	"fmt"
+	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
+	"errors"
 )
 
 func getAction(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter) error {
@@ -18,8 +20,6 @@ func getAction(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter
 	if err != nil {
 		return err
 	}
-
-	log.Println(actions)
 
 	resp := &hotel_comms.GetActionsResp{
 		Actions: actions,
@@ -54,4 +54,44 @@ func getActions(hotelId uint) ([]*hotel_comms.Action, error) {
 		}
 	}
 	return actions, nil
+}
+
+func actionComplete(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter) error {
+	newMsg := &hotel_comms.ActionComplete{}
+	err := proto.Unmarshal(msg, newMsg)
+	if err != nil {
+		return err
+	}
+
+	if newMsg.GetSuccess() {
+		if newMsg.GetActionType() == hotel_comms.ActionType_ROOM_UNLOCK {
+			err := completeRoomUnlock(newMsg.GetActionId(), hotel.ID)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	resp := &hotel_comms.ActionCompleteResp{}
+	return sendMsg(resp, hotel_comms.MsgType_ACTION_COMPLETE_RESP, w)
+}
+
+func completeRoomUnlock(roomId int64, hotelId uint) error {
+	req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/by-hotel/%d/%d/open-success", roomId, hotelId), nil)
+	if err != nil {
+		return  err
+	}
+
+	resp, err := utils.GetJson(req)
+	if err != nil {
+		return err
+	}
+	respErr, isOk := resp["err"].(string)
+	if isOk {
+		if respErr != "" {
+			return errors.New(respErr)
+		}
+	}
+
+	return nil
 }

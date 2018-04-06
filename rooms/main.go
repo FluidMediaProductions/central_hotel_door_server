@@ -28,7 +28,6 @@ type Room struct {
 	Name       string `json:"name"`
 	Floor      string `json:"floor"`
 	HotelID    uint   `json:"hotelId"`
-	DoorID     uint   `json:"doorId"`
 	ShouldOpen bool   `json:"shouldOpen"`
 }
 
@@ -43,6 +42,11 @@ type RoomResp struct {
 }
 
 type OpenRoomResp struct {
+	Err     string `json:"err"`
+	Success bool   `json:"success"`
+}
+
+type OpenRoomSuccessResp struct {
 	Err     string `json:"err"`
 	Success bool   `json:"success"`
 }
@@ -210,6 +214,53 @@ func openRoom(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func openRoomSuccess(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, _ := strconv.Atoi(vars["id"])
+	hotelId, _ := strconv.Atoi(vars["hotel"])
+
+	room := &Room{}
+	err := db.Find(&room, id).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(&OpenRoomResp{
+				Err: "room not found",
+			})
+			return
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&OpenRoomResp{
+				Err: err.Error(),
+			})
+			return
+		}
+	}
+
+	if room.HotelID != uint(hotelId) {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(&OpenRoomResp{
+			Err: "room not in hotel",
+		})
+		return
+	}
+
+	room.ShouldOpen = false
+	err = db.Save(&room).Error
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&OpenRoomResp{
+			Err: err.Error(),
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(&OpenRoomResp{
+		Success: true,
+	})
+}
+
 func router() *mux.Router {
 	r := mux.NewRouter()
 
@@ -217,6 +268,7 @@ func router() *mux.Router {
 	r.Methods("GET").Path("/rooms/{id:[0-9]+}").HandlerFunc(getRoom)
 	r.Methods("GET").Path("/rooms/by-hotel/{id:[0-9]+}").HandlerFunc(getRoomsByHotel)
 	r.Methods("GET").Path("/rooms/{id:[0-9]+}/open").HandlerFunc(openRoom)
+	r.Methods("GET").Path("/rooms/by-hotel/{hotel:[0-9]+}/{id:[0-9]+}/open-success").HandlerFunc(openRoomSuccess)
 
 	return r
 }

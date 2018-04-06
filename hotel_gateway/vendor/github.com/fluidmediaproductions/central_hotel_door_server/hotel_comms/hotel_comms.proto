@@ -8,6 +8,8 @@ enum MsgType {
     GET_ACTIONS_RESP = 3;
     GET_DOORS = 4;
     GET_DOORS_RESP = 5;
+    ACTION_COMPLETE = 6;
+    ACTION_COMPLETE_RESP = 7;
 }
 
 message ProtoMsg {
@@ -56,4 +58,13 @@ message GetActions {
 
 message GetActionsResp {
     repeated Action actions = 1;
+}
+
+message ActionComplete {
+    required int64 actionId = 1;
+    required ActionType actionType = 2;
+    required bool success = 3;
+}
+
+message ActionCompleteResp {
 }

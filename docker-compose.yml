@@ -25,7 +25,7 @@ services:
     links:
       - rooms
     environment:
-      - TRAVELR_DB_HOST=${EXTERNAL_IP}
+      - TRAVELR_DB_HOST=172.17.0.1
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_hotel_gateway
@@ -38,7 +38,7 @@ services:
       - 80
     command: sh -c "go build -o auth && ./auth"
     environment:
-      - TRAVELR_DB_HOST=${EXTERNAL_IP}
+      - TRAVELR_DB_HOST=172.17.0.1
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_auth
@@ -53,7 +53,7 @@ services:
       - 80
     command: sh -c "go build -o hotels && ./hotels"
     environment:
-      - TRAVELR_DB_HOST=${EXTERNAL_IP}
+      - TRAVELR_DB_HOST=172.17.0.1
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_hotels
@@ -68,7 +68,7 @@ services:
       - 80
     command: sh -c "go build -o rooms && ./rooms"
     environment:
-      - TRAVELR_DB_HOST=${EXTERNAL_IP}
+      - TRAVELR_DB_HOST=172.17.0.1
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_rooms
@@ -81,7 +81,7 @@ services:
       - 80
     command: sh -c "go build -o bookings && ./bookings"
     environment:
-      - TRAVELR_DB_HOST=${EXTERNAL_IP}
+      - TRAVELR_DB_HOST=172.17.0.1
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_bookings
