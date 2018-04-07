@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/gateway/main.go" line="452" mnemonic="3" />
+    <bookmark url="file://$PROJECT_DIR$/gateway/main.go" line="474" mnemonic="3" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54d2d74e-1e82-427d-b612-b697385a4d17" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/auth/auth" beforeDir="false" afterPath="$PROJECT_DIR$/auth/auth" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/auth/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/gateway" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/gateway" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gateway/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/main.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
@@ -74,8 +76,8 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/auth/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="501">
-              <caret line="259" column="22" selection-start-line="259" selection-start-column="22" selection-end-line="259" selection-end-column="22" />
+            <state relative-caret-position="288">
+              <caret line="305" column="54" lean-forward="true" selection-start-line="305" selection-start-column="54" selection-end-line="305" selection-end-column="54" />
             </state>
           </provider>
         </entry>
@@ -83,8 +85,8 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/gateway/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="555">
-              <caret line="639" column="43" lean-forward="true" selection-start-line="639" selection-start-column="43" selection-end-line="639" selection-end-column="43" />
+            <state relative-caret-position="234">
+              <caret line="424" column="25" selection-start-line="424" selection-start-column="25" selection-end-line="424" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -164,12 +166,14 @@
       <find>print</find>
       <find>_</find>
       <find>ChangePassword</find>
+      <find>UpdateUser</find>
     </findStrings>
     <replaceStrings>
       <replace>OpenHotel</replace>
       <replace>=</replace>
       <replace>-</replace>
       <replace>UpdateUser</replace>
+      <replace>UserInfo</replace>
     </replaceStrings>
   </component>
   <component name="GOROOT" path="/usr/local/go" />
@@ -240,6 +244,11 @@
               <item name="central_hotel_door_server" type="b2602c69:ProjectViewProjectNode" />
               <item name="central_hotel_door_server" type="462c0819:PsiDirectoryNode" />
               <item name="gateway" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="central_hotel_door_server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="central_hotel_door_server" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -369,13 +378,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/hotels/Dockerfile" />
-    <entry file="file://$PROJECT_DIR$/utils/http.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="14" column="23" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="das://table:/2642b66b/51051452-2f18-44bf-a6f7-98c0e5aa2b9f/main.bookings">
       <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
         <state>
@@ -514,13 +516,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="310">
           <caret line="40" column="22" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/jwt.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="573">
-          <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
         </state>
       </provider>
     </entry>
@@ -670,17 +665,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/utils/http.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="14" column="23" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/jwt.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="598">
+          <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/auth/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="501">
-          <caret line="259" column="22" selection-start-line="259" selection-start-column="22" selection-end-line="259" selection-end-column="22" />
+        <state relative-caret-position="288">
+          <caret line="305" column="54" lean-forward="true" selection-start-line="305" selection-start-column="54" selection-end-line="305" selection-end-column="54" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gateway/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="639" column="43" lean-forward="true" selection-start-line="639" selection-start-column="43" selection-end-line="639" selection-end-column="43" />
+        <state relative-caret-position="234">
+          <caret line="424" column="25" selection-start-line="424" selection-start-column="25" selection-end-line="424" selection-end-column="25" />
         </state>
       </provider>
     </entry>
