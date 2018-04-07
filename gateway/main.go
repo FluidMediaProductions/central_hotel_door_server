@@ -565,46 +565,105 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 				},
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					pass, isOK := params.Args["pass"].(string)
-					if isOK {
-						user, isOk := params.Source.(*utils.User)
+				pass, isOK := params.Args["pass"].(string)
+				if isOK {
+					user, isOk := params.Source.(*utils.User)
+					if isOk {
+						data := map[string]interface{}{
+							"pass": pass,
+						}
+						dataBytes, err := json.Marshal(data)
+						if err != nil {
+							return nil, err
+						}
+
+						req, err := http.NewRequest("POST", AuthServer+"/changePassword", bytes.NewBuffer(dataBytes))
+						if err != nil {
+							return nil, err
+						}
+
+						jwt, err := utils.NewJWT(user, jwtSecret)
+						if err != nil {
+							return nil, err
+						}
+						req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))
+
+						resp, err := utils.GetJson(req)
+						if err != nil {
+							return nil, err
+						}
+						respErr, isOk := resp["err"].(string)
 						if isOk {
-							data := map[string]interface{}{
-								"pass":  pass,
-							}
-							dataBytes, err := json.Marshal(data)
-							if err != nil {
-								return nil, err
-							}
-
-							req, err := http.NewRequest("POST", AuthServer+"/changePassword", bytes.NewBuffer(dataBytes))
-							if err != nil {
-								return nil, err
-							}
-
-							jwt, err := utils.NewJWT(user, jwtSecret)
-							if err != nil {
-								return nil, err
-							}
-							req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))
-
-							resp, err := utils.GetJson(req)
-							if err != nil {
-								return nil, err
-							}
-							respErr, isOk := resp["err"].(string)
-							if isOk {
-								if respErr != "" {
-									return nil, errors.New(respErr)
-								}
-							}
-
-							success, isOk := resp["success"].(bool)
-							if isOk {
-								return success, nil
+							if respErr != "" {
+								return nil, errors.New(respErr)
 							}
 						}
+
+						success, isOk := resp["success"].(bool)
+						if isOk {
+							return success, nil
+						}
 					}
+				}
+				return nil, nil
+			},
+		},
+		"updateUser": &graphql.Field{
+			Type: graphql.String,
+			Args: graphql.FieldConfigArgument{
+				"email": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+				"name": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+			},
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				user, isOk := params.Source.(*utils.User)
+				if isOk {
+					data := map[string]interface{}{}
+
+					email, isOK := params.Args["email"].(string)
+					if isOK {
+						data["email"] = email
+					}
+					name, isOK := params.Args["name"].(string)
+					if isOK {
+						data["name"] = name
+					}
+
+					dataBytes, err := json.Marshal(data)
+					if err != nil {
+						return nil, err
+					}
+
+					req, err := http.NewRequest("POST", AuthServer+"/updateUser", bytes.NewBuffer(dataBytes))
+					if err != nil {
+						return nil, err
+					}
+
+					jwt, err := utils.NewJWT(user, jwtSecret)
+					if err != nil {
+						return nil, err
+					}
+					req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))
+
+					resp, err := utils.GetJson(req)
+					if err != nil {
+						return nil, err
+					}
+					respErr, isOk := resp["err"].(string)
+					if isOk {
+						if respErr != "" {
+							return nil, errors.New(respErr)
+						}
+					}
+
+					success, isOk := resp["success"].(bool)
+					if isOk {
+						return success, nil
+					}
+				}
 				return nil, nil
 			},
 		},

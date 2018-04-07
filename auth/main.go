@@ -30,6 +30,11 @@ type ChangePasswordResp struct {
 	Success bool   `json:"success"`
 }
 
+type UpdateUserResp struct {
+	Err     string `json:"err"`
+	Success bool   `json:"success"`
+}
+
 func loginUser(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -189,8 +194,87 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(&JWTResp{
+	json.NewEncoder(w).Encode(&ChangePasswordResp{
 		Err: "bad request data",
+	})
+}
+
+func updateUser(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error reading request body: %v\n", err)
+		return
+	}
+	defer r.Body.Close()
+
+	data := map[string]interface{}{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(&JWTResp{
+			Err: err.Error(),
+		})
+		return
+	}
+	authHeaders, isOk := r.Header["Authorization"]
+	if isOk {
+		if len(authHeaders) > 0 {
+			authHeader := authHeaders[0]
+			jwt := strings.TrimPrefix(authHeader, "Bearer ")
+
+			claims, err := utils.VerifyJWT(jwt, jwtSecret)
+			if err != nil {
+				w.WriteHeader(http.StatusForbidden)
+				json.NewEncoder(w).Encode(&UpdateUserResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			user := &utils.User{}
+			err = db.First(user, claims.User.ID).Error
+			if err != nil {
+				if err == gorm.ErrRecordNotFound {
+					w.WriteHeader(http.StatusNotFound)
+					json.NewEncoder(w).Encode(&UpdateUserResp{
+						Err: "user not found",
+					})
+					return
+				}
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(&UpdateUserResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			email, isOk := data["email"].(string)
+			if isOk {
+				user.Email = email
+			}
+			name, isOk := data["name"].(string)
+			if isOk {
+				user.Name = name
+			}
+
+			err = db.Save(user).Error
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&UpdateUserResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			json.NewEncoder(w).Encode(&UpdateUserResp{
+				Success: true,
+			})
+			return
+		}
+	}
+	w.WriteHeader(http.StatusForbidden)
+	json.NewEncoder(w).Encode(&UpdateUserResp{
+		Err: "no auth header",
 	})
 }
 
@@ -199,6 +283,7 @@ func router() *mux.Router {
 
 	r.Methods("POST").Path("/login").HandlerFunc(loginUser)
 	r.Methods("POST").Path("/changePassword").HandlerFunc(changePassword)
+	r.Methods("POST").Path("/updateUser").HandlerFunc(updateUser)
 
 	return r
 }
