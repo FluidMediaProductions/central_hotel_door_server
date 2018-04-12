@@ -569,7 +569,7 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 				if isOK {
 					user, isOk := params.Source.(*utils.User)
 					if isOk {
-						req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d/open", id), nil)
+						req, err := http.NewRequest("GET", BookingsServer+fmt.Sprintf("/bookings/by-room/%d", id), nil)
 						if err != nil {
 							return nil, err
 						}
@@ -591,9 +591,28 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 							}
 						}
 
-						success, isOk := resp["success"].(bool)
+						_, isOk = resp["booking"].(map[string]interface{})
 						if isOk {
-							return success, nil
+							req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d/open", id), nil)
+							if err != nil {
+								return nil, err
+							}
+
+							resp, err := utils.GetJson(req)
+							if err != nil {
+								return nil, err
+							}
+							respErr, isOk := resp["err"].(string)
+							if isOk {
+								if respErr != "" {
+									return nil, errors.New(respErr)
+								}
+							}
+
+							success, isOk := resp["success"].(bool)
+							if isOk {
+								return success, nil
+							}
 						}
 					}
 				}

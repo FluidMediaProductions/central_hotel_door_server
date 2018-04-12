@@ -77,16 +77,43 @@ func actionComplete(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseW
 }
 
 func completeRoomUnlock(roomId int64, hotelId uint) error {
-	req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/by-hotel/%d/%d/open-success", roomId, hotelId), nil)
-	if err != nil {
-		return  err
-	}
+	req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d", roomId), nil)
 
 	resp, err := utils.GetJson(req)
 	if err != nil {
 		return err
 	}
 	respErr, isOk := resp["err"].(string)
+	if isOk {
+		if respErr != "" {
+			return errors.New(respErr)
+		}
+	}
+
+	room, isOk := resp["room"].(map[string]interface{})
+	if !isOk {
+		return errors.New("unable to get room")
+	}
+
+	roomHotelId, isOk := room["hotelId"].(float64)
+	if !isOk {
+		return errors.New("unable to get room")
+	}
+
+	if hotelId != uint(roomHotelId) {
+		return errors.New("room not in hotel")
+	}
+
+	req, err = http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d/open-success", roomId), nil)
+	if err != nil {
+		return  err
+	}
+
+	resp, err = utils.GetJson(req)
+	if err != nil {
+		return err
+	}
+	respErr, isOk = resp["err"].(string)
 	if isOk {
 		if respErr != "" {
 			return errors.New(respErr)
