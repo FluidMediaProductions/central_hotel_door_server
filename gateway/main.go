@@ -578,7 +578,7 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 	Name: "AuthedMutation",
 	Fields: graphql.Fields{
 		"changePassword": &graphql.Field{
-			Type: graphql.String,
+			Type: graphql.Boolean,
 			Args: graphql.FieldConfigArgument{
 				"pass": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(graphql.String),
@@ -629,7 +629,7 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 			},
 		},
 		"updateUser": &graphql.Field{
-			Type: graphql.String,
+			Type: graphql.Boolean,
 			Args: graphql.FieldConfigArgument{
 				"email": &graphql.ArgumentConfig{
 					Type: graphql.String,

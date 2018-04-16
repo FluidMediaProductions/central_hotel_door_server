@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"log"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -48,6 +49,7 @@ func VerifyJWT(tokenString string, secret []byte) (*JWTClaims, error) {
 	}
 
 	if claims, ok := token.Claims.(*JWTClaims); ok && token.Valid {
+		log.Println(claims.NotBefore, now())
 		return claims, nil
 	} else {
 		return nil, nil
