@@ -8,16 +8,14 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_"github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
 )
 
 const addr = ":80"
 
-var BookingsServer = "http://bookings"
 
 var db *gorm.DB
-var jwtSecret []byte
 
 type Room struct {
 	gorm.Model
@@ -213,8 +211,6 @@ func main() {
 	dbUser := viper.GetString("DB_USER")
 	dbPass := viper.GetString("DB_PASS")
 	dbName := viper.GetString("DB_NAME")
-
-	jwtSecret = []byte(viper.GetString("JWT_SECRET"))
 
 	config := &mysql.Config{Addr: dbHost, Net: "tcp", User: dbUser, Passwd: dbPass, DBName: dbName, ParseTime: true}
 

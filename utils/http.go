@@ -7,25 +7,26 @@ import (
 	"net/http"
 )
 
-func GetJson(r *http.Request, data *interface{}) error {
+func GetJson(r *http.Request) (map[string]interface{}, error) {
 	c := http.Client{}
 	resp, err := c.Do(r)
 	if err != nil {
 		log.Println(err)
-		return err
+		return nil, err
 	}
 
 	respBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Println(err)
-		return err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
-	err = json.Unmarshal(respBytes, data)
+	data := map[string]interface{}{}
+	err = json.Unmarshal(respBytes, &data)
 	if err != nil {
 		log.Println(err)
-		return  err
+		return nil, err
 	}
-	return nil
+	return data, nil
 }
