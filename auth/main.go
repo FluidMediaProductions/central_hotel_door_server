@@ -480,7 +480,7 @@ func router() *mux.Router {
 func newDbClient(dbHost string) *dgo.Dgraph {
 	d, err := grpc.Dial(dbHost, grpc.WithInsecure())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error connecting: %v\n", err)
 	}
 
 	return dgo.NewDgraphClient(
@@ -492,12 +492,12 @@ func setup(c *dgo.Dgraph) {
 	err := c.Alter(context.Background(), &api.Operation{
 		Schema: `
 			name: string .
-			email: string @index(hash) @upsert s.
+			email: string @index(hash) @upsert .
             pass: password .
 		`,
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error setting up schema: %v\n", err)
 	}
 }
 
