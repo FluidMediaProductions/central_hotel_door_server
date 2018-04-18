@@ -4,13 +4,12 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/jinzhu/gorm"
 )
 
 var now = time.Now
 
 type User struct {
-	gorm.Model
+	ID    string `json:"uid"`
 	Email string `json:"email"`
 	Pass  string `json:"pass,omitempty"`
 	Name  string `json:"name"`
