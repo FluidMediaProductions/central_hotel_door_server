@@ -12,7 +12,7 @@ var now = time.Now
 type User struct {
 	gorm.Model
 	Email string `json:"email"`
-	Pass  string `json:"-"`
+	Pass  string `json:"pass,omitempty"`
 	Name  string `json:"name"`
 }
 
