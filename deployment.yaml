@@ -31,3 +31,237 @@ subsets:
       - ip: 138.201.93.184
     ports:
       - port: 3306
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: glusterfs-cluster
+  namespace: travelr
+subsets:
+  - addresses:
+    - ip: 138.201.93.184
+    ports:
+    - port: 1
+  - addresses:
+    - ip: 88.99.122.54
+    ports:
+    - port: 1
+  - addresses:
+    - ip: 195.201.58.86
+    ports:
+    - port: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glusterfs-cluster
+  namespace: travelr
+spec:
+  ports:
+  - port: 1
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dgraph-zero
+  namespace: travelr
+spec:
+  serviceName: dgraph-zero
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dgraph-zero
+  template:
+    metadata:
+      labels:
+        app: dgraph-zero
+    spec:
+      containers:
+      - name: zero
+        image: dgraph/dgraph:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5080
+          name: zero-grpc
+        - containerPort: 6080
+          name: zero-http
+        volumeMounts:
+        - name: datadir
+          mountPath: /dgraph
+          subPath: travelr/dgraph/zero
+        command:
+          - bash
+          - "-c"
+          - |
+            set -ex
+            [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+            ordinal=${BASH_REMATCH[1]}
+            idx=$(($ordinal + 1))
+            if [[ $ordinal -eq 0 ]]; then
+              dgraph zero --my=$(hostname -f):5080 --idx $idx --replicas 3 -w $(hostname -f)/zw
+            else
+              dgraph zero --my=$(hostname -f):5080 --peer dgraph-zero-0.dgraph-zero.travelr.svc.cluster.local:5080 --idx $idx --replicas 3  -w $(hostname -f)/zw
+            fi
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: datadir
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: kubes-pv
+  updateStrategy:
+    type: RollingUpdate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dgraph-zero
+  namespace: travelr
+  labels:
+    app: dgraph-zero
+spec:
+  ports:
+  - port: 5080
+    targetPort: 5080
+    name: zero-grpc
+  clusterIP: None
+  selector:
+    app: dgraph-zero
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dgraph-server
+  namespace: travelr
+spec:
+  serviceName: dgraph-server
+  replicas: 6
+  selector:
+    matchLabels:
+      app: dgraph-server
+  template:
+    metadata:
+      labels:
+        app: dgraph-server
+    spec:
+      containers:
+      - name: server
+        image: dgraph/dgraph:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 7080
+          name: server-grpc-int
+        - containerPort: 8080
+          name: server-http
+        - containerPort: 9080
+          name: server-grpc
+        volumeMounts:
+        - name: datadir
+          mountPath: /dgraph
+          subPath: travelr/dgraph/server
+        command:
+          - bash
+          - "-c"
+          - |
+            set -ex
+            dgraph server --my=$(hostname -f):7080 --memory_mb 2048 --zero dgraph-zero-0.dgraph-zero.travelr.svc.cluster.local:5080 -w $(hostname -f)/w -p $(hostname -f)/p
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: datadir
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: kubes-pv
+  updateStrategy:
+    type: RollingUpdate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dgraph-server
+  labels:
+    app: dgraph-server
+spec:
+  ports:
+  - port: 7080
+    targetPort: 7080
+    name: server-grpc-int
+  clusterIP: None
+  selector:
+    app: dgraph-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dgraph-zero-public
+  namespace: travelr
+  labels:
+    app: dgraph-zero
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5080
+    targetPort: 5080
+    name: zero-grpc
+  - port: 6080
+    targetPort: 6080
+    name: zero-http
+  selector:
+    app: dgraph-zero
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dgraph-server-public
+  namespace: travelr
+  labels:
+    app: dgraph-server
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: server-http
+  - port: 9080
+    targetPort: 9080
+    name: server-grpc
+  selector:
+    app: dgraph-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dgraph-ratel
+  namespace: travelr
+  labels:
+    app: dgraph-ratel
+spec:
+  selector:
+    matchLabels:
+      app: dgraph-ratel
+  template:
+    metadata:
+      labels:
+        app: dgraph-ratel
+    spec:
+      containers:
+      - name: ratel
+        image: dgraph/dgraph:latest
+        ports:
+        - containerPort: 8000
+        command:
+        - dgraph-ratel
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dgraph-ratel-public
+  namespace: travelr
+  labels:
+    app: dgraph-ratel
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8000
+    targetPort: 8000
+    name: ratel-http
+  selector:
+    app: dgraph-ratel
