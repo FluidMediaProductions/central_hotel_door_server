@@ -67,7 +67,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 
 			variables := map[string]string{"$email": email, "$pass": pass}
 			q := `query Me($email: string, $pass: string){
-                    login_attempt(func: has(user)) @filter(exact(email, $email)) {
+                    login_attempt(func: has(user)) @filter(eq(email, $email)) {
                       email
                       name
                       checkpwd(pass, $pass)
