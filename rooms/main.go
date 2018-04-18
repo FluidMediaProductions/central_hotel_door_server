@@ -8,7 +8,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_"github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
 )
 
@@ -217,7 +217,7 @@ func main() {
 	var err error
 	db, err = gorm.Open("mysql", config.FormatDSN())
 	if err != nil {
-		panic("failed to connect database")
+		panic(err)
 	}
 	defer db.Close()
 

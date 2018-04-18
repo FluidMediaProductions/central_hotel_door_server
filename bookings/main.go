@@ -276,7 +276,7 @@ func main() {
 	var err error
 	db, err = gorm.Open("mysql", config.FormatDSN())
 	if err != nil {
-		panic("failed to connect database")
+		panic(err)
 	}
 	defer db.Close()
 

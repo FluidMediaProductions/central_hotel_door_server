@@ -12,6 +12,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
 	"gopkg.in/hlandau/passlib.v1"
+	"strings"
 )
 
 const addr = ":80"
@@ -22,6 +23,21 @@ var jwtSecret []byte
 type JWTResp struct {
 	Err string `json:"err"`
 	Jwt string `json:"jwt"`
+}
+
+type ChangePasswordResp struct {
+	Err     string `json:"err"`
+	Success bool   `json:"success"`
+}
+
+type UpdateUserResp struct {
+	Err     string `json:"err"`
+	Success bool   `json:"success"`
+}
+
+type UserInfoResp struct {
+	Err  string     `json:"err"`
+	User *utils.User `json:"user"`
 }
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
@@ -99,10 +115,226 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func changePassword(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error reading request body: %v\n", err)
+		return
+	}
+	defer r.Body.Close()
+
+	data := map[string]interface{}{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(&JWTResp{
+			Err: err.Error(),
+		})
+		return
+	}
+
+	pass, isOk := data["pass"].(string)
+	if isOk {
+
+		authHeaders, isOk := r.Header["Authorization"]
+		if isOk {
+			if len(authHeaders) > 0 {
+				authHeader := authHeaders[0]
+				jwt := strings.TrimPrefix(authHeader, "Bearer ")
+
+				claims, err := utils.VerifyJWT(jwt, jwtSecret)
+				if err != nil {
+					w.WriteHeader(http.StatusForbidden)
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
+						Err: err.Error(),
+					})
+					return
+				}
+
+				user := &utils.User{}
+				err = db.First(user, claims.User.ID).Error
+				if err != nil {
+					if err == gorm.ErrRecordNotFound {
+						w.WriteHeader(http.StatusNotFound)
+						json.NewEncoder(w).Encode(&ChangePasswordResp{
+							Err: "user not found",
+						})
+						return
+					}
+					w.WriteHeader(http.StatusNotFound)
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
+						Err: err.Error(),
+					})
+					return
+				}
+
+				newHash, err := passlib.Hash(pass)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
+						Err: err.Error(),
+					})
+					return
+				}
+
+				user.Pass = newHash
+				err = db.Save(user).Error
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
+						Err: err.Error(),
+					})
+					return
+				}
+
+				json.NewEncoder(w).Encode(&ChangePasswordResp{
+					Success: true,
+				})
+				return
+			}
+		}
+		w.WriteHeader(http.StatusForbidden)
+		json.NewEncoder(w).Encode(&ChangePasswordResp{
+			Err: "no auth header",
+		})
+	}
+	w.WriteHeader(http.StatusBadRequest)
+	json.NewEncoder(w).Encode(&ChangePasswordResp{
+		Err: "bad request data",
+	})
+}
+
+func updateUser(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error reading request body: %v\n", err)
+		return
+	}
+	defer r.Body.Close()
+
+	data := map[string]interface{}{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(&JWTResp{
+			Err: err.Error(),
+		})
+		return
+	}
+	authHeaders, isOk := r.Header["Authorization"]
+	if isOk {
+		if len(authHeaders) > 0 {
+			authHeader := authHeaders[0]
+			jwt := strings.TrimPrefix(authHeader, "Bearer ")
+
+			claims, err := utils.VerifyJWT(jwt, jwtSecret)
+			if err != nil {
+				w.WriteHeader(http.StatusForbidden)
+				json.NewEncoder(w).Encode(&UpdateUserResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			user := &utils.User{}
+			err = db.First(user, claims.User.ID).Error
+			if err != nil {
+				if err == gorm.ErrRecordNotFound {
+					w.WriteHeader(http.StatusNotFound)
+					json.NewEncoder(w).Encode(&UpdateUserResp{
+						Err: "user not found",
+					})
+					return
+				}
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(&UpdateUserResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			email, isOk := data["email"].(string)
+			if isOk {
+				user.Email = email
+			}
+			name, isOk := data["name"].(string)
+			if isOk {
+				user.Name = name
+			}
+
+			err = db.Save(user).Error
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&UpdateUserResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			json.NewEncoder(w).Encode(&UpdateUserResp{
+				Success: true,
+			})
+			return
+		}
+	}
+	w.WriteHeader(http.StatusForbidden)
+	json.NewEncoder(w).Encode(&UpdateUserResp{
+		Err: "no auth header",
+	})
+}
+
+func userInfo(w http.ResponseWriter, r *http.Request) {
+	authHeaders, isOk := r.Header["Authorization"]
+	if isOk {
+		if len(authHeaders) > 0 {
+			authHeader := authHeaders[0]
+			jwt := strings.TrimPrefix(authHeader, "Bearer ")
+
+			claims, err := utils.VerifyJWT(jwt, jwtSecret)
+			if err != nil {
+				w.WriteHeader(http.StatusForbidden)
+				json.NewEncoder(w).Encode(&UserInfoResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			user := &utils.User{}
+			err = db.First(user, claims.User.ID).Error
+			if err != nil {
+				if err == gorm.ErrRecordNotFound {
+					w.WriteHeader(http.StatusNotFound)
+					json.NewEncoder(w).Encode(&UserInfoResp{
+						Err: "user not found",
+					})
+					return
+				}
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(&UserInfoResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			json.NewEncoder(w).Encode(&UserInfoResp{
+				User: user,
+			})
+			return
+		}
+	}
+	w.WriteHeader(http.StatusForbidden)
+	json.NewEncoder(w).Encode(&UserInfoResp{
+		Err: "no auth header",
+	})
+}
+
 func router() *mux.Router {
 	r := mux.NewRouter()
 
 	r.Methods("POST").Path("/login").HandlerFunc(loginUser)
+	r.Methods("POST").Path("/changePassword").HandlerFunc(changePassword)
+	r.Methods("POST").Path("/updateUser").HandlerFunc(updateUser)
+	r.Methods("GET").Path("/userInfo").HandlerFunc(userInfo)
 
 	return r
 }
@@ -128,7 +360,7 @@ func main() {
 	var err error
 	db, err = gorm.Open("mysql", config.FormatDSN())
 	if err != nil {
-		panic("failed to connect database")
+		panic(err)
 	}
 	defer db.Close()
 

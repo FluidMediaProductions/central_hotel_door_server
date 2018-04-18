@@ -4,7 +4,7 @@ metadata:
   name: hotels-config
   namespace: travelr
 data:
-  dbHost: mysql
+  dbHost: "mysql:3306"
   dbUser: travelr
   dbName: travelr_hotels
 ---

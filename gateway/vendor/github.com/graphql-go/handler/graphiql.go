@@ -66,7 +66,7 @@ func renderGraphiQL(w http.ResponseWriter, params graphql.Params) {
 }
 
 // graphiqlVersion is the current version of GraphiQL
-const graphiqlVersion = "0.11.10"
+const graphiqlVersion = "0.11.3"
 
 // tmpl is the page template to render GraphiQL
 const graphiqlTemplate = `
