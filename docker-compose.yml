@@ -29,6 +29,16 @@ services:
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_hotel_gateway
+  hotel_gateway:
+    build: .
+    volumes:
+      - ./management:/go/src/management
+    working_dir: /go/src/management
+    command: sh -c "go build -o management && ./management"
+    ports:
+      - 3002:80
+    links:
+      - auth
   auth:
     build: .
     volumes:
