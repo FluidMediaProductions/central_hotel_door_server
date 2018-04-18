@@ -68,6 +68,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			variables := map[string]string{"$email": email, "$pass": pass}
 			q := `query Me($email: string, $pass: string){
                     login_attempt(func: has(user)) @filter(eq(email, $email)) {
+                      uid
                       email
                       name
                       checkpwd(pass, $pass)
@@ -90,6 +91,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 					} `json:"pass"`
 					Email string `json:"email"`
 					Name  string `json:"name"`
+					ID    string `json:"uid"`
 				} `json:"login_attempt"`
 			}
 			err = json.Unmarshal(resp.GetJson(), &login)
@@ -113,6 +115,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				user := &utils.User{
 					Email: login.Account[0].Email,
 					Name:  login.Account[0].Name,
+					ID:    login.Account[0].ID,
 				}
 
 				jwt, err := utils.NewJWT(user, jwtSecret)
@@ -219,14 +222,14 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 
-				var mutation struct{
-					ID string `json:"uid"`
+				var mutation struct {
+					ID   string `json:"uid"`
 					Pass string `json:"pass"`
 				}
 				mutation.ID = claims.User.ID
 				mutation.Pass = pass
 
-				mutData , err := json.Marshal(&mutation)
+				mutData, err := json.Marshal(&mutation)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
 					json.NewEncoder(w).Encode(&JWTResp{
@@ -338,9 +341,9 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			var mutation struct{
-				ID string `json:"uid"`
-				Name string `json:"name,omitempty"`
+			var mutation struct {
+				ID    string `json:"uid"`
+				Name  string `json:"name,omitempty"`
 				Email string `json:"email,omitempty"`
 			}
 
@@ -353,7 +356,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 				mutation.Name = name
 			}
 
-			mutData , err := json.Marshal(&mutation)
+			mutData, err := json.Marshal(&mutation)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(&JWTResp{
@@ -426,9 +429,9 @@ func userInfo(w http.ResponseWriter, r *http.Request) {
 
 			var user struct {
 				Account []struct {
-					ID string `json:"uid"`
+					ID    string `json:"uid"`
 					Email string `json:"email"`
-					Name string `json:"name"`
+					Name  string `json:"name"`
 				} `json:"user"`
 			}
 			err = json.Unmarshal(resp.GetJson(), &user)
@@ -449,9 +452,9 @@ func userInfo(w http.ResponseWriter, r *http.Request) {
 			}
 
 			userResp := &utils.User{
-				ID: user.Account[0].ID,
+				ID:    user.Account[0].ID,
 				Email: user.Account[0].Email,
-				Name: user.Account[0].Name,
+				Name:  user.Account[0].Name,
 			}
 
 			json.NewEncoder(w).Encode(&UserInfoResp{
