@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"fmt"
 	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
-	"github.com/mitchellh/mapstructure"
 	"errors"
 )
 
@@ -81,30 +80,7 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				token, isOK := params.Args["token"].(string)
 				if isOK {
-					req, err := http.NewRequest("GET", AuthServer+"/userInfo", nil)
-					if err != nil {
-						return nil, err
-					}
-
-					req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-
-					resp, err := utils.GetJson(req)
-					if err != nil {
-						return nil, err
-					}
-					respErr, isOk := resp["err"].(string)
-					if isOk {
-						if respErr != "" {
-							return nil, errors.New(respErr)
-						}
-					}
-
-					jsonUser, isOk := resp["user"].(map[string]interface{})
-					if isOk {
-						user := &utils.User{}
-						mapstructure.Decode(jsonUser, user)
-						return user, nil
-					}
+					return getUser(token)
 				}
 				return nil, nil
 			},
