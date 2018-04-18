@@ -11,7 +11,7 @@
   branch = "master"
   name = "github.com/fluidmediaproductions/central_hotel_door_server"
   packages = ["utils"]
-  revision = "6914b41f80fa96e261651f974f05981ba7ee765f"
+  revision = "a37b65db5dfcb1390410d6a4acb721f57df6d34f"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"

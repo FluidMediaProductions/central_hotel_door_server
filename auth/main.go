@@ -6,18 +6,19 @@ import (
 	"log"
 	"net/http"
 
+	"context"
+	"github.com/dgraph-io/dgo"
+	"github.com/dgraph-io/dgo/protos/api"
 	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
-	"github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
-	"gopkg.in/hlandau/passlib.v1"
+	"google.golang.org/grpc"
 	"strings"
 )
 
 const addr = ":80"
 
-var db *gorm.DB
+var db *dgo.Dgraph
 var jwtSecret []byte
 
 type JWTResp struct {
@@ -36,7 +37,7 @@ type UpdateUserResp struct {
 }
 
 type UserInfoResp struct {
-	Err  string     `json:"err"`
+	Err  string      `json:"err"`
 	User *utils.User `json:"user"`
 }
 
@@ -62,40 +63,18 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 	if isOk {
 		pass, isOk := data["pass"].(string)
 		if isOk {
-			user := &utils.User{
-				Email: email,
-			}
-			err := db.Where(user).First(user).Error
-			if err != nil {
-				if err == gorm.ErrRecordNotFound {
-					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&JWTResp{
-						Err: "user not found",
-					})
-					return
-				}
-				w.WriteHeader(http.StatusNotFound)
-				json.NewEncoder(w).Encode(&JWTResp{
-					Err: err.Error(),
-				})
-				return
-			}
+			ctx := context.Background()
 
-			newHash, err := passlib.Verify(pass, user.Pass)
-			if err != nil {
-				w.WriteHeader(http.StatusForbidden)
-				json.NewEncoder(w).Encode(&JWTResp{
-					Err: "invalid password",
-				})
-				return
-			}
+			variables := map[string]string{"$email": email, "$pass": pass}
+			q := `query Me($email: string, $pass: string){
+                    login_attempt(func: has(user)) @filter(exact(email, $email)) {
+                      email
+                      name
+                      checkpwd(pass, $pass)
+	                }
+                  }`
 
-			if newHash != "" {
-				user.Pass = newHash
-				db.Save(user)
-			}
-
-			jwt, err := utils.NewJWT(user, jwtSecret)
+			resp, err := db.NewTxn().QueryWithVars(ctx, q, variables)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(&JWTResp{
@@ -103,10 +82,58 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				})
 				return
 			}
-			json.NewEncoder(w).Encode(&JWTResp{
-				Jwt: jwt,
-			})
-			return
+
+			var login struct {
+				Account []struct {
+					Pass []struct {
+						CheckPwd bool `json:"checkpwd"`
+					} `json:"pass"`
+					Email string `json:"email"`
+					Name  string `json:"name"`
+				} `json:"login_attempt"`
+			}
+			err = json.Unmarshal(resp.GetJson(), &login)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&JWTResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			if len(login.Account) == 0 {
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(&JWTResp{
+					Err: "user not found",
+				})
+				return
+			}
+
+			if login.Account[0].Pass[0].CheckPwd {
+				user := &utils.User{
+					Email: login.Account[0].Email,
+					Name:  login.Account[0].Name,
+				}
+
+				jwt, err := utils.NewJWT(user, jwtSecret)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					json.NewEncoder(w).Encode(&JWTResp{
+						Err: err.Error(),
+					})
+					return
+				}
+				json.NewEncoder(w).Encode(&JWTResp{
+					Jwt: jwt,
+				})
+				return
+			} else {
+				w.WriteHeader(http.StatusForbidden)
+				json.NewEncoder(w).Encode(&JWTResp{
+					Err: "invalid password",
+				})
+				return
+			}
 		}
 	}
 	w.WriteHeader(http.StatusBadRequest)
@@ -151,37 +178,71 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 
-				user := &utils.User{}
-				err = db.First(user, claims.User.ID).Error
+				ctx := context.Background()
+				txn := db.NewTxn()
+
+				variables := map[string]string{"$id": claims.User.Email}
+				q := `query Me($id: uid){
+                        user(func: uid($id)) @filter(has(user)) {
+                          uid
+                        }
+                      }`
+
+				resp, err := txn.QueryWithVars(ctx, q, variables)
 				if err != nil {
-					if err == gorm.ErrRecordNotFound {
-						w.WriteHeader(http.StatusNotFound)
-						json.NewEncoder(w).Encode(&ChangePasswordResp{
-							Err: "user not found",
-						})
-						return
-					}
+					w.WriteHeader(http.StatusInternalServerError)
+					json.NewEncoder(w).Encode(&JWTResp{
+						Err: err.Error(),
+					})
+					return
+				}
+
+				var user struct {
+					Account []struct {
+						ID string `json:"uid"`
+					} `json:"user"`
+				}
+				err = json.Unmarshal(resp.GetJson(), &user)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					json.NewEncoder(w).Encode(&JWTResp{
+						Err: err.Error(),
+					})
+					return
+				}
+
+				if len(user.Account) == 0 {
 					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&ChangePasswordResp{
+					json.NewEncoder(w).Encode(&JWTResp{
+						Err: "user not found",
+					})
+					return
+				}
+
+				var mutation struct{
+					ID string `json:"uid"`
+					Pass string `json:"pass"`
+				}
+				mutation.ID = claims.User.ID
+				mutation.Pass = pass
+
+				mutData , err := json.Marshal(&mutation)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					json.NewEncoder(w).Encode(&JWTResp{
 						Err: err.Error(),
 					})
 					return
 				}
 
-				newHash, err := passlib.Hash(pass)
-				if err != nil {
-					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&ChangePasswordResp{
-						Err: err.Error(),
-					})
-					return
+				mu := &api.Mutation{
+					SetJson: mutData,
 				}
 
-				user.Pass = newHash
-				err = db.Save(user).Error
+				_, err = txn.Mutate(ctx, mu)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&ChangePasswordResp{
+					json.NewEncoder(w).Encode(&JWTResp{
 						Err: err.Error(),
 					})
 					return
@@ -236,36 +297,79 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			user := &utils.User{}
-			err = db.First(user, claims.User.ID).Error
+			ctx := context.Background()
+			txn := db.NewTxn()
+
+			variables := map[string]string{"$id": claims.User.Email}
+			q := `query Me($id: uid){
+                        user(func: uid($id)) @filter(has(user)) {
+                          uid
+                        }
+                      }`
+
+			resp, err := txn.QueryWithVars(ctx, q, variables)
 			if err != nil {
-				if err == gorm.ErrRecordNotFound {
-					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&UpdateUserResp{
-						Err: "user not found",
-					})
-					return
-				}
-				w.WriteHeader(http.StatusNotFound)
-				json.NewEncoder(w).Encode(&UpdateUserResp{
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&JWTResp{
 					Err: err.Error(),
 				})
 				return
 			}
 
+			var user struct {
+				Account []struct {
+					ID string `json:"uid"`
+				} `json:"user"`
+			}
+			err = json.Unmarshal(resp.GetJson(), &user)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&JWTResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			if len(user.Account) == 0 {
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(&JWTResp{
+					Err: "user not found",
+				})
+				return
+			}
+
+			var mutation struct{
+				ID string `json:"uid"`
+				Name string `json:"name,omitempty"`
+				Email string `json:"email,omitempty"`
+			}
+
 			email, isOk := data["email"].(string)
 			if isOk {
-				user.Email = email
+				mutation.Email = email
 			}
 			name, isOk := data["name"].(string)
 			if isOk {
-				user.Name = name
+				mutation.Name = name
 			}
 
-			err = db.Save(user).Error
+			mutData , err := json.Marshal(&mutation)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(&UpdateUserResp{
+				json.NewEncoder(w).Encode(&JWTResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			mu := &api.Mutation{
+				SetJson: mutData,
+			}
+
+			_, err = txn.Mutate(ctx, mu)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&JWTResp{
 					Err: err.Error(),
 				})
 				return
@@ -299,25 +403,59 @@ func userInfo(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			user := &utils.User{}
-			err = db.First(user, claims.User.ID).Error
+			ctx := context.Background()
+			txn := db.NewTxn()
+
+			variables := map[string]string{"$id": claims.User.Email}
+			q := `query Me($id: uid){
+                        user(func: uid($id)) @filter(has(user)) {
+                          uid
+                          email
+                          name
+                        }
+                      }`
+
+			resp, err := txn.QueryWithVars(ctx, q, variables)
 			if err != nil {
-				if err == gorm.ErrRecordNotFound {
-					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&UserInfoResp{
-						Err: "user not found",
-					})
-					return
-				}
-				w.WriteHeader(http.StatusNotFound)
-				json.NewEncoder(w).Encode(&UserInfoResp{
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&JWTResp{
 					Err: err.Error(),
 				})
 				return
 			}
 
+			var user struct {
+				Account []struct {
+					ID string `json:"uid"`
+					Email string `json:"email"`
+					Name string `json:"name"`
+				} `json:"user"`
+			}
+			err = json.Unmarshal(resp.GetJson(), &user)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&JWTResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+			if len(user.Account) == 0 {
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(&JWTResp{
+					Err: "user not found",
+				})
+				return
+			}
+
+			userResp := &utils.User{
+				ID: user.Account[0].ID,
+				Email: user.Account[0].Email,
+				Name: user.Account[0].Name,
+			}
+
 			json.NewEncoder(w).Encode(&UserInfoResp{
-				User: user,
+				User: userResp,
 			})
 			return
 		}
@@ -339,32 +477,43 @@ func router() *mux.Router {
 	return r
 }
 
+func newDbClient(dbHost string) *dgo.Dgraph {
+	d, err := grpc.Dial(dbHost, grpc.WithInsecure())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return dgo.NewDgraphClient(
+		api.NewDgraphClient(d),
+	)
+}
+
+func setup(c *dgo.Dgraph) {
+	err := c.Alter(context.Background(), &api.Operation{
+		Schema: `
+			name: string .
+			email: string @index(hash) @upsert s.
+            pass: password .
+		`,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
-	viper.SetDefault("DB_HOST", "mysql")
-	viper.SetDefault("DB_USER", "travelr")
-	viper.SetDefault("DB_NAME", "auth")
+	viper.SetDefault("DB_HOST", "draph-server-public:9080")
 
 	viper.SetEnvPrefix("TRAVELR")
 	viper.AutomaticEnv()
 
 	dbHost := viper.GetString("DB_HOST")
-	dbUser := viper.GetString("DB_USER")
-	dbPass := viper.GetString("DB_PASS")
-	dbName := viper.GetString("DB_NAME")
 
 	jwtSecret = []byte(viper.GetString("JWT_SECRET"))
 
-	config := &mysql.Config{Addr: dbHost, Net: "tcp", User: dbUser, Passwd: dbPass, DBName: dbName, ParseTime: true}
+	db = newDbClient(dbHost)
 
-	log.Printf("Connecting to database with DSN: %s\n", config.FormatDSN())
-	var err error
-	db, err = gorm.Open("mysql", config.FormatDSN())
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	db.AutoMigrate(&utils.User{})
+	setup(db)
 
 	log.Printf("Listening on %s\n", addr)
 	log.Fatalln(http.ListenAndServe(addr, router()))

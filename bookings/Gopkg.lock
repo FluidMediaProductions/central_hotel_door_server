@@ -10,7 +10,7 @@
 [[projects]]
   name = "github.com/fluidmediaproductions/central_hotel_door_server"
   packages = ["utils"]
-  revision = "5cc2596f3255e7fa336652a9f61f411aad957a2a"
+  revision = "a37b65db5dfcb1390410d6a4acb721f57df6d34f"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"

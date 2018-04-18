@@ -8,7 +8,7 @@ services:
     working_dir: /go/src/gateway
     command: sh -c "go build -o gateway && ./gateway"
     ports:
-      - 8080:80
+      - 8081:80
     links:
       - auth
       - hotels
@@ -21,11 +21,11 @@ services:
     working_dir: /go/src/hotel_gateway
     command: sh -c "go build -o hotel_gateway && ./hotel_gateway"
     ports:
-      - 8081:80
+      - 8082:80
     links:
       - rooms
     environment:
-      - TRAVELR_DB_HOST=172.17.0.1
+      - TRAVELR_DB_HOST=172.17.0.1:3306
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_hotel_gateway
@@ -48,10 +48,7 @@ services:
       - 80
     command: sh -c "go build -o auth && ./auth"
     environment:
-      - TRAVELR_DB_HOST=172.17.0.1
-      - TRAVELR_DB_USER=root
-      - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
-      - TRAVELR_DB_NAME=travelr_auth
+      - TRAVELR_DB_HOST=172.17.0.1:9080
   hotels:
     build: .
     volumes:
@@ -63,7 +60,7 @@ services:
       - 80
     command: sh -c "go build -o hotels && ./hotels"
     environment:
-      - TRAVELR_DB_HOST=172.17.0.1
+      - TRAVELR_DB_HOST=172.17.0.1:3306
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_hotels
@@ -78,7 +75,7 @@ services:
       - 80
     command: sh -c "go build -o rooms && ./rooms"
     environment:
-      - TRAVELR_DB_HOST=172.17.0.1
+      - TRAVELR_DB_HOST=172.17.0.1:3306
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_rooms
@@ -91,7 +88,7 @@ services:
       - 80
     command: sh -c "go build -o bookings && ./bookings"
     environment:
-      - TRAVELR_DB_HOST=172.17.0.1
+      - TRAVELR_DB_HOST=172.17.0.1:3306
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_bookings
