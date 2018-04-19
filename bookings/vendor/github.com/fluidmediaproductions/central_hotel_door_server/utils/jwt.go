@@ -1,19 +1,17 @@
 package utils
 
 import (
-	"log"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/jinzhu/gorm"
 )
 
 var now = time.Now
 
 type User struct {
-	gorm.Model
+	ID    string `json:"uid"`
 	Email string `json:"email"`
-	Pass  string `json:"-"`
+	Pass  string `json:"pass,omitempty"`
 	Name  string `json:"name"`
 }
 
@@ -49,7 +47,6 @@ func VerifyJWT(tokenString string, secret []byte) (*JWTClaims, error) {
 	}
 
 	if claims, ok := token.Claims.(*JWTClaims); ok && token.Valid {
-		log.Println(claims.NotBefore, now())
 		return claims, nil
 	} else {
 		return nil, nil

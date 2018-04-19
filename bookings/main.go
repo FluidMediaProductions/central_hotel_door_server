@@ -4,30 +4,30 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
+	"github.com/dgraph-io/dgo"
+	"github.com/dgraph-io/dgo/protos/api"
 	"github.com/fluidmediaproductions/central_hotel_door_server/utils"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_"github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
+	"context"
 )
 
 const addr = ":80"
 
-var db *gorm.DB
+var db *dgo.Dgraph
 var jwtSecret []byte
 
 type Booking struct {
-	gorm.Model
-	UserID  uint      `json:"userId"`
+	ID      string    `json:"uid"`
+	UserID  string    `json:"userId"`
 	Start   time.Time `json:"start"`
 	End     time.Time `json:"end"`
-	HotelID uint      `json:"hotelId"`
-	RoomID  uint      `json:"roomId"`
+	HotelID string    `json:"hotelId"`
+	RoomID  string    `json:"roomId"`
 }
 
 type BookingsResp struct {
@@ -56,10 +56,52 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			bookings := make([]*Booking, 0)
-			err = db.Where(&Booking{
-				UserID: claims.User.ID,
-			}).Find(&bookings).Error
+			ctx := context.Background()
+			txn := db.NewTxn()
+
+			variables := map[string]string{"$uid": claims.User.ID}
+			q := `query ($uid: uid){
+                    bookings(func: eq(booking.userId, $uid) @filter(has(booking)) {
+                      uid
+                      booking.start
+                      booking.end
+                      booking.hotel {
+                        uid
+                      }
+                      booking.room {
+                        uid
+                      }
+                      booking.user {
+                        uid
+                      }
+	                }
+                  }`
+
+			resp, err := txn.QueryWithVars(ctx, q, variables)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&BookingsResp{
+					Err: err.Error(),
+				})
+				return
+			}
+			var bookings struct {
+				Bookings []struct {
+					Start *time.Time `json:"booking.start"`
+					End  *time.Time `json:"booking.end"`
+					User  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.user"`
+					Hotel  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.hotel"`
+					Room  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.room"`
+					ID    string `json:"uid"`
+				} `json:"bookings"`
+			}
+			err = json.Unmarshal(resp.GetJson(), &bookings)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(&BookingsResp{
@@ -68,8 +110,21 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
+			outBookings := make([]*Booking, 0)
+			for _, booking := range bookings.Bookings {
+				outBooking := &Booking{
+					ID: booking.ID,
+					HotelID: booking.Hotel.ID,
+					RoomID: booking.Room.ID,
+					Start: *booking.Start,
+					End: *booking.End,
+					UserID: booking.User.ID,
+				}
+				outBookings = append(outBookings, outBooking)
+			}
+
 			json.NewEncoder(w).Encode(&BookingsResp{
-				Bookings: bookings,
+				Bookings: outBookings,
 			})
 			return
 		}
@@ -98,27 +153,87 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 
 			vars := mux.Vars(r)
 
-			id, _ := strconv.Atoi(vars["id"])
+			id := vars["id"]
 
-			booking := &Booking{}
-			err = db.Find(&booking, id).Error
+			ctx := context.Background()
+			txn := db.NewTxn()
+
+			variables := map[string]string{"$uid": id, "$user": claims.User.ID}
+			q := `query ($uid: uid, $user: uid){
+                    bookings(func: uid($uid)) @filter(has(booking)) @cascade {
+                      uid
+                      booking.start
+                      booking.end
+                      booking.hotel {
+                        uid
+                      }
+                      booking.room {
+                        uid
+                      }
+                      booking.user @filter(uid($user)) {
+                        uid
+                      }
+	                }
+                  }`
+
+			resp, err := txn.QueryWithVars(ctx, q, variables)
 			if err != nil {
-				if err == gorm.ErrRecordNotFound {
-					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&BookingResp{
-						Err: "booking not found",
-					})
-					return
-				} else {
-					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&BookingResp{
-						Err: err.Error(),
-					})
-					return
-				}
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&BookingsResp{
+					Err: err.Error(),
+				})
+				return
+			}
+			var bookings struct {
+				Bookings []struct {
+					Start *time.Time `json:"booking.start"`
+					End  *time.Time `json:"booking.end"`
+					User  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.user"`
+					Hotel  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.hotel"`
+					Room  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.room"`
+					ID    string `json:"uid"`
+				} `json:"bookings"`
+			}
+			err = json.Unmarshal(resp.GetJson(), &bookings)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&BookingsResp{
+					Err: err.Error(),
+				})
+				return
 			}
 
-			if booking.UserID != claims.User.ID {
+
+			if len(bookings.Bookings) == 0 {
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(&BookingResp{
+					Err: "booking not found",
+				})
+				return
+			}
+
+			booking := bookings.Bookings[0]
+				outBooking := &Booking{
+					ID: booking.ID,
+					HotelID: booking.Hotel.ID,
+					RoomID: booking.Room.ID,
+					Start: *booking.Start,
+					End: *booking.End,
+					UserID: booking.User.ID,
+				}
+
+			json.NewEncoder(w).Encode(&BookingResp{
+				Booking: outBooking,
+			})
+			return
+
+			if outBooking.UserID != claims.User.ID {
 				w.WriteHeader(http.StatusForbidden)
 				json.NewEncoder(w).Encode(&BookingResp{
 					Err: "booking not owned by user",
@@ -127,7 +242,7 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 			}
 
 			json.NewEncoder(w).Encode(&BookingResp{
-				Booking: booking,
+				Booking: outBooking,
 			})
 			return
 		}
@@ -156,31 +271,83 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 
 			vars := mux.Vars(r)
 
-			id, _ := strconv.Atoi(vars["id"])
+			id, _ := vars["id"]
 
-			booking := &Booking{}
-			err = db.Find(&booking, &Booking{
-				RoomID: uint(id),
-				UserID: claims.User.ID,
-			}).Error
+			ctx := context.Background()
+			txn := db.NewTxn()
+
+			variables := map[string]string{"$uid": id, "$user": claims.User.ID}
+			q := `query ($uid: uid, $user: uid){
+                    bookings(func: has(booking)) @cascade {
+                      uid
+                      booking.start
+                      booking.end
+                      booking.hotel {
+                        uid
+                      }
+                      booking.room @filter(uid($uid)) {
+                        uid
+                      }
+                      booking.user @filter(uid($user)) {
+                        uid
+                      }
+	                }
+                  }`
+
+			resp, err := txn.QueryWithVars(ctx, q, variables)
 			if err != nil {
-				if err == gorm.ErrRecordNotFound {
-					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&BookingResp{
-						Err: "booking not found",
-					})
-					return
-				} else {
-					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&BookingResp{
-						Err: err.Error(),
-					})
-					return
-				}
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&BookingsResp{
+					Err: err.Error(),
+				})
+				return
+			}
+			var bookings struct {
+				Bookings []struct {
+					Start *time.Time `json:"booking.start"`
+					End  *time.Time `json:"booking.end"`
+					User  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.user"`
+					Hotel  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.hotel"`
+					Room  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.room"`
+					ID    string `json:"uid"`
+				} `json:"bookings"`
+			}
+			err = json.Unmarshal(resp.GetJson(), &bookings)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&BookingsResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+
+			if len(bookings.Bookings) == 0 {
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(&BookingResp{
+					Err: "booking not found",
+				})
+				return
+			}
+
+			booking := bookings.Bookings[0]
+			outBooking := &Booking{
+				ID: booking.ID,
+				HotelID: booking.Hotel.ID,
+				RoomID: booking.Room.ID,
+				Start: *booking.Start,
+				End: *booking.End,
+				UserID: booking.User.ID,
 			}
 
 			json.NewEncoder(w).Encode(&BookingResp{
-				Booking: booking,
+				Booking: outBooking,
 			})
 			return
 		}
@@ -209,31 +376,83 @@ func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
 
 			vars := mux.Vars(r)
 
-			id, _ := strconv.Atoi(vars["id"])
+			id := vars["id"]
 
-			booking := &Booking{}
-			err = db.Find(&booking, &Booking{
-				HotelID: uint(id),
-				UserID:  claims.User.ID,
-			}).Error
+			ctx := context.Background()
+			txn := db.NewTxn()
+
+			variables := map[string]string{"$uid": id, "$user": claims.User.ID}
+			q := `query ($uid: uid, $user: uid){
+                    bookings(func: has(booking)) @cascade {
+                      uid
+                      booking.start
+                      booking.end
+                      booking.hotel @filter(uid($uid)) {
+                        uid
+                      }
+                      booking.room {
+                        uid
+                      }
+                      booking.user @filter(uid($user)) {
+                        uid
+                      }
+	                }
+                  }`
+
+			resp, err := txn.QueryWithVars(ctx, q, variables)
 			if err != nil {
-				if err == gorm.ErrRecordNotFound {
-					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&BookingResp{
-						Err: "booking not found",
-					})
-					return
-				} else {
-					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&BookingResp{
-						Err: err.Error(),
-					})
-					return
-				}
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&BookingsResp{
+					Err: err.Error(),
+				})
+				return
+			}
+			var bookings struct {
+				Bookings []struct {
+					Start *time.Time `json:"booking.start"`
+					End  *time.Time `json:"booking.end"`
+					User  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.user"`
+					Hotel  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.hotel"`
+					Room  struct{
+						ID    string `json:"uid"`
+					} `json:"booking.room"`
+					ID    string `json:"uid"`
+				} `json:"bookings"`
+			}
+			err = json.Unmarshal(resp.GetJson(), &bookings)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(&BookingsResp{
+					Err: err.Error(),
+				})
+				return
+			}
+
+
+			if len(bookings.Bookings) == 0 {
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(&BookingResp{
+					Err: "booking not found",
+				})
+				return
+			}
+
+			booking := bookings.Bookings[0]
+			outBooking := &Booking{
+				ID: booking.ID,
+				HotelID: booking.Hotel.ID,
+				RoomID: booking.Room.ID,
+				Start: *booking.Start,
+				End: *booking.End,
+				UserID: booking.User.ID,
 			}
 
 			json.NewEncoder(w).Encode(&BookingResp{
-				Booking: booking,
+				Booking: outBooking,
 			})
 			return
 		}
@@ -248,39 +467,52 @@ func router() *mux.Router {
 	r := mux.NewRouter()
 
 	r.Methods("GET").Path("/bookings").HandlerFunc(getBookings)
-	r.Methods("GET").Path("/bookings/{id:[0-9]+}").HandlerFunc(getBooking)
-	r.Methods("GET").Path("/bookings/by-room/{id:[0-9]+}").HandlerFunc(getBookingByRoom)
-	r.Methods("GET").Path("/bookings/by-hotel/{id:[0-9]+}").HandlerFunc(getBookingByHotel)
+	r.Methods("GET").Path("/bookings/{id}").HandlerFunc(getBooking)
+	r.Methods("GET").Path("/bookings/by-room/{id}").HandlerFunc(getBookingByRoom)
+	r.Methods("GET").Path("/bookings/by-hotel/{id}").HandlerFunc(getBookingByHotel)
 
 	return r
 }
 
+func newDbClient(dbHost string) *dgo.Dgraph {
+	d, err := grpc.Dial(dbHost, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error connecting: %v\n", err)
+	}
+
+	return dgo.NewDgraphClient(
+		api.NewDgraphClient(d),
+	)
+}
+
+func setup(c *dgo.Dgraph) {
+	err := c.Alter(context.Background(), &api.Operation{
+		Schema: `
+			booking.start dateTime .
+			booking.end dateTime .
+			booking.hotel uid @reverse .
+			booking.room uid @reverse .
+			booking.user uid @reverse .
+		`,
+	})
+	if err != nil {
+		log.Fatalf("Error setting up schema: %v\n", err)
+	}
+}
+
 func main() {
-	viper.SetDefault("DB_HOST", "mysql")
-	viper.SetDefault("DB_USER", "travelr")
-	viper.SetDefault("DB_NAME", "bookings")
+	viper.SetDefault("DB_HOST", "draph-server-public:9080")
 
 	viper.SetEnvPrefix("TRAVELR")
 	viper.AutomaticEnv()
 
 	dbHost := viper.GetString("DB_HOST")
-	dbUser := viper.GetString("DB_USER")
-	dbPass := viper.GetString("DB_PASS")
-	dbName := viper.GetString("DB_NAME")
 
 	jwtSecret = []byte(viper.GetString("JWT_SECRET"))
 
-	config := &mysql.Config{Addr: dbHost, Net: "tcp", User: dbUser, Passwd: dbPass, DBName: dbName, ParseTime: true}
+	db = newDbClient(dbHost)
 
-	log.Printf("Connecting to database with DSN: %s\n", config.FormatDSN())
-	var err error
-	db, err = gorm.Open("mysql", config.FormatDSN())
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	db.AutoMigrate(&Booking{})
+	setup(db)
 
 	log.Printf("Listening on %s\n", addr)
 	log.Fatalln(http.ListenAndServe(addr, router()))
