@@ -23,14 +23,6 @@ subsets:
       - ip: 195.201.58.86
     ports:
       - port: 3306
-  - addresses:
-      - ip: 88.99.122.54
-    ports:
-      - port: 3306
-  - addresses:
-      - ip: 138.201.93.184
-    ports:
-      - port: 3306
 ---
 apiVersion: v1
 kind: Endpoints

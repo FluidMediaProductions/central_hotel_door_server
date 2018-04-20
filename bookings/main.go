@@ -501,7 +501,7 @@ func setup(c *dgo.Dgraph) {
 }
 
 func main() {
-	viper.SetDefault("DB_HOST", "draph-server-public:9080")
+	viper.SetDefault("DB_HOST", "dgraph-server-public:9080")
 
 	viper.SetEnvPrefix("TRAVELR")
 	viper.AutomaticEnv()

@@ -4,7 +4,7 @@ metadata:
   name: auth-config
   namespace: travelr
 data:
-  dbHost: "dgraph-server-0.dgraph-server:9080"
+  dbHost: "dgraph-server-public:9080"
 ---
 apiVersion: apps/v1
 kind: Deployment
