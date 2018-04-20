@@ -233,14 +233,6 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 			})
 			return
 
-			if outBooking.UserID != claims.User.ID {
-				w.WriteHeader(http.StatusForbidden)
-				json.NewEncoder(w).Encode(&BookingResp{
-					Err: "booking not owned by user",
-				})
-				return
-			}
-
 			json.NewEncoder(w).Encode(&BookingResp{
 				Booking: outBooking,
 			})
@@ -488,11 +480,11 @@ func newDbClient(dbHost string) *dgo.Dgraph {
 func setup(c *dgo.Dgraph) {
 	err := c.Alter(context.Background(), &api.Operation{
 		Schema: `
-			booking.start dateTime .
-			booking.end dateTime .
-			booking.hotel uid @reverse .
-			booking.room uid @reverse .
-			booking.user uid @reverse .
+			booking.start: dateTime .
+			booking.end: dateTime .
+			booking.hotel: uid @reverse .
+			booking.room: uid @reverse .
+			booking.user: uid @reverse .
 		`,
 	})
 	if err != nil {
