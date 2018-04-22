@@ -29,44 +29,7 @@ var userType = graphql.NewObject(graphql.ObjectConfig{
 			Type: graphql.NewNonNull(graphql.String),
 		},
 		"ID": &graphql.Field{
-			Type: graphql.NewNonNull(graphql.Int),
-			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				user, isOk := params.Source.(*utils.User)
-				if isOk {
-					return user.Model.ID, nil
-				}
-				return nil, nil
-			},
-		},
-		"createdAt": &graphql.Field{
-			Type: graphql.DateTime,
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				user, isOK := p.Source.(*utils.User)
-				if isOK {
-					return user.CreatedAt, nil
-				}
-				return nil, nil
-			},
-		},
-		"updatedAt": &graphql.Field{
-			Type: graphql.DateTime,
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				user, isOK := p.Source.(*utils.User)
-				if isOK {
-					return user.UpdatedAt, nil
-				}
-				return nil, nil
-			},
-		},
-		"deletedAt": &graphql.Field{
-			Type: graphql.DateTime,
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				user, isOK := p.Source.(*utils.User)
-				if isOK {
-					return user.DeletedAt, nil
-				}
-				return nil, nil
-			},
+			Type: graphql.NewNonNull(graphql.String),
 		},
 	},
 })

@@ -59,9 +59,9 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 			ctx := context.Background()
 			txn := db.NewTxn()
 
-			variables := map[string]string{"$uid": claims.User.ID}
-			q := `query ($uid: uid){
-                    bookings(func: eq(booking.userId, $uid) @filter(has(booking)) {
+			variables := map[string]string{"$userID": claims.User.ID}
+			q := `query q($userID: uid){
+                    bookings(func: has(booking)) @cascade {
                       uid
                       booking.start
                       booking.end
@@ -71,7 +71,7 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
                       booking.room {
                         uid
                       }
-                      booking.user {
+                      booking.user @filter(uid($userID)) {
                         uid
                       }
 	                }
@@ -159,7 +159,7 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 			txn := db.NewTxn()
 
 			variables := map[string]string{"$uid": id, "$user": claims.User.ID}
-			q := `query ($uid: uid, $user: uid){
+			q := `query q($uid: uid, $user: uid){
                     bookings(func: uid($uid)) @filter(has(booking)) @cascade {
                       uid
                       booking.start
@@ -269,7 +269,7 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 			txn := db.NewTxn()
 
 			variables := map[string]string{"$uid": id, "$user": claims.User.ID}
-			q := `query ($uid: uid, $user: uid){
+			q := `query q($uid: uid, $user: uid){
                     bookings(func: has(booking)) @cascade {
                       uid
                       booking.start
@@ -374,7 +374,7 @@ func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
 			txn := db.NewTxn()
 
 			variables := map[string]string{"$uid": id, "$user": claims.User.ID}
-			q := `query ($uid: uid, $user: uid){
+			q := `query q($uid: uid, $user: uid){
                     bookings(func: has(booking)) @cascade {
                       uid
                       booking.start

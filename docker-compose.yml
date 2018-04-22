@@ -1,12 +1,37 @@
 version: "2"
 
 services:
+  dg-zero:
+    image: dgraph/dgraph:latest
+    volumes:
+      - dgraph:/dgraph
+    ports:
+      - 5080:5080
+      - 6080:6080
+    restart: on-failure
+    command: dgraph zero --my=dg-zero:5080
+  dg-server:
+    image: dgraph/dgraph:latest
+    volumes:
+      - dgraph:/dgraph
+    ports:
+      - 8080:8080
+      - 9080:9080
+    restart: on-failure
+    command: dgraph server --my=dg-server:7080 --memory_mb=2048 --zero=dg-zero:5080
+  dg-ratel:
+    image: dgraph/dgraph:latest
+    volumes:
+      - dgraph:/dgraph
+    ports:
+      - 8000:8000
+    command: dgraph-ratel
+
   gateway:
-    image: golang:1.10-alpine
+    build: gateway
     volumes:
       - ./gateway:/go/src/gateway
     working_dir: /go/src/gateway
-    command: sh -c "go build -o gateway && ./gateway"
     ports:
       - 8081:80
     links:
@@ -15,11 +40,10 @@ services:
       - rooms
       - bookings
   hotel_gateway:
-    build: .
+    build: hotel_gateway
     volumes:
       - ./hotel_gateway:/go/src/hotel_gateway
     working_dir: /go/src/hotel_gateway
-    command: sh -c "go build -o hotel_gateway && ./hotel_gateway"
     ports:
       - 8082:80
     links:
@@ -29,28 +53,26 @@ services:
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_hotel_gateway
-  hotel_gateway:
-    build: .
-    volumes:
-      - ./management:/go/src/management
-    working_dir: /go/src/management
-    command: sh -c "go build -o management && ./management"
-    ports:
-      - 3002:80
-    links:
-      - auth
+#  management:
+#    build: management
+#    volumes:
+#      - ./management:/go/src/management
+#    working_dir: /go/src/management
+#    ports:
+#      - 3002:80
+#    links:
+#      - auth
   auth:
-    build: .
+    build: auth
     volumes:
       - ./auth:/go/src/auth
     working_dir: /go/src/auth
     expose:
       - 80
-    command: sh -c "go build -o auth && ./auth"
     environment:
-      - TRAVELR_DB_HOST=172.17.0.1:9080
+      - TRAVELR_DB_HOST=dg-server:9080
   hotels:
-    build: .
+    build: hotels
     volumes:
       - ./hotels:/go/src/hotels
     working_dir: /go/src/hotels
@@ -58,14 +80,13 @@ services:
       - bookings
     expose:
       - 80
-    command: sh -c "go build -o hotels && ./hotels"
     environment:
       - TRAVELR_DB_HOST=172.17.0.1:3306
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_hotels
   rooms:
-    build: .
+    build: rooms
     volumes:
       - ./rooms:/go/src/rooms
     working_dir: /go/src/rooms
@@ -73,22 +94,20 @@ services:
       - bookings
     expose:
       - 80
-    command: sh -c "go build -o rooms && ./rooms"
     environment:
       - TRAVELR_DB_HOST=172.17.0.1:3306
       - TRAVELR_DB_USER=root
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_rooms
   bookings:
-    build: .
+    build: bookings
     volumes:
       - ./bookings:/go/src/bookings
     working_dir: /go/src/bookings
     expose:
       - 80
-    command: sh -c "go build -o bookings && ./bookings"
     environment:
-      - TRAVELR_DB_HOST=172.17.0.1:3306
-      - TRAVELR_DB_USER=root
-      - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
-      - TRAVELR_DB_NAME=travelr_bookings
+      - TRAVELR_DB_HOST=dg-server:9080
+
+volumes:
+  dgraph:

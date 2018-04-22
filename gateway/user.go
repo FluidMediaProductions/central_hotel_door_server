@@ -19,14 +19,7 @@ var userType = graphql.NewObject(graphql.ObjectConfig{
 			Type: graphql.NewNonNull(graphql.String),
 		},
 		"ID": &graphql.Field{
-			Type: graphql.NewNonNull(graphql.Int),
-			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				user, isOk := params.Source.(*utils.User)
-				if isOk {
-					return user.Model.ID, nil
-				}
-				return nil, nil
-			},
+			Type: graphql.NewNonNull(graphql.String),
 		},
 		"bookings": &graphql.Field{
 			Type: graphql.NewList(bookingType),
