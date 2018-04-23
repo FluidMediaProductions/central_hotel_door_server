@@ -61,7 +61,7 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 
 			variables := map[string]string{"$userID": claims.User.ID}
 			log.Println(variables)
-			q := `query q($userID: string){
+			q := `query q($userID: string) {
                     var (func: uid($userID)) {
 		              u as uid
 	                }
@@ -163,9 +163,12 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 			ctx := context.Background()
 			txn := db.NewTxn()
 
-			variables := map[string]string{"$uid": id, "$user": claims.User.ID}
-			q := `query q($uid: uid, $user: uid){
-                    bookings(func: uid($uid)) @filter(has(booking)) @cascade {
+			variables := map[string]string{"$id": id, "$user": claims.User.ID}
+			q := `query q($id: uid, $user: uid) {
+                    var (func: uid($user)) {
+		              u as uid
+	                }
+                    bookings(func: uid($id)) @filter(has(booking)) @cascade {
                       uid
                       booking.start
                       booking.end
@@ -175,7 +178,7 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
                       booking.room {
                         uid
                       }
-                      booking.user @filter(uid($user)) {
+                      booking.user @filter(uid(u)) {
                         uid
                       }
 	                }
@@ -193,13 +196,13 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 				Bookings []struct {
 					Start *time.Time `json:"booking.start"`
 					End  *time.Time `json:"booking.end"`
-					User  struct{
+					User  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.user"`
-					Hotel  struct{
+					Hotel  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.hotel"`
-					Room  struct{
+					Room  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.room"`
 					ID    string `json:"uid"`
@@ -226,11 +229,11 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 			booking := bookings.Bookings[0]
 				outBooking := &Booking{
 					ID: booking.ID,
-					HotelID: booking.Hotel.ID,
-					RoomID: booking.Room.ID,
+					HotelID: booking.Hotel[0].ID,
+					RoomID: booking.Room[0].ID,
 					Start: *booking.Start,
 					End: *booking.End,
-					UserID: booking.User.ID,
+					UserID: booking.User[0].ID,
 				}
 
 			json.NewEncoder(w).Encode(&BookingResp{
@@ -250,7 +253,7 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
+func getBookingsByRoom(w http.ResponseWriter, r *http.Request) {
 	authHeaders, isOk := r.Header["Authorization"]
 	if isOk {
 		if len(authHeaders) > 0 {
@@ -273,8 +276,14 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 			ctx := context.Background()
 			txn := db.NewTxn()
 
-			variables := map[string]string{"$uid": id, "$user": claims.User.ID}
-			q := `query q($uid: uid, $user: uid){
+			variables := map[string]string{"$id": id, "$user": claims.User.ID}
+			q := `query q($id: uid, $user: uid) {
+                    var (func: uid($user)) {
+		              u as uid
+	                }
+                    var (func: uid($id)) {
+		              r as uid
+	                }
                     bookings(func: has(booking)) @cascade {
                       uid
                       booking.start
@@ -282,10 +291,10 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
                       booking.hotel {
                         uid
                       }
-                      booking.room @filter(uid($uid)) {
+                      booking.room @filter(uid(r)) {
                         uid
                       }
-                      booking.user @filter(uid($user)) {
+                      booking.user @filter(uid(u)) {
                         uid
                       }
 	                }
@@ -303,13 +312,13 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 				Bookings []struct {
 					Start *time.Time `json:"booking.start"`
 					End  *time.Time `json:"booking.end"`
-					User  struct{
+					User  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.user"`
-					Hotel  struct{
+					Hotel  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.hotel"`
-					Room  struct{
+					Room  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.room"`
 					ID    string `json:"uid"`
@@ -324,27 +333,21 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-
-			if len(bookings.Bookings) == 0 {
-				w.WriteHeader(http.StatusNotFound)
-				json.NewEncoder(w).Encode(&BookingResp{
-					Err: "booking not found",
-				})
-				return
+			outBookings := make([]*Booking, 0)
+			for _, booking := range bookings.Bookings {
+				outBooking := &Booking{
+					ID: booking.ID,
+					HotelID: booking.Hotel[0].ID,
+					RoomID: booking.Room[0].ID,
+					Start: *booking.Start,
+					End: *booking.End,
+					UserID: booking.User[0].ID,
+				}
+				outBookings = append(outBookings, outBooking)
 			}
 
-			booking := bookings.Bookings[0]
-			outBooking := &Booking{
-				ID: booking.ID,
-				HotelID: booking.Hotel.ID,
-				RoomID: booking.Room.ID,
-				Start: *booking.Start,
-				End: *booking.End,
-				UserID: booking.User.ID,
-			}
-
-			json.NewEncoder(w).Encode(&BookingResp{
-				Booking: outBooking,
+			json.NewEncoder(w).Encode(&BookingsResp{
+				Bookings: outBookings,
 			})
 			return
 		}
@@ -355,7 +358,7 @@ func getBookingByRoom(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
+func getBookingsByHotel(w http.ResponseWriter, r *http.Request) {
 	authHeaders, isOk := r.Header["Authorization"]
 	if isOk {
 		if len(authHeaders) > 0 {
@@ -378,19 +381,25 @@ func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
 			ctx := context.Background()
 			txn := db.NewTxn()
 
-			variables := map[string]string{"$uid": id, "$user": claims.User.ID}
-			q := `query q($uid: uid, $user: uid){
+			variables := map[string]string{"$id": id, "$user": claims.User.ID}
+			q := `query q($id: uid, $user: uid){
+                    var (func: uid($user)) {
+		              u as uid
+	                }
+                    var (func: uid($id)) {
+		              h as uid
+	                }
                     bookings(func: has(booking)) @cascade {
                       uid
                       booking.start
                       booking.end
-                      booking.hotel @filter(uid($uid)) {
+                      booking.hotel @filter(uid(h)) {
                         uid
                       }
                       booking.room {
                         uid
                       }
-                      booking.user @filter(uid($user)) {
+                      booking.user @filter(uid(u)) {
                         uid
                       }
 	                }
@@ -408,13 +417,13 @@ func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
 				Bookings []struct {
 					Start *time.Time `json:"booking.start"`
 					End  *time.Time `json:"booking.end"`
-					User  struct{
+					User  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.user"`
-					Hotel  struct{
+					Hotel  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.hotel"`
-					Room  struct{
+					Room  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.room"`
 					ID    string `json:"uid"`
@@ -429,27 +438,21 @@ func getBookingByHotel(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-
-			if len(bookings.Bookings) == 0 {
-				w.WriteHeader(http.StatusNotFound)
-				json.NewEncoder(w).Encode(&BookingResp{
-					Err: "booking not found",
-				})
-				return
+			outBookings := make([]*Booking, 0)
+			for _, booking := range bookings.Bookings {
+				outBooking := &Booking{
+					ID: booking.ID,
+					HotelID: booking.Hotel[0].ID,
+					RoomID: booking.Room[0].ID,
+					Start: *booking.Start,
+					End: *booking.End,
+					UserID: booking.User[0].ID,
+				}
+				outBookings = append(outBookings, outBooking)
 			}
 
-			booking := bookings.Bookings[0]
-			outBooking := &Booking{
-				ID: booking.ID,
-				HotelID: booking.Hotel.ID,
-				RoomID: booking.Room.ID,
-				Start: *booking.Start,
-				End: *booking.End,
-				UserID: booking.User.ID,
-			}
-
-			json.NewEncoder(w).Encode(&BookingResp{
-				Booking: outBooking,
+			json.NewEncoder(w).Encode(&BookingsResp{
+				Bookings: outBookings,
 			})
 			return
 		}
@@ -465,8 +468,8 @@ func router() *mux.Router {
 
 	r.Methods("GET").Path("/bookings").HandlerFunc(getBookings)
 	r.Methods("GET").Path("/bookings/{id}").HandlerFunc(getBooking)
-	r.Methods("GET").Path("/bookings/by-room/{id}").HandlerFunc(getBookingByRoom)
-	r.Methods("GET").Path("/bookings/by-hotel/{id}").HandlerFunc(getBookingByHotel)
+	r.Methods("GET").Path("/bookings/by-room/{id}").HandlerFunc(getBookingsByRoom)
+	r.Methods("GET").Path("/bookings/by-hotel/{id}").HandlerFunc(getBookingsByHotel)
 
 	return r
 }
