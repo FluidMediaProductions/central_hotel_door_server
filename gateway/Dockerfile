@@ -4,6 +4,12 @@ RUN apk --no-cache add git
 RUN mkdir -p /go/src/gateway
 WORKDIR /go/src/gateway
 
+
+RUN go get -v -d github.com/graphql-go/graphql
+RUN go get -v -d github.com/graphql-go/handler
+RUN go get -v -d github.com/rs/cors
+RUN go get -v -d github.com/spf13/viper
+
 COPY ./ /go/src/gateway
 RUN go get -v -d
 RUN CGO_ENABLED=0 go build -o gateway

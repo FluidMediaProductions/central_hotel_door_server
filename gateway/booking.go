@@ -12,13 +12,13 @@ var bookingType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Booking",
 	Fields: graphql.Fields{
 		"ID": &graphql.Field{
-			Type: graphql.Int,
+			Type: graphql.String,
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				booking, isOk := params.Source.(map[string]interface{})
 				if isOk {
-					id, isOk := booking["ID"].(float64)
+					id, isOk := booking["uid"].(string)
 					if isOk {
-						return int(id), nil
+						return id, nil
 					}
 				}
 				return nil, nil
