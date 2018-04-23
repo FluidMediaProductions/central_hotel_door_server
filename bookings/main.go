@@ -60,7 +60,11 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 			txn := db.NewTxn()
 
 			variables := map[string]string{"$userID": claims.User.ID}
-			q := `query q($userID: uid){
+			log.Println(variables)
+			q := `query q($userID: string){
+                    var (func: uid($userID)) {
+		              u as uid
+	                }
                     bookings(func: has(booking)) @cascade {
                       uid
                       booking.start
@@ -71,7 +75,7 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
                       booking.room {
                         uid
                       }
-                      booking.user @filter(uid($userID)) {
+                      booking.user @filter(uid(u)) {
                         uid
                       }
 	                }
@@ -89,19 +93,20 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 				Bookings []struct {
 					Start *time.Time `json:"booking.start"`
 					End  *time.Time `json:"booking.end"`
-					User  struct{
+					User  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.user"`
-					Hotel  struct{
+					Hotel  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.hotel"`
-					Room  struct{
+					Room  []struct{
 						ID    string `json:"uid"`
 					} `json:"booking.room"`
 					ID    string `json:"uid"`
 				} `json:"bookings"`
 			}
 			err = json.Unmarshal(resp.GetJson(), &bookings)
+			log.Println(resp, bookings)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(&BookingsResp{
@@ -114,11 +119,11 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 			for _, booking := range bookings.Bookings {
 				outBooking := &Booking{
 					ID: booking.ID,
-					HotelID: booking.Hotel.ID,
-					RoomID: booking.Room.ID,
+					HotelID: booking.Hotel[0].ID,
+					RoomID: booking.Room[0].ID,
 					Start: *booking.Start,
 					End: *booking.End,
-					UserID: booking.User.ID,
+					UserID: booking.User[0].ID,
 				}
 				outBookings = append(outBookings, outBooking)
 			}
