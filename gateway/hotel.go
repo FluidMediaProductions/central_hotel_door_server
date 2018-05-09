@@ -9,13 +9,13 @@ var hotelType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Hotel",
 	Fields: graphql.Fields{
 		"ID": &graphql.Field{
-			Type: graphql.Int,
+			Type: graphql.String,
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				hotel, isOk := params.Source.(map[string]interface{})
 				if isOk {
-					id, isOk := hotel["ID"].(float64)
+					id, isOk := hotel["uid"].(string)
 					if isOk {
-						return int(id), nil
+						return id, nil
 					}
 				}
 				return nil, nil

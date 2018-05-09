@@ -63,7 +63,9 @@ services:
 #    links:
 #      - auth
   auth:
-    build: auth
+    build:
+      context: .
+      dockerfile: Dockerfile.auth
     volumes:
       - ./auth:/go/src/auth
     working_dir: /go/src/auth
@@ -72,7 +74,9 @@ services:
     environment:
       - TRAVELR_DB_HOST=dg-server:9080
   hotels:
-    build: hotels
+    build:
+      context: .
+      dockerfile: Dockerfile.hotels
     volumes:
       - ./hotels:/go/src/hotels
     working_dir: /go/src/hotels
@@ -81,10 +85,7 @@ services:
     expose:
       - 80
     environment:
-      - TRAVELR_DB_HOST=172.17.0.1:3306
-      - TRAVELR_DB_USER=root
-      - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
-      - TRAVELR_DB_NAME=travelr_hotels
+      - TRAVELR_DB_HOST=dg-server:9080
   rooms:
     build: rooms
     volumes:
