@@ -7,13 +7,13 @@ RUN go get -v -d github.com/spf13/viper
 RUN go get -v -d google.golang.org/grpc
 
 COPY ./ /go/src/github.com/fluidmediaproductions/central_hotel_door_server
-WORKDIR /go/src/github.com/fluidmediaproductions/central_hotel_door_server/rooms
+WORKDIR /go/src/github.com/fluidmediaproductions/central_hotel_door_server/hotel_gateway
 
 RUN go get -v -d
-RUN CGO_ENABLED=0 go build -o rooms
+RUN CGO_ENABLED=0 go build -o hotel_gateway
 
 FROM scratch
 
-COPY --from=0 /go/src/github.com/fluidmediaproductions/central_hotel_door_server/rooms/rooms /rooms
+COPY --from=0 /go/src/github.com/fluidmediaproductions/central_hotel_door_server/hotel_gateway/hotel_gateway /hotel_gateway
 
-ENTRYPOINT ["/rooms"]
+ENTRYPOINT ["/hotel_gateway"]

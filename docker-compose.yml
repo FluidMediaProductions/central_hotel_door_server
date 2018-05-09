@@ -28,7 +28,9 @@ services:
     command: dgraph-ratel
 
   gateway:
-    build: gateway
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
     volumes:
       - ./gateway:/go/src/gateway
     working_dir: /go/src/gateway
@@ -40,7 +42,9 @@ services:
       - rooms
       - bookings
   hotel_gateway:
-    build: hotel_gateway
+    build:
+      context: .
+      dockerfile: Dockerfile.hotel_gateway
     volumes:
       - ./hotel_gateway:/go/src/hotel_gateway
     working_dir: /go/src/hotel_gateway
@@ -87,7 +91,9 @@ services:
     environment:
       - TRAVELR_DB_HOST=dg-server:9080
   rooms:
-    build: rooms
+    build:
+      context: .
+      dockerfile: Dockerfile.rooms
     volumes:
       - ./rooms:/go/src/rooms
     working_dir: /go/src/rooms
@@ -101,7 +107,9 @@ services:
       - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
       - TRAVELR_DB_NAME=travelr_rooms
   bookings:
-    build: bookings
+    build:
+      context: .
+      dockerfile: Dockerfile.bookings
     volumes:
       - ./bookings:/go/src/bookings
     working_dir: /go/src/bookings

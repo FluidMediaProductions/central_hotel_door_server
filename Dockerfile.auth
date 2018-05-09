@@ -14,6 +14,6 @@ RUN CGO_ENABLED=0 go build -o auth
 
 FROM scratch
 
-COPY --from=0 /go/src/github.com/fluidmediaproductions/central_hotel_door_server/auth /auth
+COPY --from=0 /go/src/github.com/fluidmediaproductions/central_hotel_door_server/auth/auth /auth
 
 ENTRYPOINT ["/auth"]
