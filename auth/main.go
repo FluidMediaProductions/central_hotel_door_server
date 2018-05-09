@@ -14,6 +14,9 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"strings"
+	"fmt"
+	"crypto/sha1"
+	"errors"
 )
 
 const addr = ":80"
@@ -39,6 +42,40 @@ type UpdateUserResp struct {
 type UserInfoResp struct {
 	Err  string      `json:"err"`
 	User *utils.User `json:"user"`
+}
+
+func checkForPwnage(pass string) error {
+	h := sha1.New()
+	h.Write([]byte(pass))
+	hb := h.Sum(nil)
+	hs := fmt.Sprintf("%x", hb)
+
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.pwnedpasswords.com/range/%s", hs[:5]), nil)
+	if err != nil {
+		return err
+	}
+
+	c := http.Client{}
+	resp, err := c.Do(req)
+	if err != nil {
+		return err
+	}
+
+	respBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	respS := string(respBytes)
+
+	hashes := strings.Split(respS, "\n")
+	for _, hash := range hashes {
+		parts := strings.Split(hash, ":")
+		if hs[:5] + parts[0] == hs {
+			return errors.New("pwned password")
+		}
+	}
+	return nil
 }
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
@@ -157,7 +194,7 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(&JWTResp{
+		json.NewEncoder(w).Encode(&ChangePasswordResp{
 			Err: err.Error(),
 		})
 		return
@@ -194,7 +231,7 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 				resp, err := txn.QueryWithVars(ctx, q, variables)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&JWTResp{
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
 						Err: err.Error(),
 					})
 					return
@@ -208,7 +245,7 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 				err = json.Unmarshal(resp.GetJson(), &user)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&JWTResp{
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
 						Err: err.Error(),
 					})
 					return
@@ -216,8 +253,17 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 
 				if len(user.Account) == 0 {
 					w.WriteHeader(http.StatusNotFound)
-					json.NewEncoder(w).Encode(&JWTResp{
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
 						Err: "user not found",
+					})
+					return
+				}
+
+				err = checkForPwnage(pass)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
+						Err: err.Error(),
 					})
 					return
 				}
@@ -232,7 +278,7 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 				mutData, err := json.Marshal(&mutation)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&JWTResp{
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
 						Err: err.Error(),
 					})
 					return
@@ -245,7 +291,7 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 				_, err = txn.Mutate(ctx, mu)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
-					json.NewEncoder(w).Encode(&JWTResp{
+					json.NewEncoder(w).Encode(&ChangePasswordResp{
 						Err: err.Error(),
 					})
 					return

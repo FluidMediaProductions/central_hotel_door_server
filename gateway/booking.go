@@ -12,13 +12,13 @@ var bookingType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Booking",
 	Fields: graphql.Fields{
 		"ID": &graphql.Field{
-			Type: graphql.Int,
+			Type: graphql.String,
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				booking, isOk := params.Source.(map[string]interface{})
 				if isOk {
-					id, isOk := booking["ID"].(float64)
+					id, isOk := booking["uid"].(string)
 					if isOk {
-						return int(id), nil
+						return id, nil
 					}
 				}
 				return nil, nil
@@ -63,9 +63,9 @@ var bookingType = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				booking, isOk := params.Source.(map[string]interface{})
 				if isOk {
-					hotelId, isOk := booking["hotelId"].(float64)
+					hotelId, isOk := booking["hotelId"].(string)
 					if isOk {
-						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%d", int(hotelId)), nil)
+						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%s", hotelId), nil)
 						if err != nil {
 							return nil, err
 						}
@@ -95,9 +95,9 @@ var bookingType = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				booking, isOk := params.Source.(map[string]interface{})
 				if isOk {
-					roomId, isOk := booking["roomId"].(float64)
+					roomId, isOk := booking["roomId"].(string)
 					if isOk {
-						req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d", int(roomId)), nil)
+						req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%s", roomId), nil)
 						if err != nil {
 							return nil, err
 						}

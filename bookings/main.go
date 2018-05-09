@@ -60,7 +60,6 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 			txn := db.NewTxn()
 
 			variables := map[string]string{"$userID": claims.User.ID}
-			log.Println(variables)
 			q := `query q($userID: string) {
                     var (func: uid($userID)) {
 		              u as uid
@@ -106,7 +105,6 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 				} `json:"bookings"`
 			}
 			err = json.Unmarshal(resp.GetJson(), &bookings)
-			log.Println(resp, bookings)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(&BookingsResp{
