@@ -485,7 +485,7 @@ func newDbClient(dbHost string) *dgo.Dgraph {
 	)
 }
 
-func setup(c *dgo.Dgraph) {
+func setupSchema(c *dgo.Dgraph) {
 	err := c.Alter(context.Background(), &api.Operation{
 		Schema: `
 			booking.start: dateTime .
@@ -512,7 +512,7 @@ func main() {
 
 	db = newDbClient(dbHost)
 
-	setup(db)
+	setupSchema(db)
 
 	log.Printf("Listening on %s\n", addr)
 	log.Fatalln(http.ListenAndServe(addr, router()))
