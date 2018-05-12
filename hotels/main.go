@@ -50,6 +50,16 @@ type OpenHotelResp struct {
 	Success bool   `json:"success"`
 }
 
+type hotelQuery struct {
+	Hotels []struct {
+		ID    string `json:"uid"`
+		Name    string `json:"hotel.name"`
+		Address    string `json:"hotel.address"`
+		CheckIn   *time.Time `json:"hotel.checkIn"`
+		HasCarPark  bool `json:"hotel.hasCarPark"`
+	} `json:"hotels"`
+}
+
 func getHotels(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	txn := db.NewTxn()
@@ -73,15 +83,7 @@ func getHotels(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	var hotels struct {
-		Hotels []struct {
-			ID    string `json:"uid"`
-			Name    string `json:"hotel.name"`
-			Address    string `json:"hotel.address"`
-			CheckIn   *time.Ticker `json:"hotel.checkIn"`
-			HasCarPark  bool `json:"hotel.hasCarPark"`
-		} `json:"hotels"`
-	}
+	var hotels hotelQuery
 	err = json.Unmarshal(resp.GetJson(), &hotels)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -95,7 +97,10 @@ func getHotels(w http.ResponseWriter, r *http.Request) {
 	for _, hotel := range hotels.Hotels {
 		outHotel := &Hotel{
 			ID: hotel.ID,
-
+			Name: hotel.Name,
+			Address: hotel.Address,
+			CheckIn: *hotel.CheckIn,
+			HasCarPark: hotel.HasCarPark,
 		}
 		outHotels = append(outHotels, outHotel)
 	}
@@ -114,8 +119,8 @@ func getHotel(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	txn := db.NewTxn()
 
-	q := `query q($id: uid) {
-            hotels(func: uid($id) @filter(has(hotel)) @cascade {
+	q := `query q($id: string) {
+            hotels(func: uid($id)) @filter(has(hotel)) @cascade {
               uid
               hotel.name
               hotel.address
@@ -133,15 +138,7 @@ func getHotel(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	var hotels struct {
-		Hotels []struct {
-			ID    string `json:"uid"`
-			Name    string `json:"hotel.name"`
-			Address    string `json:"hotel.address"`
-			CheckIn   *time.Ticker `json:"hotel.checkIn"`
-			HasCarPark  bool `json:"hotel.hasCarPark"`
-		} `json:"hotels"`
-	}
+	var hotels hotelQuery
 	err = json.Unmarshal(resp.GetJson(), &hotels)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -162,7 +159,10 @@ func getHotel(w http.ResponseWriter, r *http.Request) {
 	hotel := hotels.Hotels[0]
 	outHotel := &Hotel{
 			ID: hotel.ID,
-
+			Name: hotel.Name,
+			Address: hotel.Address,
+			CheckIn: *hotel.CheckIn,
+			HasCarPark: hotel.HasCarPark,
 		}
 
 	json.NewEncoder(w).Encode(&HotelResp{

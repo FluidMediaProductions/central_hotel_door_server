@@ -40,6 +40,23 @@ type BookingResp struct {
 	Booking *Booking `json:"booking"`
 }
 
+type bookingQuery struct {
+	Bookings []struct {
+		Start *time.Time `json:"booking.start"`
+		End  *time.Time `json:"booking.end"`
+		User  []struct{
+			ID    string `json:"uid"`
+		} `json:"booking.user"`
+		Hotel  []struct{
+			ID    string `json:"uid"`
+		} `json:"booking.hotel"`
+		Room  []struct{
+			ID    string `json:"uid"`
+		} `json:"booking.room"`
+		ID    string `json:"uid"`
+	} `json:"bookings"`
+}
+
 func getBookings(w http.ResponseWriter, r *http.Request) {
 	authHeaders, isOk := r.Header["Authorization"]
 	if isOk {
@@ -88,22 +105,7 @@ func getBookings(w http.ResponseWriter, r *http.Request) {
 				})
 				return
 			}
-			var bookings struct {
-				Bookings []struct {
-					Start *time.Time `json:"booking.start"`
-					End  *time.Time `json:"booking.end"`
-					User  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.user"`
-					Hotel  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.hotel"`
-					Room  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.room"`
-					ID    string `json:"uid"`
-				} `json:"bookings"`
-			}
+			var bookings bookingQuery
 			err = json.Unmarshal(resp.GetJson(), &bookings)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
@@ -190,22 +192,7 @@ func getBooking(w http.ResponseWriter, r *http.Request) {
 				})
 				return
 			}
-			var bookings struct {
-				Bookings []struct {
-					Start *time.Time `json:"booking.start"`
-					End  *time.Time `json:"booking.end"`
-					User  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.user"`
-					Hotel  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.hotel"`
-					Room  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.room"`
-					ID    string `json:"uid"`
-				} `json:"bookings"`
-			}
+			var bookings bookingQuery
 			err = json.Unmarshal(resp.GetJson(), &bookings)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
@@ -306,22 +293,7 @@ func getBookingsByRoom(w http.ResponseWriter, r *http.Request) {
 				})
 				return
 			}
-			var bookings struct {
-				Bookings []struct {
-					Start *time.Time `json:"booking.start"`
-					End  *time.Time `json:"booking.end"`
-					User  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.user"`
-					Hotel  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.hotel"`
-					Room  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.room"`
-					ID    string `json:"uid"`
-				} `json:"bookings"`
-			}
+			var bookings bookingQuery
 			err = json.Unmarshal(resp.GetJson(), &bookings)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
@@ -411,23 +383,8 @@ func getBookingsByHotel(w http.ResponseWriter, r *http.Request) {
 				})
 				return
 			}
-			var bookings struct {
-				Bookings []struct {
-					Start *time.Time `json:"booking.start"`
-					End  *time.Time `json:"booking.end"`
-					User  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.user"`
-					Hotel  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.hotel"`
-					Room  []struct{
-						ID    string `json:"uid"`
-					} `json:"booking.room"`
-					ID    string `json:"uid"`
-				} `json:"bookings"`
-			}
-			err = json.Unmarshal(resp.GetJson(), &bookings)
+			var bookings bookingQuery
+			json.Unmarshal(resp.GetJson(), &bookings)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(&BookingsResp{

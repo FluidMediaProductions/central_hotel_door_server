@@ -4,9 +4,7 @@ metadata:
   name: rooms-config
   namespace: travelr
 data:
-  dbHost: "mysql:3306"
-  dbUser: travelr
-  dbName: travelr_rooms
+  dbHost: "dgraph-server-public:9080"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -38,21 +36,6 @@ spec:
                 configMapKeyRef:
                   name: rooms-config
                   key: dbHost
-            - name: TRAVELR_DB_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: rooms-config
-                  key: dbUser
-            - name: TRAVELR_DB_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: rooms-config
-                  key: dbName
-            - name: TRAVELR_DB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: db-auth
-                  key: pass
             - name: TRAVELR_JWT_SECRET
               valueFrom:
                 secretKeyRef:

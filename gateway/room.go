@@ -12,13 +12,13 @@ var roomType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Room",
 	Fields: graphql.Fields{
 		"ID": &graphql.Field{
-			Type: graphql.Int,
+			Type: graphql.String,
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				room, isOk := params.Source.(map[string]interface{})
 				if isOk {
-					id, isOk := room["ID"].(float64)
+					id, isOk := room["uid"].(string)
 					if isOk {
-						return int(id), nil
+						return id, nil
 					}
 				}
 				return nil, nil
@@ -55,9 +55,9 @@ var roomType = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				room, isOk := params.Source.(map[string]interface{})
 				if isOk {
-					hotelId, isOk := room["hotelId"].(float64)
+					hotelId, isOk := room["hotelId"].(string)
 					if isOk {
-						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%d", int(hotelId)), nil)
+						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%s", hotelId), nil)
 						if err != nil {
 							return nil, err
 						}

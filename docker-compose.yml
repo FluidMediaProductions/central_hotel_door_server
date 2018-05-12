@@ -102,10 +102,7 @@ services:
     expose:
       - 80
     environment:
-      - TRAVELR_DB_HOST=172.17.0.1:3306
-      - TRAVELR_DB_USER=root
-      - TRAVELR_DB_PASS=wHUgN89srLyXRTXbwDctc3k7xoxqmBW7
-      - TRAVELR_DB_NAME=travelr_rooms
+      - TRAVELR_DB_HOST=dg-server:9080
   bookings:
     build:
       context: .
