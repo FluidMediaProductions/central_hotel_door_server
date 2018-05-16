@@ -392,6 +392,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 				Name  string `json:"name,omitempty"`
 				Email string `json:"email,omitempty"`
 			}
+			mutation.ID = user.Account[0].ID
 
 			email, isOk := data["email"].(string)
 			if isOk {
