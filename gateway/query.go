@@ -25,15 +25,15 @@ var authedQuery = graphql.NewObject(graphql.ObjectConfig{
 			Type: bookingType,
 			Args: graphql.FieldConfigArgument{
 				"id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.Int),
+					Type: graphql.NewNonNull(graphql.String),
 				},
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				id, isOK := params.Args["id"].(int)
+				id, isOK := params.Args["id"].(string)
 				if isOK {
 					user, isOk := params.Source.(*utils.User)
 					if isOk {
-						req, err := http.NewRequest("GET", BookingsServer+fmt.Sprintf("/bookings/%d", id), nil)
+						req, err := http.NewRequest("GET", BookingsServer+fmt.Sprintf("/bookings/%s", id), nil)
 						if err != nil {
 							return nil, err
 						}
@@ -115,13 +115,13 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 			Type: hotelType,
 			Args: graphql.FieldConfigArgument{
 				"id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.Int),
+					Type: graphql.NewNonNull(graphql.String),
 				},
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				id, isOK := params.Args["id"].(int)
+				id, isOK := params.Args["id"].(string)
 				if isOK {
-					req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%d", id), nil)
+					req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%s", id), nil)
 					if err != nil {
 						return nil, err
 					}
@@ -175,13 +175,13 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 			Type: roomType,
 			Args: graphql.FieldConfigArgument{
 				"id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.Int),
+					Type: graphql.NewNonNull(graphql.String),
 				},
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				id, isOK := params.Args["id"].(int)
+				id, isOK := params.Args["id"].(string)
 				if isOK {
-					req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d", id), nil)
+					req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%s", id), nil)
 					if err != nil {
 						return nil, err
 					}

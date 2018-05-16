@@ -128,15 +128,15 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 			Type: graphql.Boolean,
 			Args: graphql.FieldConfigArgument{
 				"id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.Int),
+					Type: graphql.NewNonNull(graphql.String),
 				},
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				id, isOK := params.Args["id"].(int)
+				id, isOK := params.Args["id"].(string)
 				if isOK {
 					user, isOk := params.Source.(*utils.User)
 					if isOk {
-						req, err := http.NewRequest("GET", BookingsServer+fmt.Sprintf("/bookings/by-room/%d", id), nil)
+						req, err := http.NewRequest("GET", BookingsServer+fmt.Sprintf("/bookings/by-room/%s", id), nil)
 						if err != nil {
 							return nil, err
 						}
@@ -160,7 +160,7 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 
 						_, isOk = resp["booking"].(map[string]interface{})
 						if isOk {
-							req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d/open", id), nil)
+							req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%s/open", id), nil)
 							if err != nil {
 								return nil, err
 							}
@@ -190,15 +190,15 @@ var authedMutation = graphql.NewObject(graphql.ObjectConfig{
 			Type: graphql.Boolean,
 			Args: graphql.FieldConfigArgument{
 				"id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.Int),
+					Type: graphql.NewNonNull(graphql.String),
 				},
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				id, isOK := params.Args["id"].(int)
+				id, isOK := params.Args["id"].(string)
 				if isOK {
 					user, isOk := params.Source.(*utils.User)
 					if isOk {
-						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%d/open", id), nil)
+						req, err := http.NewRequest("GET", HotelsServer+fmt.Sprintf("/hotels/%s/open", id), nil)
 						if err != nil {
 							return nil, err
 						}
