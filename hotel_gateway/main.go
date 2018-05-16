@@ -10,15 +10,19 @@ import (
 	"github.com/fluidmediaproductions/central_hotel_door_server/hotel_comms"
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	_"github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
+	"github.com/dgraph-io/dgo"
+	"google.golang.org/grpc"
+	"github.com/dgraph-io/dgo/protos/api"
+	"context"
+	"encoding/json"
+	"encoding/base64"
 )
 
 const addr = ":80"
 
-var db *gorm.DB
+var db *dgo.Dgraph
 
 type Status struct {
 	PrivateKey *rsa.PrivateKey
@@ -28,12 +32,12 @@ type Status struct {
 var status = &Status{}
 
 type HotelServer struct {
-	gorm.Model
+	ID      string
 	UUID      string
-	HotelId   uint
+	HotelId   string
 	LastSeen  time.Time
-	Online    bool
-	PublicKey []byte `gorm:"type:LONGBLOB"`
+	Online bool
+	PublicKey []byte
 }
 
 type ProtoHandlerFunc func(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter) error
@@ -62,18 +66,70 @@ var protoHandlers = []ProtoHandler{
 	},
 }
 
+type hotelQuery struct {
+	Hotels []struct {
+		ID    string `json:"uid"`
+		UUID    string `json:"hotelServer.uuid"`
+		LastSeen    *time.Time `json:"hotelServer.lastSeen"`
+		Online    bool `json:"hotelServer.online"`
+		PubKey   string `json:"hotelServer.pubKey"`
+	} `json:"hotels"`
+}
+
+func getHotels() (*hotelQuery, error) {
+	ctx := context.Background()
+	txn := db.NewTxn()
+
+	q := `query{
+            hotels(func: has(hotelServer)) @cascade {
+              uid
+              hotel.uuid
+              hotel.lastSeen
+              hotel.pubKey
+              hotel.checkIn
+              hotel.hasCarPark
+	        }
+          }`
+
+	resp, err := txn.Query(ctx, q)
+	if err != nil {
+		return nil, err
+	}
+	var hotels *hotelQuery
+	err = json.Unmarshal(resp.GetJson(), &hotels)
+	if err != nil {
+		return nil, err
+	}
+
+	return hotels, nil
+}
+
 func checkHotels() {
 	ticker := time.NewTicker(time.Second * 5)
 	for range ticker.C {
-		hotelServers := make([]*HotelServer, 0)
-		db.Find(&hotelServers, &HotelServer{Online: true})
+		hotelServers, err := getHotels()
+		if err != nil {
+			log.Println(err)
+			continue
+		}
 
-		for _, hotelServer := range hotelServers {
-			if time.Since(hotelServer.LastSeen) > time.Minute {
+		for i, hotelServer := range hotelServers.Hotels {
+			if time.Since(*hotelServer.LastSeen) > time.Minute {
 				log.Printf("Removing hotel %v, too old\n", hotelServer.UUID)
-				hotelServer.Online = false
-				db.Save(&hotelServer)
+				hotelServers.Hotels[i].Online = false
 			}
+		}
+		txn := db.NewTxn()
+		out, err := json.Marshal(hotelServers.Hotels)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		_, err = txn.Mutate(context.Background(), &api.Mutation{SetJson: out, CommitNow: true})
+		if err != nil {
+			log.Println(err)
+			continue
 		}
 	}
 }
@@ -116,30 +172,43 @@ func hotelPing(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseWriter
 	return sendMsg(resp, hotel_comms.MsgType_HOTEL_PING_RESP, w)
 }
 
+func newDbClient(dbHost string) *dgo.Dgraph {
+	d, err := grpc.Dial(dbHost, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error connecting: %v\n", err)
+	}
+
+	return dgo.NewDgraphClient(
+		api.NewDgraphClient(d),
+	)
+}
+
+func setupSchema(c *dgo.Dgraph) {
+	err := c.Alter(context.Background(), &api.Operation{
+		Schema: `
+			hotelServer.uuid: string .
+			hotelServer.hotel: uid @reverse .
+			hotelServer.lastSeen: dateTime .
+			hotelServer.online: bool .
+			hotelServer.pubKey: string .
+		`,
+	})
+	if err != nil {
+		log.Fatalf("Error setting up schema: %v\n", err)
+	}
+}
+
 func main() {
-	viper.SetDefault("DB_HOST", "mysql")
-	viper.SetDefault("DB_USER", "travelr")
-	viper.SetDefault("DB_NAME", "hotel_gateway")
+	viper.SetDefault("DB_HOST", "dgraph-server-public:9080")
 
 	viper.SetEnvPrefix("TRAVELR")
 	viper.AutomaticEnv()
 
 	dbHost := viper.GetString("DB_HOST")
-	dbUser := viper.GetString("DB_USER")
-	dbPass := viper.GetString("DB_PASS")
-	dbName := viper.GetString("DB_NAME")
 
-	config := &mysql.Config{Addr: dbHost, Net: "tcp", User: dbUser, Passwd: dbPass, DBName: dbName, ParseTime: true}
+	db = newDbClient(dbHost)
 
-	log.Printf("Connecting to database with DSN: %s\n", config.FormatDSN())
-	var err error
-	db, err = gorm.Open("mysql", config.FormatDSN())
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	db.AutoMigrate(&HotelServer{})
+	setupSchema(db)
 
 	priv, pub, err := hotel_comms.GetKeys()
 	if err != nil {

@@ -288,7 +288,7 @@ func setup(c *dgo.Dgraph) {
 		Schema: `
 			room.name: string .
 			room.floor: string .
-			room.hotel: uid .
+			room.hotel: uid @reverse .
 		`,
 	})
 	if err != nil {
