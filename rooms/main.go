@@ -163,25 +163,59 @@ func getRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func getRoomsByHotel(w http.ResponseWriter, r *http.Request) {
-	//vars := mux.Vars(r)
-	//
-	//id := vars["id"]
-	//
-	//rooms := make([]*Room, 0)
-	//err := db.Find(&rooms, &Room{
-	//	HotelID: id,
-	//}).Error
-	//if err != nil {
-	//	w.WriteHeader(http.StatusInternalServerError)
-	//	json.NewEncoder(w).Encode(&RoomsResp{
-	//		Err: err.Error(),
-	//	})
-	//	return
-	//}
-	//
-	//json.NewEncoder(w).Encode(&RoomsResp{
-	//	Rooms: rooms,
-	//})
+	vars := mux.Vars(r)
+
+	id := vars["id"]
+
+	ctx := context.Background()
+	txn := db.NewTxn()
+
+	q := `query q($id: string) {
+            var (func: uid($id)) {
+              u as uid
+	        }
+            rooms(func: has(room)) @cascade {
+              uid
+              room.name
+              room.floor
+              room.hotel @filter(uid(u)) {
+                uid
+              }
+	        }
+          }`
+
+	resp, err := txn.QueryWithVars(ctx, q, map[string]string{"$id": id})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&RoomResp{
+			Err: err.Error(),
+		})
+		return
+	}
+	var rooms roomQuery
+	err = json.Unmarshal(resp.GetJson(), &rooms)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&RoomResp{
+			Err: err.Error(),
+		})
+		return
+	}
+
+	outRooms:= make([]*Room, 0)
+	for _, room := range rooms.Rooms {
+		outRoom := &Room{
+			ID:         room.ID,
+			Name:       room.Name,
+			Floor: room.Floor,
+			HotelID: room.Hotel[0].ID,
+		}
+		outRooms = append(outRooms, outRoom)
+	}
+
+	json.NewEncoder(w).Encode(&RoomsResp{
+		Rooms: outRooms,
+	})
 }
 
 func openRoom(w http.ResponseWriter, r *http.Request) {
