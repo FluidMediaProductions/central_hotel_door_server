@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"github.com/dgraph-io/dgo/protos/api"
 	"context"
+	"github.com/pkg/errors"
 )
 
 const addr = ":80"
@@ -49,10 +50,45 @@ type roomQuery struct {
 		ID    string `json:"uid"`
 		Name    string `json:"room.name"`
 		Floor    string `json:"room.floor"`
+		ShouldOpen    bool `json:"room.shouldOpen"`
 		Hotel  []struct{
 			ID    string `json:"uid"`
 		} `json:"room.hotel"`
 	} `json:"rooms"`
+}
+
+func getRoomFormDB(id string) (*roomQuery, error) {
+	ctx := context.Background()
+	txn := db.NewTxn()
+	defer txn.Commit(ctx)
+
+	q := `query q($id: string) {
+            rooms(func: uid($id)) @filter(has(room)) @cascade {
+              uid
+              room.name
+              room.floor
+              room.shouldOpen
+              room.hotel {
+                uid
+              }
+	        }
+          }`
+
+	resp, err := txn.QueryWithVars(ctx, q, map[string]string{"$id": id})
+	if err != nil {
+		return nil, err
+	}
+	var rooms roomQuery
+	err = json.Unmarshal(resp.GetJson(), &rooms)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(rooms.Rooms) == 0 {
+		return nil, errors.New("room not found")
+	}
+
+	return &rooms, nil
 }
 
 func getRooms(w http.ResponseWriter, r *http.Request) {
@@ -64,6 +100,7 @@ func getRooms(w http.ResponseWriter, r *http.Request) {
               uid
               room.name
               room.floor
+              room.shouldOpen
               room.hotel {
                 uid
               }
@@ -109,42 +146,12 @@ func getRoom(w http.ResponseWriter, r *http.Request) {
 
 	id := vars["id"]
 
-	ctx := context.Background()
-	txn := db.NewTxn()
+	rooms, err := getRoomFormDB(id)
 
-	q := `query q($id: string) {
-            rooms(func: uid($id)) @filter(has(room)) @cascade {
-              uid
-              room.name
-              room.floor
-              room.hotel {
-                uid
-              }
-	        }
-          }`
-
-	resp, err := txn.QueryWithVars(ctx, q, map[string]string{"$id": id})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(&RoomResp{
 			Err: err.Error(),
-		})
-		return
-	}
-	var rooms roomQuery
-	err = json.Unmarshal(resp.GetJson(), &rooms)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(&RoomResp{
-			Err: err.Error(),
-		})
-		return
-	}
-
-	if len(rooms.Rooms) == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(&RoomResp{
-			Err: "room not found",
 		})
 		return
 	}
@@ -178,6 +185,7 @@ func getRoomsByHotel(w http.ResponseWriter, r *http.Request) {
               uid
               room.name
               room.floor
+              room.shouldOpen
               room.hotel @filter(uid(u)) {
                 uid
               }
@@ -219,79 +227,105 @@ func getRoomsByHotel(w http.ResponseWriter, r *http.Request) {
 }
 
 func openRoom(w http.ResponseWriter, r *http.Request) {
-	//vars := mux.Vars(r)
-	//
-	//id, _ := strconv.Atoi(vars["id"])
-	//
-	//room := &Room{}
-	//err := db.Find(&room, id).Error
-	//if err != nil {
-	//	if err == gorm.ErrRecordNotFound {
-	//		w.WriteHeader(http.StatusNotFound)
-	//		json.NewEncoder(w).Encode(&OpenRoomResp{
-	//			Err: "room not found",
-	//		})
-	//		return
-	//	} else {
-	//		w.WriteHeader(http.StatusInternalServerError)
-	//		json.NewEncoder(w).Encode(&OpenRoomResp{
-	//			Err: err.Error(),
-	//		})
-	//		return
-	//	}
-	//}
-	//
-	//room.ShouldOpen = true
-	//err = db.Save(&room).Error
-	//if err != nil {
-	//	w.WriteHeader(http.StatusInternalServerError)
-	//	json.NewEncoder(w).Encode(&OpenRoomResp{
-	//		Err: err.Error(),
-	//	})
-	//	return
-	//}
-	//
-	//json.NewEncoder(w).Encode(&OpenRoomResp{
-	//	Success: true,
-	//})
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	rooms, err := getRoomFormDB(id)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&OpenRoomResp{
+			Err: err.Error(),
+		})
+		return
+	}
+
+	ctx := context.Background()
+	txn := db.NewTxn()
+
+	var mutation struct {
+		ID    string `json:"uid"`
+		ShouldOpen  bool `json:"room.shouldOpen"`
+	}
+	mutation.ID = rooms.Rooms[0].ID
+	mutation.ShouldOpen = true
+
+	mutData, err := json.Marshal(&mutation)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&OpenRoomResp{
+			Err: err.Error(),
+		})
+		return
+	}
+
+	mu := &api.Mutation{
+		SetJson: mutData,
+	}
+
+	_, err = txn.Mutate(ctx, mu)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&OpenRoomResp{
+			Err: err.Error(),
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(&OpenRoomResp{
+		Success: true,
+	})
 }
 
 func openRoomSuccess(w http.ResponseWriter, r *http.Request) {
-	//vars := mux.Vars(r)
-	//
-	//id, _ := strconv.Atoi(vars["id"])
-	//
-	//room := &Room{}
-	//err := db.Find(&room, id).Error
-	//if err != nil {
-	//	if err == gorm.ErrRecordNotFound {
-	//		w.WriteHeader(http.StatusNotFound)
-	//		json.NewEncoder(w).Encode(&OpenRoomSuccessResp{
-	//			Err: "room not found",
-	//		})
-	//		return
-	//	} else {
-	//		w.WriteHeader(http.StatusInternalServerError)
-	//		json.NewEncoder(w).Encode(&OpenRoomSuccessResp{
-	//			Err: err.Error(),
-	//		})
-	//		return
-	//	}
-	//}
-	//
-	//room.ShouldOpen = false
-	//err = db.Save(&room).Error
-	//if err != nil {
-	//	w.WriteHeader(http.StatusInternalServerError)
-	//	json.NewEncoder(w).Encode(&OpenRoomSuccessResp{
-	//		Err: err.Error(),
-	//	})
-	//	return
-	//}
-	//
-	//json.NewEncoder(w).Encode(&OpenRoomSuccessResp{
-	//	Success: true,
-	//})
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	rooms, err := getRoomFormDB(id)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&OpenRoomSuccessResp{
+			Err: err.Error(),
+		})
+		return
+	}
+
+	ctx := context.Background()
+	txn := db.NewTxn()
+
+	var mutation struct {
+		ID    string `json:"uid"`
+		ShouldOpen  bool `json:"room.shouldOpen"`
+	}
+	mutation.ID = rooms.Rooms[0].ID
+	mutation.ShouldOpen = false
+
+	mutData, err := json.Marshal(&mutation)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&OpenRoomSuccessResp{
+			Err: err.Error(),
+		})
+		return
+	}
+
+	mu := &api.Mutation{
+		SetJson: mutData,
+	}
+
+	_, err = txn.Mutate(ctx, mu)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(&OpenRoomSuccessResp{
+			Err: err.Error(),
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(&OpenRoomSuccessResp{
+		Success: true,
+	})
 }
 
 func router() *mux.Router {
@@ -322,6 +356,7 @@ func setup(c *dgo.Dgraph) {
 		Schema: `
 			room.name: string .
 			room.floor: string .
+			room.shouldOpen: bool .
 			room.hotel: uid @reverse .
 		`,
 	})
