@@ -48,7 +48,7 @@ enum ActionType {
 
 message Action {
     required ActionType type = 1;
-    required int64 id = 2;
+    required string id = 2;
     optional bytes payload = 3;
 }
 
@@ -61,7 +61,7 @@ message GetActionsResp {
 }
 
 message ActionComplete {
-    required int64 actionId = 1;
+    required string actionId = 1;
     required ActionType actionType = 2;
     required bool success = 3;
 }

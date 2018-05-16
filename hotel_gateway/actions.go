@@ -40,12 +40,12 @@ func getActions(hotelId uint) ([]*hotel_comms.Action, error) {
 			shouldOpen, isOk := room["shouldOpen"].(bool)
 			if isOk {
 				if shouldOpen {
-					id, isOk := room["ID"].(float64)
+					id, isOk := room["ID"].(string)
 					if isOk {
 						actionType := hotel_comms.ActionType_ROOM_UNLOCK
 						action := &hotel_comms.Action{
 							Type: &actionType,
-							Id:   proto.Int64(int64(id)),
+							Id:   proto.String(id),
 						}
 						actions = append(actions, action)
 					}
@@ -76,8 +76,8 @@ func actionComplete(hotel *HotelServer, msg []byte, sig []byte, w http.ResponseW
 	return sendMsg(resp, hotel_comms.MsgType_ACTION_COMPLETE_RESP, w)
 }
 
-func completeRoomUnlock(roomId int64, hotelId uint) error {
-	req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d", roomId), nil)
+func completeRoomUnlock(roomId string, hotelId string) error {
+	req, err := http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%s", roomId), nil)
 
 	resp, err := utils.GetJson(req)
 	if err != nil {
@@ -95,16 +95,16 @@ func completeRoomUnlock(roomId int64, hotelId uint) error {
 		return errors.New("unable to get room")
 	}
 
-	roomHotelId, isOk := room["hotelId"].(float64)
+	roomHotelId, isOk := room["hotelId"].(string)
 	if !isOk {
 		return errors.New("unable to get room")
 	}
 
-	if hotelId != uint(roomHotelId) {
+	if hotelId != roomHotelId {
 		return errors.New("room not in hotel")
 	}
 
-	req, err = http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%d/open-success", roomId), nil)
+	req, err = http.NewRequest("GET", RoomsServer+fmt.Sprintf("/rooms/%s/open-success", roomId), nil)
 	if err != nil {
 		return  err
 	}
