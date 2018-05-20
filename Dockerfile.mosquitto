@@ -1,20 +1,28 @@
 FROM alpine
 
-RUN apk --no-cache add alpine-sdk c-ares util-linux-dev openssl-dev git curl-dev
-RUN git clone https://github.com/eclipse/mosquitto.git
+RUN apk --no-cache add cmake alpine-sdk c-ares openssl-dev git wget curl-dev
+RUN wget --content-disposition https://github.com/warmcat/libwebsockets/archive/v3.0.0.tar.gz \
+      && tar xzvf libwebsockets-3.0.0.tar.gz && mv libwebsockets-3.0.0 /libwebsockets
+
+RUN cd /libwebsockets && mkdir build && cd build && cmake .. && make install \
+      && ln -s /usr/local/lib/libwebsockets.so.13 /lib/libwebsockets.so.13
+
+RUN wget --content-disposition https://github.com/eclipse/mosquitto/archive/v1.5.tar.gz \
+      && tar xzvf mosquitto-1.5.tar.gz && mv mosquitto-1.5 /mosquitto
 RUN git clone https://github.com/jpmens/mosquitto-auth-plug.git
 
-RUN cd /mosquitto && make WITH_DOCS=no && make install WITH_DOCS=no
+COPY mosquitto/config.mk /mosquitto
+RUN cd /mosquitto && make && make install
 
-COPY mosquitto/config.mk /mosquitto-auth-plug/
+COPY mosquitto/auth/config.mk /mosquitto-auth-plug/
 RUN cd /mosquitto-auth-plug && make && cp auth-plug.so ../mosquitto && cd ../mosquitto
 
 COPY mosquitto/mosquitto.conf /mosquitto/
 
 FROM alpine
 
-RUN apk --no-cache add openssl make libcurl libuuid
+RUN apk --no-cache add openssl libcurl
+COPY --from=0 /lib/libwebsockets.so.13 /lib/libwebsockets.so.13
 COPY --from=0 /mosquitto /mosquitto
-RUN cd /mosquitto && make install WITH_DOCS=no
 
-ENTRYPOINT ["mosquitto", "-c", "/mosquitto/mosquitto.conf"]
+ENTRYPOINT ["/mosquitto/src/mosquitto", "-c", "/mosquitto/mosquitto.conf"]
