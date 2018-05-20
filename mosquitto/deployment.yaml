@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+  namespace: travelr
+  labels:
+    app: mosquitto
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      containers:
+        - name: mosquitto
+          image: evilben/travelr_mosquitto:(hash)
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+            - containerPort: 8883
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto
+  namespace: travelr
+spec:
+  selector:
+    app: mosquitto
+  ports:
+    - port: 8883
+      protocol: TCP
+      targetPort: 8883
+    - port: 80
+      protocol: TCP
+      targetPort: 80

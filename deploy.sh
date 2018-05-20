@@ -8,3 +8,5 @@ cat hotels/deployment.yaml | sed "s/(hash)/$HASH/g" | kubectl apply -f -
 cat rooms/deployment.yaml | sed "s/(hash)/$HASH/g" | kubectl apply -f -
 cat gateway/deployment.yaml | sed "s/(hash)/$HASH/g" | kubectl apply -f -
 cat hotel_gateway/deployment.yaml | sed "s/(hash)/$HASH/g" | kubectl apply -f -
+cat hotel_mqtt_auth/deployment.yaml | sed "s/(hash)/$HASH/g" | kubectl apply -f -
+cat mosquitto/deployment.yaml | sed "s/(hash)/$HASH/g" | kubectl apply -f -

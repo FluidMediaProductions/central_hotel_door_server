@@ -1,41 +1,28 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: hotels-config
-  namespace: travelr
-data:
-  dbHost: "dgraph-server-public:9080"
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hotels
+  name: hotel_mqtt_auth
   namespace: travelr
   labels:
-    app: hotels
+    app: hotel_mqtt_auth
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: hotels
+      app: hotel_mqtt_auth
   template:
     metadata:
       labels:
-        app: hotels
+        app: hotel_mqtt_auth
     spec:
       containers:
-        - name: hotels
-          image: evilben/travelr_hotels:(hash)
+        - name: hotel_mqtt_auth
+          image: evilben/travelr_hotel_mqtt_auth:(hash)
           imagePullPolicy: Always
           ports:
             - containerPort: 80
               protocol: TCP
           env:
-            - name: TRAVELR_DB_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: hotels-config
-                  key: dbHost
             - name: TRAVELR_JWT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -45,11 +32,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hotels
+  name: hotel_mqtt_auth
   namespace: travelr
 spec:
   selector:
-    app: hotels
+    app: hotel_mqtt_auth
   ports:
     - port: 80
       protocol: TCP
