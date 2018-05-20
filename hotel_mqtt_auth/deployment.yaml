@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hotel_mqtt_auth
+  name: hotel-mqtt-auth
   namespace: travelr
   labels:
-    app: hotel_mqtt_auth
+    app: hotel-mqtt-auth
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: hotel_mqtt_auth
+      app: hotel-mqtt-auth
   template:
     metadata:
       labels:
-        app: hotel_mqtt_auth
+        app: hotel-mqtt-auth
     spec:
       containers:
-        - name: hotel_mqtt_auth
+        - name: hotel-mqtt-auth
           image: evilben/travelr_hotel_mqtt_auth:(hash)
           imagePullPolicy: Always
           ports:
@@ -32,11 +32,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hotel_mqtt_auth
+  name: hotel-mqtt-auth
   namespace: travelr
 spec:
   selector:
-    app: hotel_mqtt_auth
+    app: hotel-mqtt-auth
   ports:
     - port: 80
       protocol: TCP

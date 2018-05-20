@@ -37,7 +37,7 @@ services:
       - 8883:8883
     links:
       - hotel_mqtt_auth
-  hotel_mqtt_auth:
+  hotel-mqtt-auth:
     build:
       context: .
       dockerfile: Dockerfile.hotel_mqtt_auth

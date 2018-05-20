@@ -35,8 +35,10 @@ spec:
     app: mosquitto
   ports:
     - port: 8883
+      name: mqtt
       protocol: TCP
       targetPort: 8883
     - port: 80
       protocol: TCP
+      name: websocket
       targetPort: 80
