@@ -27,13 +27,26 @@ services:
       - 8000:8000
     command: dgraph-ratel
 
+  mosquitto:
+    build:
+      context: .
+      dockerfile: Dockerfile.mosquitto
+    volumes:
+      - mosquitto:/data
+    ports:
+      - 8883:8883
+    links:
+      - hotel_mqtt_auth
+  hotel_mqtt_auth:
+    build:
+      context: .
+      dockerfile: Dockerfile.hotel_mqtt_auth
+    expose:
+      - 80
   gateway:
     build:
       context: .
       dockerfile: Dockerfile.gateway
-    volumes:
-      - ./gateway:/go/src/gateway
-    working_dir: /go/src/gateway
     ports:
       - 8081:80
     links:
@@ -45,9 +58,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.hotel_gateway
-    volumes:
-      - ./hotel_gateway:/go/src/hotel_gateway
-    working_dir: /go/src/hotel_gateway
     ports:
       - 8082:80
     links:
@@ -70,9 +80,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.auth
-    volumes:
-      - ./auth:/go/src/auth
-    working_dir: /go/src/auth
     expose:
       - 80
     environment:
@@ -81,9 +88,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.hotels
-    volumes:
-      - ./hotels:/go/src/hotels
-    working_dir: /go/src/hotels
     links:
       - bookings
     expose:
@@ -94,9 +98,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.rooms
-    volumes:
-      - ./rooms:/go/src/rooms
-    working_dir: /go/src/rooms
     links:
       - bookings
     expose:
@@ -107,9 +108,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.bookings
-    volumes:
-      - ./bookings:/go/src/bookings
-    working_dir: /go/src/bookings
     expose:
       - 80
     environment:
@@ -117,3 +115,4 @@ services:
 
 volumes:
   dgraph:
+  mosquitto:

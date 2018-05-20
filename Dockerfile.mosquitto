@@ -1,0 +1,14 @@
+FROM alpine
+
+RUN apk --no-cache add openssl alpine-sdk c-ares util-linux-dev openssl-dev git curl-dev
+RUN git clone https://github.com/eclipse/mosquitto.git
+RUN git clone https://github.com/jpmens/mosquitto-auth-plug.git
+
+RUN cd /mosquitto && make WITH_DOCS=no && make install WITH_DOCS=no
+
+COPY mosquitto/config.mk /mosquitto-auth-plug/
+RUN cd /mosquitto-auth-plug && make && cp auth-plug.so ../mosquitto && cd ../mosquitto
+
+COPY mosquitto/mosquitto.conf /mosquitto/
+
+ENTRYPOINT ["mosquitto", "-c", "/mosquitto/mosquitto.conf"]

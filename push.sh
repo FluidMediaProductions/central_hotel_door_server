@@ -8,3 +8,5 @@ docker push evilben/travelr_hotels:$HASH
 docker push evilben/travelr_rooms:$HASH
 docker push evilben/travelr_gateway:$HASH
 docker push evilben/travelr_hotel_gateway:$HASH
+docker push evilben/travelr_hotel_mqtt_auth:$HASH
+docker push evilben/travelr_mosquitto:$HASH

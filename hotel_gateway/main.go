@@ -17,7 +17,6 @@ import (
 	"github.com/dgraph-io/dgo/protos/api"
 	"context"
 	"encoding/json"
-	"encoding/base64"
 )
 
 const addr = ":80"

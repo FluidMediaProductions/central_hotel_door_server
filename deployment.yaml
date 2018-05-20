@@ -4,27 +4,6 @@ metadata:
   name: travelr
 ---
 apiVersion: v1
-kind: Service
-metadata:
-  name: mysql
-  namespace: travelr
-spec:
-  ports:
-    - port: 3306
-      protocol: TCP
----
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: mysql
-  namespace: travelr
-subsets:
-  - addresses:
-      - ip: 195.201.58.86
-    ports:
-      - port: 3306
----
-apiVersion: v1
 kind: Endpoints
 metadata:
   name: glusterfs-cluster
